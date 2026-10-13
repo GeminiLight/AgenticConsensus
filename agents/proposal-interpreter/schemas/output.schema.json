@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["interpretation","unknowns"],"properties":{"interpretation":{"type":"string"},"unknowns":{"type":"array","items":{"type":"string"}}}}

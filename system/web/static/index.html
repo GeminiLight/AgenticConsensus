@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="zh-CN" data-theme-preference="light" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/static/i18n.js?v=0.32.0-llm-advice"></script>
+  <script src="./entry.js?v=0.22.3-entry-1"></script>
+  <style>
+    body.entry-pending { margin: 0; }
+    body.entry-pending > :not(#entry-gate):not(script):not(style) { display: none !important; }
+    #entry-gate { position: fixed; inset: 0; z-index: 110; box-sizing: border-box; overflow: auto; display: grid; place-items: center; padding: 24px; background: var(--ground, #f4f5f2); color: var(--ink, #17201b); font: 15px/1.6 var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif); }
+    #entry-gate[hidden], #entry-gate [hidden], html[data-entry="http"] #entry-gate .entry-local { display: none; }
+    .entry-panel { box-sizing: border-box; width: min(520px, 100%); padding: 32px; border: 1px solid var(--line, #dfe3df); border-radius: var(--radius-large, 12px); background: var(--panel, #ffffff); }
+    .entry-brand { margin: 0 0 28px; color: var(--accent, #216c53); font-size: 13px; font-weight: 650; }
+    #entry-title { margin: 0 0 14px; font: 500 30px/1.15 var(--font-editorial, Charter, Georgia, serif); }
+    #entry-copy { margin: 0 0 24px; color: var(--muted, #4f5b54); }
+    .entry-action { box-sizing: border-box; display: inline-flex; justify-content: center; align-items: center; min-height: 44px; width: 100%; padding: 10px 16px; border: 1px solid var(--accent, #216c53); border-radius: var(--radius-small, 6px); background: var(--accent, #216c53); color: var(--accent-ink, #ffffff); font: 600 14px/1.4 var(--font-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif); text-decoration: none; cursor: pointer; }
+    .entry-action:focus-visible, #entry-gate summary:focus-visible { outline: 2px solid var(--accent, #216c53); outline-offset: 4px; }
+    .entry-address { margin: 10px 0 0; color: var(--muted, #4f5b54); font-size: 12px; overflow-wrap: anywhere; text-align: center; }
+    .entry-help { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line, #dfe3df); color: var(--muted, #4f5b54); font-size: 13px; }
+    .entry-help summary { min-height: 44px; display: list-item; align-content: center; color: var(--ink, #17201b); cursor: pointer; }
+    .entry-help p { margin: 8px 0; }
+    .entry-command { display: block; padding: 12px; border: 1px solid var(--line, #dfe3df); border-radius: var(--radius-small, 6px); overflow-wrap: anywhere; background: var(--panel-subtle, #f7f8f6); color: var(--ink, #17201b); }
+    @media (max-width: 560px) { #entry-gate { padding: 16px; } .entry-panel { padding: 24px; } #entry-title { font-size: 27px; } }
+  </style>
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" id="theme-color" content="#f4f5f2">
+  <script src="/static/theme-bootstrap.js?v=0.17.0-review-desk"></script>
+  <title>AgenticConsensus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23131311'/%3E%3Cpath d='M13 48 24 12h8L21 48zm17 0 8-27h7l-8 27zm14 0 5-17h6l-5 17z' fill='%237ea896'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/app.css?v=0.32.0-llm-advice">
+  <link rel="stylesheet" href="/static/theme.css?v=0.29.0-reading">
+  <link rel="stylesheet" href="/static/alignment.css?v=0.30.0-workbench">
+</head>
+<body class="auth-locked entry-pending">
+  <section id="entry-gate" aria-labelledby="entry-title" data-state="file">
+    <div class="entry-panel">
+      <p class="entry-brand">AgenticConsensus</p>
+      <h1 id="entry-title" data-i18n=Open%20the%20review%20workspace>Open the review workspace</h1>
+      <p id="entry-copy" role="status" data-i18n=This%20file%20is%20the%20interface%2C%20not%20the%20running%20app.%20Open%20the%20local%20service%20to%20sign%20in%20and%20load%20your%20projects.>This file is the interface, not the running app. Open the local service to sign in and load your projects.</p>
+      <a class="entry-action entry-local" id="entry-local-link" href="http://127.0.0.1:8765/" data-i18n=Open%20local%20app>Open local app</a>
+      <button class="entry-action" id="entry-retry" type="button" hidden data-i18n=Try%20again>Try again</button>
+      <p class="entry-address" id="entry-service-address">http://127.0.0.1:8765/</p>
+      <details class="entry-help entry-local">
+        <summary data-i18n=If%20the%20app%20doesn%E2%80%99t%20open>If the app doesn’t open</summary>
+        <p data-i18n=From%20the%20project%20folder%2C%20activate%20your%20Python%20environment%20and%20start%20the%20service%3A>From the project folder, activate your Python environment and start the service:</p>
+        <code class="entry-command">agentic-consensus serve</code>
+        <p data-i18n=Keep%20that%20terminal%20open%2C%20then%20use%20the%20button%20above.%20If%20you%20chose%20another%20port%2C%20open%20the%20address%20printed%20in%20the%20terminal.>Keep that terminal open, then use the button above. If you chose another port, open the address printed in the terminal.</p>
+      </details>
+      <noscript><p class="entry-help" data-i18n=JavaScript%20is%20required%20to%20use%20the%20workspace.%20Enable%20it%2C%20then%20reload%20the%20app%E2%80%99s%20address.>JavaScript is required to use the workspace. Enable it, then reload the app’s address.</p></noscript>
+    </div>
+  </section>
+  <a class="skip-link" href="#main-content" data-i18n=Skip%20to%20review%20workspace>Skip to review workspace</a>
+  <div class="busy-bar" id="busy-bar" aria-hidden="true"></div>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.4 15.4A8.6 8.6 0 0 1 8.6 3.6 8.7 8.7 0 1 0 20.4 15.4Z"></path></symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></symbol>
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"></path></symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4.2-4.2"></path></symbol>
+    <symbol id="icon-command" viewBox="0 0 24 24"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"></path></symbol>
+    <symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"></path></symbol>
+    <symbol id="icon-panel-right" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M15 4v16"></path></symbol>
+    <symbol id="icon-link" viewBox="0 0 24 24"><path d="m9.5 14.5 5-5M7.1 17H6a4 4 0 0 1 0-8h3M16.9 7H18a4 4 0 1 1 0 8h-3"></path></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M5 20h14"></path></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M18.2 9A7 7 0 0 0 6.4 6.4L4 9M5.8 15A7 7 0 0 0 17.6 17.6L20 15"></path></symbol>
+    <symbol id="icon-history" viewBox="0 0 24 24"><path d="M3 4v5h5M3.7 9a8.5 8.5 0 1 1 .8 8M12 7v5l3 2"></path></symbol>
+    <symbol id="icon-git-rebase" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="5" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M6 7v10M18 7v2a5 5 0 0 1-5 5H9M13 11l-3 3 3 3"></path></symbol>
+    <symbol id="icon-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></symbol>
+    <symbol id="icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m8 12 2.5 2.5L16 9"></path></symbol>
+    <symbol id="icon-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"></circle><path d="M12 12h9M17 12v3M20 12v2"></path></symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24"><path d="M9 19c-4.5 1.4-4.5-2.4-6.3-3M15 22v-3.5c0-1 .1-1.5-.5-2.1 3.2-.4 6.5-1.6 6.5-7.1A5.6 5.6 0 0 0 19.5 5a5.2 5.2 0 0 0-.1-4S18.2.6 15 2.5a15 15 0 0 0-6 0C5.8.6 4.6 1 4.6 1a5.2 5.2 0 0 0-.1 4A5.6 5.6 0 0 0 3 9.3c0 5.5 3.3 6.7 6.5 7.1-.5.5-.7 1.1-.5 2.1V22"></path></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3 20a6 6 0 0 1 12 0M16 5.5a3 3 0 0 1 0 5.5M17 14a5 5 0 0 1 4 5"></path></symbol>
+    <symbol id="icon-file-text" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 13h6M9 17h6"></path></symbol>
+    <symbol id="icon-log-out" viewBox="0 0 24 24"><path d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"></path></symbol>
+    <symbol id="icon-folder-plus" viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3zM12 11v5M9.5 13.5h5"></path></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"></path></symbol>
+    <symbol id="icon-more-horizontal" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></symbol>
+    <symbol id="icon-layout" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 10h18M10 10v10"></path></symbol>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 2.8 8.1 7 10 4.2-1.9 7-5.4 7-10V6z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"></path></symbol>
+    <symbol id="icon-message-square" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 3v-4.5A2 2 0 0 1 3 15V7a2 2 0 0 1 2-2Z"></path><path d="M8 9h8M8 13h5"></path></symbol>
+    <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"></circle><circle cx="5" cy="18" r="2"></circle><circle cx="19" cy="18" r="2"></circle><path d="M12 7v4M5 16v-3h14v3"></path></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"></path></symbol>
+    <symbol id="icon-thumbs-up" viewBox="0 0 24 24"><path d="M7 10v10H3V10zM7 18h10.2a2 2 0 0 0 2-1.6l1.2-6A2 2 0 0 0 18.4 8H15l.5-3.2A2.4 2.4 0 0 0 13.1 2L7 10"></path></symbol>
+    <symbol id="icon-thumbs-down" viewBox="0 0 24 24"><path d="M7 14V4H3v10zM7 6h10.2a2 2 0 0 1 2 1.6l1.2 6a2 2 0 0 1-2 2.4H15l.5 3.2a2.4 2.4 0 0 1-2.4 2.8L7 14"></path></symbol>
+  </svg>
+  <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
+    <div class="auth-panel">
+      <div class="auth-panel-top">
+        <div class="auth-brand" aria-hidden="true"><span class="mark"><i></i><i></i><i></i></span><span>Agentic <b>Consensus</b></span></div>
+        <button type="button" class="language-button" data-language-switch aria-label="Switch to English">EN</button>
+      </div>
+      <p id="auth-kicker" hidden data-i18n=Account%20access>Account access</p>
+      <h1 id="auth-title">Sign in to your workspace</h1>
+      <p id="auth-copy">Review proposed changes, trace the evidence, and record your decision.</p>
+      <p class="paper-demo-auth-note">Research demo. Your synthetic case lives in this browser tab, not a permanent workspace. Export records before signing out or closing the tab. Model advice is not verification. Do not enter private data.</p>
+
+      <div class="auth-mode-tabs hidden" id="auth-mode-tabs" role="tablist" aria-label="Account access" data-i18n-aria-label=Account%20access>
+        <button type="button" class="active" role="tab" aria-selected="true" aria-controls="login-form" data-auth-mode="signin" data-i18n=Sign%20in>Sign in</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="signup-form" data-auth-mode="signup" data-i18n=Sign%20up>Sign up</button>
+      </div>
+
+      <form id="bootstrap-form" class="auth-form hidden" method="post">
+        <label><span data-i18n=Username>Username</span><input name="username" required autofocus autocomplete="username" placeholder="alice"></label>
+        <label><span data-i18n=Audit%20identity>Audit identity</span><input name="actor" required autocomplete="name" placeholder="alice@example.com"><small class="field-hint" data-i18n=Use%20the%20exact%20identity%20named%20in%20project%20authority%20grants.>Use the exact identity named in project authority grants.</small></label>
+        <label><span data-i18n=Password>Password</span><input name="password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <label><span data-i18n=Confirm%20password>Confirm password</span><input name="confirm_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <p class="form-error" id="bootstrap-error" role="alert"></p>
+        <button class="button button-primary" type="submit" data-i18n=Create%20first%20administrator>Create first administrator</button>
+      </form>
+
+      <form id="login-form" class="auth-form hidden" method="post">
+        <label><span data-i18n=Username>Username</span><input name="username" required autofocus autocomplete="username"></label>
+        <label><span data-i18n=Password>Password</span><input name="password" type="password" required maxlength="1024" autocomplete="current-password"></label>
+        <p class="form-error" id="login-error" role="alert"></p>
+        <button class="button button-primary" type="submit" data-i18n=Sign%20in>Sign in</button>
+      </form>
+
+      <form id="signup-form" class="auth-form hidden" method="post">
+        <label><span data-i18n=Username>Username</span><input name="username" required autofocus autocomplete="username" placeholder="builder"></label>
+        <label><span data-i18n=Audit%20identity>Audit identity</span><input name="actor" required autocomplete="email" placeholder="you@example.com"><small class="field-hint" data-i18n=This%20identity%20is%20recorded%20on%20governed%20actions.>This identity is recorded on governed actions.</small></label>
+        <label><span data-i18n=Password>Password</span><input name="password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <label><span data-i18n=Confirm%20password>Confirm password</span><input name="confirm_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <p class="signup-role-note"><span data-i18n=Operator>Operator</span> <span data-i18n=Registration%20grants%20console%20access%2C%20not%20project%20authority.>Registration grants console access, not project authority.</span></p>
+        <p class="form-error" id="signup-error" role="alert"></p>
+        <button class="button button-primary" type="submit" data-i18n=Create%20operator%20account>Create operator account</button>
+      </form>
+
+      <form id="forced-password-form" class="auth-form hidden" method="post">
+        <label><span data-i18n=Temporary%20password>Temporary password</span><input name="current_password" type="password" required maxlength="1024" autocomplete="current-password"></label>
+        <label><span data-i18n=New%20password>New password</span><input name="new_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <label><span data-i18n=Confirm%20new%20password>Confirm new password</span><input name="confirm_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+        <p class="form-error" id="forced-password-error" role="alert"></p>
+        <button class="button button-primary" type="submit" data-i18n=Set%20new%20password>Set new password</button>
+      </form>
+      <p class="auth-access-note" id="auth-access-note">Use the account created for this installation.</p>
+      <details class="auth-security-note"><summary data-i18n=About%20accounts%20and%20permissions>About accounts and permissions</summary><p data-i18n=Project%20permissions%20govern%20who%20can%20approve%2C%20waive%2C%20or%20provide%20evidence.%20An%20account%20alone%20does%20not%20grant%20that%20authority.>Project permissions govern who can approve, waive, or provide evidence. An account alone does not grant that authority.</p><p data-i18n=Passwords%20are%20hashed%20with%20Argon2id.%20Sessions%20stay%20server-side%20and%20expire%20automatically.>Passwords are hashed with Argon2id. Sessions stay server-side and expire automatically.</p></details>
+    </div>
+  </section>
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="AgenticConsensus home">
+      <span class="mark"><i></i><i></i><i></i></span>
+      <span>Agentic <b>Consensus</b></span>
+    </a>
+    <div class="project-context" id="project-context" hidden>
+      <span class="topbar-divider" aria-hidden="true"></span>
+      <button type="button" class="project-menu-button" id="project-menu-button" aria-haspopup="menu" aria-expanded="false" aria-controls="project-menu" aria-label="Switch project" data-i18n-aria-label=Switch%20project><span class="project-menu-name" id="project-menu-name">Project</span><span class="project-menu-meta" id="project-menu-meta"></span><svg class="ui-icon" aria-hidden="true"><use href="#icon-chevron-down"></use></svg></button>
+      <div class="project-menu" id="project-menu" role="menu" aria-label="Projects" hidden data-i18n-aria-label=Projects></div>
+      <label class="mobile-project-control project-switcher" for="mobile-project-select" hidden><span data-i18n=Project>Project</span><select id="mobile-project-select" aria-label="Active project" data-i18n-aria-label=Active%20project><option value="" data-i18n=No%20project>No project</option></select></label>
+      <nav class="view-nav" id="view-nav" aria-label="Project views" data-i18n-aria-label=Project%20views>
+        <button type="button" data-view-tab="canvas" aria-current="page"><svg class="ui-icon" aria-hidden="true"><use href="#icon-network"></use></svg><span data-i18n=Project>Project</span></button>
+        <button type="button" data-view-tab="intents"><svg class="ui-icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span data-i18n=Requests>Requests</span></button>
+        <button type="button" data-view-tab="review"><svg class="ui-icon" aria-hidden="true"><use href="#icon-shield-check"></use></svg><span data-i18n=Reviews>Reviews</span><small id="view-nav-review-count" hidden></small></button>
+        <button type="button" data-view-tab="governance"><svg class="ui-icon" aria-hidden="true"><use href="#icon-layout"></use></svg><span data-i18n=Rules>Rules</span></button>
+      </nav>
+    </div>
+    <div class="system-status sr-only" role="status"><span id="health-label">Service status</span><span class="control-tooltip" aria-hidden="true"></span></div>
+    <div class="topbar-actions">
+      <details class="paper-demo-notice"><summary>Demo · temporary data</summary><p>StudyShare is a synthetic research case. Try drafting a commitment, analyzing the unsafe export, then requesting an update and reviewing the bundled fix. Model advice is not verification. Records live in this browser tab; export before signing out or closing it. Do not enter private data.</p></details>
+      <button type="button" class="button button-quiet command-button" id="command-button" aria-label="Open command palette" data-i18n-aria-label=Open%20command%20palette><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg><span data-i18n=Jump%20to%E2%80%A6>Jump to…</span><kbd>⌘K</kbd></button>
+      <button type="button" class="button button-quiet icon-tool-button inspector-toggle-button hidden" id="toggle-file-panel-button" aria-label="Show review inspector" aria-controls="project-file-panel" aria-expanded="false" data-tooltip="Show inspector" data-i18n-aria-label=Show%20review%20inspector data-i18n-data-tooltip=Show%20inspector><svg class="ui-icon" aria-hidden="true"><use href="#icon-panel-right"></use></svg><span class="sr-only" id="file-panel-button-label" data-i18n=Inspector>Inspector</span><span class="control-tooltip" aria-hidden="true" data-i18n=Show%20inspector>Show inspector</span></button>
+      <button class="button button-primary button-with-icon new-analysis-button" id="new-project-button" aria-label="New review" data-i18n-aria-label=New%20review><svg class="ui-icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span data-i18n=New%20review>New review</span></button>
+      <button class="button button-quiet intake-status-button" id="intake-status-button" type="button" hidden aria-label="Import status" data-i18n-aria-label=Import%20status><svg class="ui-icon" aria-hidden="true"><use href="#icon-refresh"></use></svg><span class="intake-status-label" data-i18n=Import%20status>Import status</span><span class="intake-status-short" aria-hidden="true" data-i18n=Status>Status</span></button>
+      <div class="secondary-actions" id="secondary-actions" role="menu" aria-label="Account actions" data-i18n-aria-label=Account%20actions>
+        <div class="account-menu-identity current-user hidden" id="current-user"><span id="current-user-actor"></span><small id="current-user-role"></small></div>
+        <button class="button button-quiet hidden" id="password-button" type="button" role="menuitem"><svg class="ui-icon" aria-hidden="true"><use href="#icon-key"></use></svg><span data-i18n=Password>Password</span></button>
+        <button class="button button-quiet hidden" id="github-account-button" type="button" role="menuitem"><svg class="ui-icon" aria-hidden="true"><use href="#icon-github"></use></svg><span data-i18n=GitHub%20repositories>GitHub repositories</span></button>
+        <button class="button button-quiet" id="shortcuts-button" type="button" role="menuitem"><svg class="ui-icon" aria-hidden="true"><use href="#icon-command"></use></svg><span data-i18n=Keyboard%20shortcuts>Keyboard shortcuts</span></button>
+        <button class="button button-quiet" id="paper-mode-button" type="button" role="menuitemcheckbox" aria-checked="false"><svg class="ui-icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span id="paper-mode-label" data-i18n=Presentation%20view>Presentation view</span></button>
+        <button class="button button-quiet hidden" id="manage-users-button" type="button" role="menuitem"><svg class="ui-icon" aria-hidden="true"><use href="#icon-users"></use></svg><span data-i18n=Users>Users</span></button>
+        <button class="button button-quiet hidden" id="logout-button" type="button" role="menuitem"><svg class="ui-icon" aria-hidden="true"><use href="#icon-log-out"></use></svg><span data-i18n=Sign%20out>Sign out</span></button>
+      </div>
+      <button type="button" class="language-button" id="language-button" data-language-switch aria-label="Switch to English">EN</button>
+      <button class="button button-quiet icon-tool-button theme-mode-button" id="theme-mode-button" type="button" data-preference="light" data-theme-cycle aria-label="Switch to dark theme" data-tooltip="Switch to dark" data-i18n-aria-label=Switch%20to%20dark%20theme data-i18n-data-tooltip=Switch%20to%20dark><svg class="ui-icon" aria-hidden="true"><use id="theme-mode-icon" href="#icon-moon"></use></svg><span class="control-tooltip" aria-hidden="true" data-i18n=Switch%20to%20dark>Switch to dark</span></button>
+      <button class="button button-quiet icon-tool-button more-actions-button" id="more-actions-button" type="button" aria-label="Open account menu" data-tooltip="Account" aria-expanded="false" aria-controls="secondary-actions" aria-haspopup="menu" data-i18n-aria-label=Open%20account%20menu data-i18n-data-tooltip=Account><svg class="ui-icon" aria-hidden="true"><use href="#icon-user"></use></svg><span class="control-tooltip" aria-hidden="true" data-i18n=Account>Account</span></button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <main id="main-content" tabindex="-1">
+      <section class="empty-state" id="empty-state">
+        <p class="eyebrow" data-i18n=Pull%20request%20review>Pull request review</p>
+        <h1 data-i18n=Decide%20what%20is%20safe%20to%20merge.>Decide what is safe to merge.</h1>
+        <p data-i18n=Open%20a%20pull%20request%20to%20see%20the%20blocking%20checks%2C%20supporting%20evidence%2C%20changed%20files%2C%20and%20the%20next%20action%20in%20one%20place.>Open a pull request to see the blocking checks, supporting evidence, changed files, and the next action in one place.</p>
+        <div class="empty-actions">
+          <button class="button button-primary button-with-icon" id="empty-register-button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-github"></use></svg><span data-i18n=Analyze%20a%20GitHub%20pull%20request>Analyze a GitHub pull request</span></button>
+          <button class="button button-quiet" id="empty-local-button" data-i18n=Use%20a%20local%20repository>Use a local repository</button>
+        </div>
+        <p class="empty-note" data-i18n=GitHub%20access%20is%20read-only.%20This%20workspace%20records%20review%20decisions%3B%20it%20never%20merges%20code%20on%20your%20behalf.>GitHub access is read-only. This workspace records review decisions; it never merges code on your behalf.</p>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <div class="workspace-head workspace-overview reveal">
+          <div class="project-identity">
+            <h1 id="project-name">Project</h1>
+            <div class="repo-path" id="repo-path"></div>
+          </div>
+          <div class="workspace-tools" aria-label="Project state" data-i18n-aria-label=Project%20state>
+            <span class="project-revision" id="project-version">Version 1</span><span class="project-head" id="project-head"></span>
+          </div>
+        </div>
+
+        <div class="control-grid" id="review-workbench">
+          <section class="review-rail panel reveal delay-1">
+            <div class="panel-head"><div><h2><span data-i18n=Reviews>Reviews</span> <span id="review-count">0</span></h2></div><button class="button button-small icon-tool-button" id="new-review-button" aria-label="Compare two revisions" data-tooltip="Compare two revisions" hidden data-i18n-aria-label=Compare%20two%20revisions data-i18n-data-tooltip=Compare%20two%20revisions><svg class="ui-icon" aria-hidden="true"><use href="#icon-git-rebase"></use></svg><span class="control-tooltip" aria-hidden="true" data-i18n=Compare%20two%20revisions>Compare two revisions</span></button></div>
+            <button type="button" class="review-list-toggle" id="review-list-toggle" aria-expanded="false" aria-controls="review-list-content" hidden><span data-i18n=Switch%20review>Switch review</span><span id="review-list-position"></span><svg class="ui-icon" aria-hidden="true"><use href="#icon-chevron-down"></use></svg></button>
+            <div class="review-list-content" id="review-list-content">
+              <div class="review-rail-tools hidden" id="review-rail-tools">
+                <input id="review-filter" type="search" placeholder="Filter reviews" aria-label="Filter reviews" aria-controls="review-list" autocomplete="off" data-i18n-placeholder=Filter%20reviews data-i18n-aria-label=Filter%20reviews>
+                <div class="review-filter-feedback" id="review-filter-feedback" hidden><p id="review-filter-status" role="status"></p><button type="button" class="text-button" id="clear-review-filter" aria-label="Clear review filter" data-i18n=Clear data-i18n-aria-label=Clear%20review%20filter>Clear</button></div>
+              </div>
+              <nav id="review-list" class="review-list" aria-label="Pull request reviews" data-i18n-aria-label=Pull%20request%20reviews></nav>
+            </div>
+          </section>
+
+          <section class="review-detail review-canvas panel reveal delay-2" id="review-canvas">
+            <div class="detail-empty">
+              <h2 data-i18n=Select%20a%20pull%20request>Select a pull request</h2>
+              <p data-i18n=Its%20decision%2C%20blockers%2C%20evidence%2C%20and%20changed%20files%20will%20appear%20here.>Its decision, blockers, evidence, and changed files will appear here.</p>
+            </div>
+          </section>
+
+          <aside class="project-file-panel panel reveal delay-2" id="project-file-panel" aria-labelledby="review-inspector-title">
+            <div class="inspector-resizer" id="inspector-resizer" role="separator" aria-orientation="vertical" aria-label="Resize inspector" aria-valuemin="280" aria-valuemax="560" aria-valuenow="324" tabindex="0" title="Drag to resize · double-click to reset"></div>
+            <header class="project-file-head">
+              <div><h2 id="review-inspector-title" data-i18n=Inspector>Inspector</h2></div>
+              <button type="button" class="icon-button close-file-panel-button" id="close-file-panel-button" aria-label="Close review inspector" data-tooltip="Close inspector" data-i18n-data-tooltip=Close%20inspector><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg><span class="control-tooltip" aria-hidden="true" data-i18n=Close%20inspector>Close inspector</span></button>
+            </header>
+            <nav class="inspector-tabs" role="tablist" aria-label="Review inspector">
+              <button type="button" class="active" role="tab" id="inspector-tab-files" data-inspector-tab="files" aria-controls="inspector-files" aria-selected="true" tabindex="0" data-i18n=Files>Files</button>
+              <button type="button" role="tab" id="inspector-tab-assistant" data-inspector-tab="assistant" aria-controls="inspector-assistant" aria-selected="false" tabindex="-1" data-i18n=Assistant>Assistant</button>
+            </nav>
+            <section class="inspector-panel" id="inspector-files" data-inspector-panel="files" role="tabpanel" aria-labelledby="inspector-tab-files">
+              <div class="inspector-changed-files" id="inspector-changed-files" role="group" aria-label="Files changed in this review"></div>
+              <div class="project-file-meta"><span id="project-file-state" data-i18n=Loading%20snapshot%E2%80%A6>Loading snapshot…</span><span class="project-tree-revision" id="project-tree-revision" data-i18n=Project%20snapshot>Project snapshot</span></div>
+              <div class="project-file-filter hidden" id="project-file-filter"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg><input id="project-file-search" type="search" placeholder="Filter files" aria-label="Filter repository files" autocomplete="off"></div>
+              <div class="project-file-tree" id="project-file-tree" role="region" aria-label="Project file directory"></div>
+            </section>
+            <section class="inspector-panel inspector-assistant hidden" id="inspector-assistant" data-inspector-panel="assistant" role="tabpanel" aria-labelledby="inspector-tab-assistant">
+              <div class="inspector-empty"><strong data-i18n=Select%20a%20pull%20request>Select a pull request</strong><p data-i18n=Then%20ask%20a%20question%20grounded%20in%20its%20evidence.>Then ask a question grounded in its evidence.</p></div>
+            </section>
+          </aside>
+        </div>
+
+        <section class="governance-view" id="governance-view" aria-labelledby="governance-title" hidden>
+        <header class="governance-head">
+          <div><h2 id="governance-title" data-i18n=Project%20rules>Project rules</h2><p data-i18n=What%20must%20stay%20true%20when%20code%20changes%2C%20and%20which%20evidence%20this%20project%20accepts.>What must stay true when code changes, and which evidence this project accepts.</p></div>
+          <span class="governance-state" id="project-tools-state"></span>
+        </header>
+        <div class="rules-context" id="rules-context" aria-label="Project decision policy"></div>
+        <details class="project-tools" id="project-tools" open>
+          <summary class="project-tools-summary sr-only" data-i18n=Project%20governance>Project governance</summary>
+          <div class="project-tools-body">
+            <section class="governance-claims module" id="project-claims" aria-labelledby="project-claims-title">
+              <header class="module-head"><h3 id="project-claims-title" data-i18n=Governed%20claims>Governed claims</h3><span id="project-claims-count"></span></header>
+              <div id="project-claims-list" class="claims-list"></div>
+            </section>
+            <details class="trust-registry" id="trust-registry">
+              <summary class="trust-registry-summary">
+                <div><p class="eyebrow" data-i18n=Evidence%20trust>Evidence trust</p><h2 id="trust-registry-title" data-i18n=Trusted%20signing%20keys>Trusted signing keys</h2><p data-i18n=Control%20which%20signed%20evidence%20this%20project%20can%20accept.>Control which signed evidence this project can accept.</p></div>
+                <span class="trust-registry-state" id="trust-registry-state" data-i18n=Manage%20keys%20and%20history>Manage keys and history</span>
+              </summary>
+              <div class="trust-registry-body">
+                <div class="trust-registry-actions"><button type="button" class="button button-small button-with-icon" id="add-trust-root-button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span data-i18n=Add%20trust%20root>Add trust root</span></button></div>
+                <div class="trust-registry-grid">
+                  <div class="trust-root-list" id="trust-root-list"></div>
+                  <aside class="project-event-panel">
+                    <div class="subhead"><h3 data-i18n=Trust%20history>Trust history</h3><span data-i18n=Recorded%20events>Recorded events</span></div>
+                    <div id="project-event-list" class="project-event-list"></div>
+                  </aside>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </details>
+        </section>
+        <section class="intents-view" id="intents-view" hidden aria-labelledby="intents-title">
+          <header class="governance-head"><div><h2 id="intents-title" data-i18n=Requests>Requests</h2><p data-i18n=Compare%20Python%20import%20alternatives%2C%20clarify%20a%20choice%2C%20then%20review%20its%20implementation.>Compare Python import alternatives, clarify a choice, then review its implementation.</p></div><div class="intent-workspace-actions"><span class="count" id="intent-count">0</span><button type="button" class="button button-small button-primary button-with-icon" id="new-intent-button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-plus"></use></svg><span data-i18n=New%20request>New request</span></button></div></header>
+            <section class="intent-workspace" id="intent-workspace" aria-labelledby="intents-title">
+              <div class="intent-list" id="intent-list"><div class="empty-contract" data-i18n=No%20intent%20maps%20yet.>No intent maps yet.</div></div>
+            </section>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <template id="project-canvas-template">
+    <section class="project-canvas" data-surface="state" aria-labelledby="project-canvas-title">
+      <header class="project-canvas-head">
+        <div class="project-canvas-heading"><h2 id="project-canvas-title" data-i18n=Project%20state>Project state</h2><p id="project-canvas-copy" data-i18n=Agreed%20commitments%20and%20the%20changes%20awaiting%20a%20decision.>Agreed commitments and the changes awaiting a decision.</p></div>
+        <div class="project-canvas-actions" id="project-canvas-actions"></div>
+      </header>
+      <div class="state-surface-tabs" role="group" aria-label="Project view"><button type="button" data-state-surface="state" aria-pressed="true" data-i18n=Commitments>Commitments</button><button type="button" data-state-surface="relations" aria-pressed="false" data-i18n=Relations>Relations</button></div>
+      <div id="project-state-overview"></div>
+      <div class="project-canvas-toolbar" role="group" aria-label="Canvas controls">
+        <label class="canvas-search"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg><span class="sr-only" data-i18n=Find%20on%20canvas>Find on canvas</span><input id="canvas-search" type="search" placeholder="Find a change, request, or file…" autocomplete="off" data-i18n-placeholder=Find%20a%20change%2C%20request%2C%20or%20file%E2%80%A6></label>
+        <div class="canvas-scope-controls"><div class="canvas-mode" role="group" aria-label="Map scope"><button type="button" id="canvas-mode-focus" data-canvas-mode="focus" aria-pressed="true" data-i18n=Focus>Focus</button><button type="button" id="canvas-mode-project" data-canvas-mode="project" aria-pressed="false" data-i18n=Project>Project</button></div><output id="canvas-scope-status" aria-live="polite"></output></div>
+        <div class="canvas-view-controls">
+          <button type="button" class="button button-quiet icon-button" data-canvas-zoom="out" aria-label="Zoom out" data-i18n-aria-label=Zoom%20out>−</button>
+          <output id="canvas-zoom" aria-label="Canvas zoom" data-i18n-aria-label=Canvas%20zoom>100%</output>
+          <button type="button" class="button button-quiet icon-button" data-canvas-zoom="in" aria-label="Zoom in" data-i18n-aria-label=Zoom%20in>+</button>
+          <button type="button" class="button button-quiet" id="canvas-fit" data-i18n=Fit%20map>Fit map</button>
+          <button type="button" class="button button-quiet" id="canvas-file-detail" aria-pressed="false" data-i18n=Show%20files>Show files</button>
+          <button type="button" class="button button-quiet" id="canvas-panel-toggle" aria-controls="canvas-side" aria-expanded="true" data-i18n=Hide%20panel>Hide panel</button>
+        </div>
+      </div>
+      <div class="project-canvas-body">
+        <div class="project-canvas-stage">
+          <div id="project-canvas" class="project-canvas-mount" role="img" tabindex="0" aria-label="Project canvas showing intents, reviews, claims, and changed files" aria-describedby="canvas-help"></div>
+          <p class="canvas-map-help" id="canvas-help" data-i18n=Drag%20to%20pan%20%C2%B7%20%2B%20%2F%20%E2%88%92%20to%20zoom%20%C2%B7%200%20to%20fit.%20Select%20an%20object%20to%20inspect%20its%20relationships.>Drag to pan · + / − to zoom · 0 to fit. Select an object to inspect its relationships.</p>
+          <div class="project-canvas-overlay hidden" id="project-canvas-overlay"></div>
+        </div>
+        <aside class="project-canvas-side" id="canvas-side" aria-label="Canvas inspector">
+          <nav class="canvas-panel-tabs" aria-label="Canvas panel">
+            <button type="button" data-canvas-panel="overview" aria-pressed="true" data-i18n=Overview>Overview</button>
+            <button type="button" data-canvas-panel="files" aria-pressed="false" data-i18n=Files>Files</button>
+          </nav>
+          <section id="canvas-search-results" class="canvas-search-results" aria-label="Matching objects" hidden></section>
+          <section class="canvas-detail" id="project-canvas-detail" aria-live="polite" hidden></section>
+          <div id="canvas-overview">
+          <section class="canvas-glance" id="project-canvas-glance" aria-label="Project at a glance"></section>
+          <section class="canvas-activity" aria-labelledby="canvas-activity-title">
+            <div class="subhead"><h3 id="canvas-activity-title" data-i18n=Changes>Changes</h3><span id="canvas-activity-meta"></span></div>
+            <div id="project-canvas-activity" class="canvas-activity-list"></div>
+          </section>
+          <section class="canvas-directories" id="canvas-directories-section" aria-label="Affected directories" data-i18n-aria-label=Affected%20directories><div class="subhead"><h3 data-i18n=Affected%20directories>Affected directories</h3><span data-i18n=Changed%20files>Changed files</span></div><div id="canvas-directories"></div></section>
+          <section class="canvas-intents" aria-labelledby="canvas-intents-title"><div class="subhead"><h3 id="canvas-intents-title" data-i18n=Requests>Requests</h3><button type="button" class="text-button" id="canvas-all-intents" data-i18n=View%20all>View all</button></div><div id="canvas-intents-list"></div></section>
+          <section class="canvas-claims" aria-labelledby="canvas-claims-title">
+            <div class="subhead"><h3 id="canvas-claims-title" data-i18n=Shared%20state>Shared state</h3><span id="canvas-claims-meta"></span></div>
+            <div id="project-canvas-claims" class="canvas-claims-list"></div>
+          </section>
+          </div>
+          <section id="canvas-files" class="canvas-files" hidden aria-label="Repository files"></section>
+          <footer class="project-canvas-legend" role="group" aria-label="Canvas legend">
+            <span data-node="state" data-i18n=State>State</span><span data-node="claim" data-i18n=Claim>Claim</span><span data-node="intent" data-i18n=Intent>Intent</span><span data-node="review" data-i18n=Review>Review</span><span data-node="directory" data-i18n=Directory>Directory</span><span data-node="artifact" data-i18n=File>File</span>
+          </footer>
+        </aside>
+      </div>
+    </section>
+  </template>
+
+  <template id="review-copilot-template">
+    <section class="review-copilot" aria-labelledby="review-copilot-title">
+      <header class="copilot-head">
+        <h3 id="review-copilot-title" data-i18n=Review%20assistant>Review assistant</h3>
+        <p id="copilot-review-context" class="copilot-review-context"></p>
+        <p id="copilot-review-version" class="copilot-review-version"></p>
+        <p class="copilot-head-note" data-i18n=Advice%2C%20not%20approval.%20Inspect%20the%20sources%20before%20you%20decide.>Advice, not approval. Inspect the sources before you decide.</p>
+      </header>
+      <div class="copilot-history" id="copilot-history" hidden></div>
+      <div class="copilot-output" id="review-copilot-output">
+        <p class="copilot-empty" data-i18n=Ask%20about%20this%20review%2C%20or%20start%20from%20a%20suggestion%20below.>Ask about this review, or start from a suggestion below.</p>
+      </div>
+      <div class="copilot-starters" aria-label="Suggested questions" role="group">
+        <button type="button" data-copilot-prompt="What blocks approval, and what should happen next?" data-i18n=What%20blocks%20approval%3F>What blocks approval?</button>
+        <button type="button" data-copilot-prompt="Summarize the highest-risk changes in this pull request." data-i18n=Summarize%20risk>Summarize risk</button>
+        <button type="button" data-copilot-prompt="Which required evidence is missing or inconclusive?" data-i18n=Find%20evidence%20gaps>Find evidence gaps</button>
+      </div>
+      <p class="copilot-status" id="review-copilot-status" role="status" aria-live="polite"></p>
+      <form id="review-copilot-form" class="copilot-form" aria-label="Ask about this review">
+        <label for="review-copilot-question" data-i18n=Your%20question>Your question</label>
+        <div class="copilot-question-row"><textarea id="review-copilot-question" name="question" rows="3" required maxlength="4000" aria-describedby="copilot-data-note" placeholder="What should I inspect before approving?" data-i18n-placeholder=What%20should%20I%20inspect%20before%20approving%3F></textarea></div>
+        <details class="copilot-settings">
+          <summary data-i18n=Answer%20options>Answer options</summary>
+          <p id="copilot-provider-state" data-i18n=Local%20records>Local records</p>
+          <label><input type="checkbox" name="deliberate" checked> Challenge the answer</label>
+          <p data-i18n=A%20separate%20critique%20and%20synthesis%20use%20additional%20model%20calls%20and%20may%20take%20longer.>A separate critique and synthesis use additional model calls and may take longer.</p>
+        </details>
+        <p id="copilot-data-note" class="copilot-data-note"></p>
+        <button type="submit" class="button button-primary" data-i18n=Ask%20assistant>Ask assistant</button>
+      </form>
+      <section class="copilot-local-plan" aria-label="Local evidence inspection"><p data-i18n=Missing%20or%20stale%20records%3F>Missing or stale records?</p><button type="button" class="button button-quiet" id="evidence-gaps-button" data-i18n=Find%20recorded%20gaps>Find recorded gaps</button><small data-i18n=No%20model%20call.%20Lists%20next%20checks%3B%20does%20not%20run%20them.>No model call. Lists next checks; does not run them.</small></section>
+      <details class="ai-quality-disclosure">
+        <summary><span data-i18n=Project%20AI%20metrics>Project AI metrics</span><small data-i18n=Inspect%20recorded%20run%20statistics>Inspect recorded run statistics</small></summary>
+        <div class="ai-eval-strip" role="group" aria-label="Recorded AI run statistics">
+          <p class="ai-eval-scope"><span data-i18n=Recorded%20activity%20in%20this%20project>Recorded activity in this project</span><small><span data-i18n=Recent%20runs%20%C2%B7>Recent runs ·</span> <strong id="ai-eval-runs">0</strong></small></p>
+          <div><span data-i18n=Grounding%20check%20rate>Grounding check rate</span><strong id="ai-grounded-rate">—</strong></div>
+          <div><span data-i18n=Citation%20ID%20match>Citation ID match</span><strong id="ai-citation-precision">—</strong></div>
+          <div><span data-i18n=Avg%20latency>Avg latency</span><strong id="ai-latency">—</strong></div>
+          <div><span data-i18n=Feedback>Feedback</span><strong id="ai-feedback-count">—</strong></div>
+        </div>
+        <p class="ai-eval-note" data-i18n=Includes%20local%20explanations%20and%20model%20runs.%20Matching%20a%20citation%20ID%20confirms%20a%20record%20exists%2C%20not%20that%20it%20supports%20the%20answer.%20These%20statistics%20are%20not%20independent%20proof%20of%20answer%20correctness.>Includes local explanations and model runs. Matching a citation ID confirms a record exists, not that it supports the answer. These statistics are not independent proof of answer correctness.</p>
+      </details>
+    </section>
+  </template>
+
+  <template id="contract-graph-template">
+    <section class="contract-graph-shell" id="contract-graph-panel" aria-labelledby="contract-graph-title">
+      <header class="contract-graph-head">
+        <div class="contract-graph-heading">
+          <p class="eyebrow" data-i18n=Decision%20provenance>Decision provenance</p>
+          <h3 id="contract-graph-title" data-i18n=Audit%20graph>Audit graph</h3>
+          <p data-i18n=Trace%20this%20change%20from%20proposal%20and%20evidence%20to%20the%20recorded%20decision.>Trace this change from proposal and evidence to the recorded decision.</p>
+        </div>
+        <div class="contract-graph-toolbar" aria-label="Audit graph controls">
+          <div class="segmented-control" aria-label="Audit graph view">
+            <button type="button" class="graph-view-button active" data-graph-view="graph" aria-pressed="true" data-i18n=Graph>Graph</button>
+            <button type="button" class="graph-view-button" data-graph-view="table" aria-pressed="false" data-i18n=Relation%20table>Relation table</button>
+          </div>
+          <button type="button" class="button button-small" id="contract-graph-expand" aria-pressed="false" data-i18n=Focus%20graph>Focus graph</button>
+          <button type="button" class="button button-small" id="contract-graph-export" data-i18n=Download%20SVG>Download SVG</button>
+        </div>
+      </header>
+      <div class="graph-control-deck">
+        <nav class="graph-lenses" id="contract-graph-lenses" aria-label="Audit graph lens">
+          <button type="button" data-graph-lens="decision" aria-pressed="true"><span data-i18n=Decision%20trail>Decision trail</span><small data-i18n=proposal%20%E2%86%92%20authority>proposal → authority</small></button>
+          <button type="button" data-graph-lens="evidence" aria-pressed="false"><span data-i18n=Evidence%20coverage>Evidence coverage</span><small data-i18n=sources%20%E2%86%92%20claim>sources → claim</small></button>
+          <button type="button" data-graph-lens="full" aria-pressed="false"><span data-i18n=Full%20contract>Full contract</span><small data-i18n=every%20relation>every relation</small></button>
+        </nav>
+        <form class="graph-search-form" id="contract-graph-search-form" role="search">
+          <label for="contract-graph-search" data-i18n=Find%20an%20element>Find an element</label>
+          <div><input id="contract-graph-search" type="search" list="contract-graph-search-options" autocomplete="off" placeholder="File, evidence, decision…"><button type="submit" data-i18n=Find>Find</button></div>
+          <datalist id="contract-graph-search-options"></datalist>
+          <small id="contract-graph-search-status" aria-live="polite" data-i18n=Press%20%2F%20to%20search>Press / to search</small>
+        </form>
+        <div class="graph-zoom" aria-label="Graph zoom controls">
+          <button type="button" id="contract-graph-zoom-out" aria-label="Zoom out" data-i18n-aria-label=Zoom%20out><svg class="ui-icon" aria-hidden="true"><use href="#icon-minus"></use></svg></button>
+          <output id="contract-graph-zoom-label" aria-live="polite">100%</output>
+          <button type="button" id="contract-graph-zoom-in" aria-label="Zoom in" data-i18n-aria-label=Zoom%20in><svg class="ui-icon" aria-hidden="true"><use href="#icon-plus"></use></svg></button>
+          <button type="button" id="contract-graph-fit" data-i18n=Fit%20graph>Fit graph</button>
+        </div>
+      </div>
+      <section class="graph-story" id="contract-graph-story" aria-live="polite">
+        <div><p class="eyebrow" id="contract-graph-story-label" data-i18n=Decision%20trail>Decision trail</p><p id="contract-graph-story-copy" data-i18n=Follow%20proposal%2C%20authority%2C%20and%20disposition.>Follow proposal, authority, and disposition.</p></div>
+        <div class="graph-metrics" id="contract-graph-metrics"></div>
+      </section>
+      <div class="contract-graph-stage">
+        <div class="contract-graph-viewport" data-lens="decision">
+          <div class="graph-lane-labels" aria-hidden="true"><span data-i18n=Proposal>Proposal</span><span data-i18n=Artifacts>Artifacts</span><span data-i18n=Policy>Policy</span><span data-i18n=Authority>Authority</span><span data-i18n=State>State</span></div>
+          <div id="contract-graph-canvas" role="img" tabindex="0" aria-label="Interactive audit relation graph"></div>
+          <div id="contract-graph-table" class="contract-graph-table hidden" role="region" aria-label="Accessible audit graph relations"></div>
+          <p class="graph-interaction-hint" data-i18n=Drag%20to%20pan%20%C2%B7%20scroll%20or%20pinch%20to%20zoom%20%C2%B7%20select%20an%20element%20for%20its%20relation%20path>Drag to pan · scroll or pinch to zoom · select an element for its relation path</p>
+          <div class="contract-graph-legend" aria-label="Relation legend">
+            <span data-relation="supports" data-i18n=supports>supports</span>
+            <span data-relation="contests" data-i18n=contests>contests</span>
+            <span data-relation="authorizes" data-i18n=authorizes>authorizes</span>
+            <span data-relation="governs" data-i18n=governs>governs</span>
+          </div>
+        </div>
+        <aside id="contract-graph-detail" class="contract-graph-detail" aria-live="polite">
+          <div class="graph-detail-intro"><p class="eyebrow" data-i18n=Selected%20element>Selected element</p><h4 data-i18n=Explore%20the%20decision%20path>Explore the decision path</h4><span class="graph-detail-status" data-i18n=Ready>Ready</span><button type="button" class="graph-selection-clear" id="contract-graph-selection-clear" data-i18n=Show%20all>Show all</button></div>
+          <div class="graph-detail-copy"><p data-i18n=Select%20an%20element%20to%20isolate%20its%20immediate%20relations%2C%20status%2C%20and%20provenance.>Select an element to isolate its immediate relations, status, and provenance.</p></div>
+          <div class="graph-connection-list"><p class="eyebrow" data-i18n=Connected%20records>Connected records</p><p data-i18n=No%20element%20selected.>No element selected.</p></div>
+        </aside>
+      </div>
+    </section>
+  </template>
+
+  <dialog id="project-dialog" class="project-intake-dialog" aria-labelledby="project-intake-title">
+    <form method="dialog" id="project-form">
+      <div class="dialog-head project-intake-head"><div><h2 id="project-intake-title" data-i18n=Review%20a%20pull%20request>Review a pull request</h2><p class="project-intake-intro" data-i18n=Choose%20a%20repository%20and%20an%20open%20pull%20request%20to%20inspect%20its%20changes%20and%20evidence.>Choose a repository and an open pull request to inspect its changes and evidence.</p></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <input type="hidden" name="repository_source" value="github">
+      <section id="intake-operation" class="intake-operation" role="status" tabindex="-1" aria-labelledby="intake-operation-title" hidden>
+        <p id="intake-operation-context" class="intake-operation-context"></p>
+        <h3 id="intake-operation-title"></h3>
+        <p id="intake-operation-subject" class="intake-operation-subject"></p>
+        <p id="intake-operation-detail"></p>
+        <p id="intake-operation-note" class="field-hint"></p>
+      </section>
+      <div class="project-intake-layout">
+        <section class="project-intake-source" aria-label="Choose repository">
+          <div class="repository-source-tabs" role="tablist" aria-label="Repository source">
+            <button class="source-tab active" id="github-source-tab" type="button" role="tab" aria-selected="true" tabindex="0" aria-controls="github-source-panel">GitHub</button>
+            <button class="source-tab" id="local-source-tab" type="button" role="tab" aria-selected="false" tabindex="-1" aria-controls="local-source-panel" data-i18n=Local%20path>Local path</button>
+          </div>
+          <section class="repository-source-panel" id="github-source-panel" role="tabpanel" aria-labelledby="github-source-tab">
+            <details class="github-connection-card" id="github-connection" open>
+              <summary><strong id="github-connection-status" data-i18n=Sign%20in%20with%20GitHub>Sign in with GitHub</strong><span data-i18n=Account>Account</span></summary>
+              <div class="github-connection-body"><small id="github-connection-detail" data-i18n=Only%20repositories%20you%20explicitly%20grant%20are%20listed.>Only repositories you explicitly grant are listed.</small>
+              <div class="github-connection-actions">
+                <button class="button button-small button-primary" id="github-connect-button" type="button" data-i18n=Connect%20GitHub>Connect GitHub</button>
+                <a class="button button-small hidden" id="github-install-button" href="#" data-i18n=Manage%20access>Manage access</a>
+                <button class="button button-small button-danger hidden" id="github-disconnect-button" type="button" data-i18n=Disconnect>Disconnect</button>
+                <button class="button button-small hidden" id="github-status-retry-button" type="button" data-i18n=Retry%20connection%20check>Retry connection check</button>
+              </div>
+              </div>
+            </details>
+            <div id="github-repository-picker" hidden>
+            <label class="github-repository-search"><span data-i18n=Find%20repository>Find repository</span><input id="github-repository-search" type="search" placeholder="Search owner or repository" autocomplete="off"></label>
+            <div class="github-repository-list" id="github-repository-list" aria-live="polite"><p class="repository-list-empty" data-i18n=Connect%20GitHub%20to%20load%20repositories.>Connect GitHub to load repositories.</p></div>
+            </div>
+            <section class="github-pull-request-step hidden" id="github-pull-request-step" aria-labelledby="github-pull-request-title">
+              <div class="github-selected-repository"><div><small data-i18n=Repository>Repository</small><strong id="github-pull-request-repository"></strong></div><button class="button button-quiet" id="github-change-repository" type="button" data-i18n=Change>Change</button></div>
+              <div class="intake-section-head"><h3 id="github-pull-request-title" tabindex="-1" data-i18n=Choose%20an%20open%20pull%20request>Choose an open pull request</h3></div>
+              <label class="github-pull-search" hidden><span data-i18n=Find%20pull%20request>Find pull request</span><input id="github-pull-request-search" type="search" placeholder="Title, number, branch or author" autocomplete="off"></label>
+              <p id="github-pull-search-status" class="field-hint" role="status"></p>
+              <div class="github-pull-request-list" id="github-pull-request-list" aria-live="polite"><p class="repository-list-empty" data-i18n=Select%20a%20repository%20first.>Select a repository first.</p></div>
+            </section>
+          </section>
+          <section class="repository-source-panel hidden" id="local-source-panel" role="tabpanel" aria-labelledby="local-source-tab">
+            <label><span data-i18n=Absolute%20repository%20path>Absolute repository path</span><input name="repo_path" required placeholder="/path/to/repository"></label>
+            <label><span data-i18n=Display%20label>Display label</span> <span class="field-optional" data-i18n=Optional>Optional</span><input name="repo_label" placeholder="demo://capability-migration"><small class="field-hint" data-i18n=Used%20in%20exports%20instead%20of%20the%20local%20path.>Used in exports instead of the local path.</small></label>
+            <label><span data-i18n=Revision>Revision</span><input name="head_ref" value="HEAD" required></label>
+          </section>
+        </section>
+        <details class="project-intake-setup" id="project-intake-settings">
+          <summary class="project-intake-settings-summary">
+            <span><small data-i18n=Optional>Optional</small><strong data-i18n=Review%20settings>Review settings</strong><em data-i18n=Defaults%20are%20ready%3B%20add%20tests%20or%20policy%20only%20when%20needed.>Defaults are ready; add tests or policy only when needed.</em></span>
+            <b data-i18n=Defaults%20applied>Defaults applied</b>
+          </summary>
+          <div class="project-intake-settings-body" aria-label="Review settings" data-i18n-aria-label=Review%20settings>
+            <label><span data-i18n=Project%20name>Project name</span><input name="name" required placeholder="Billing migration"></label>
+            <label><span data-i18n=Test%20command>Test command</span> <span class="field-optional" data-i18n=Optional>Optional</span><input name="test_command" placeholder="python3 -m unittest -q"><small class="field-hint" data-i18n=Quoted%20arguments%20are%20supported%3B%20commands%20never%20run%20through%20a%20shell.>Quoted arguments are supported; commands never run through a shell.</small></label>
+          <details class="intake-disclosure" id="project-policy-settings">
+            <summary><span data-i18n=Policy%20%26%20access>Policy &amp; access</span><small data-i18n=Secure%20defaults%20ready>Secure defaults ready</small></summary>
+            <div class="intake-disclosure-body">
+              <div class="form-pair">
+                <label><span data-i18n=Policy%20ID>Policy ID</span><input name="policy_id" value="project-change-control/v1" required></label>
+                <label><span data-i18n=Default%20authority>Default authority</span><input name="default_authority" value="project owner" required></label>
+              </div>
+              <label><span data-i18n=Authorized%20identities>Authorized identities</span><input name="authorized_actors" required placeholder="lead@example.com, security@example.com"><small class="field-hint" data-i18n=People%20allowed%20to%20record%20governed%20decisions.>People allowed to record governed decisions.</small></label>
+            </div>
+          </details>
+          <details class="intake-disclosure" id="project-claim-settings">
+            <summary><span data-i18n=Structural%20claim>Structural claim</span><small data-i18n=Optional>Optional</small></summary>
+            <div class="intake-disclosure-body">
+              <label><span data-i18n=Claim%20title>Claim title</span><input name="claim_title" placeholder="No new legacy billing reads"></label>
+              <div class="form-pair">
+                <label><span data-i18n=Claim%20ID>Claim ID</span><input name="claim_id" placeholder="billing.no_new_legacy_reads"></label>
+                <label><span data-i18n=Forbidden%20modules>Forbidden modules</span><input name="forbidden_modules" placeholder="legacy.billing, old.invoice"></label>
+              </div>
+              <div class="form-pair">
+                <label><span data-i18n=Claim%20scope>Claim scope</span><input name="claim_scope" placeholder="connectors.*"></label>
+                <label><span data-i18n=Authority%20override>Authority override</span><input name="claim_authority" placeholder="security owner"><small class="field-hint" data-i18n=Blank%20uses%20the%20project%20default.>Blank uses the project default.</small></label>
+              </div>
+              <label><span data-i18n=Evidence%20obligations>Evidence obligations</span><input name="evidence_obligations" placeholder="credential provenance trace, denial test"></label>
+            </div>
+          </details>
+          <details class="intake-disclosure" id="project-ci-settings">
+            <summary><span data-i18n=Signed%20CI%20evidence>Signed CI evidence</span><small data-i18n=Advanced%20%C2%B7%20optional>Advanced · optional</small></summary>
+            <div class="intake-disclosure-body">
+              <p class="dialog-copy" data-i18n=Pin%20an%20Ed25519%20public%20key%20and%20require%20a%20DSSE-wrapped%20SLSA%20verification%20summary.%20Never%20paste%20a%20private%20key.>Pin an Ed25519 public key and require a DSSE-wrapped SLSA verification summary. Never paste a private key.</p>
+              <label><span data-i18n=Signed%20obligation%20label>Signed obligation label</span><input name="signed_obligation_label" placeholder="source policy passed on the target revision"></label>
+              <div class="form-pair">
+                <label><span data-i18n=Trusted%20key%20ID>Trusted key ID</span><input name="attestation_key_id" placeholder="ci-source-ed25519-2026"></label>
+                <label><span data-i18n=Required%20verified%20level>Required verified level</span><input name="attestation_required_level" value="SLSA_SOURCE_LEVEL_2"></label>
+              </div>
+              <label><span data-i18n=Ed25519%20public%20key%20%C2%B7%20base64>Ed25519 public key · base64</span><input name="attestation_public_key_base64" autocomplete="off" spellcheck="false" placeholder="32-byte public key encoded as base64"></label>
+              <label><span data-i18n=Verifier%20ID>Verifier ID</span><input name="attestation_verifier_id" placeholder="https://ci.example.com/verifiers/source-policy/v1"></label>
+              <label><span data-i18n=Resource%20URI%20prefix>Resource URI prefix</span><input name="attestation_resource_uri_prefix" placeholder="git+https://example.com/org/repo@"><small class="field-hint" data-i18n=The%20target%20commit%20is%20appended%20and%20must%20match%20the%20signed%20VSA%20resource%20URI.>The target commit is appended and must match the signed VSA resource URI.</small></label>
+            </div>
+            </details>
+          </div>
+        </details>
+      </div>
+      <div class="dialog-actions project-intake-footer">
+        <div class="project-intake-status"><span id="project-intake-selection" aria-live="polite" data-i18n=Choose%20a%20repository%2C%20then%20an%20open%20pull%20request>Choose a repository, then an open pull request</span><small id="intake-safety-note" data-i18n=Read-only%3A%20Consensus%20cannot%20change%20or%20merge%20the%20PR.>Read-only: Consensus cannot change or merge the PR.</small><p class="form-error" id="project-error" role="alert" tabindex="-1"></p></div>
+        <div class="project-intake-actions"><button class="button button-quiet" id="intake-close-button" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-quiet" id="intake-edit-settings" type="button" hidden data-i18n=Edit%20settings>Edit settings</button><button class="button button-primary" id="intake-check-workspace" type="button" hidden data-i18n=Check%20workspace>Check workspace</button><button class="button button-primary" id="intake-open-result" type="button" hidden data-i18n=Open%20review>Open review</button><button class="button button-primary" id="project-submit-button" type="submit" disabled hidden data-i18n=Analyze%20PR>Analyze PR</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="commitment-dialog" class="commitment-dialog intent-composer" aria-labelledby="commitment-dialog-title">
+    <form id="commitment-form" method="dialog">
+      <div class="dialog-head"><h2 id="commitment-dialog-title" data-i18n=Describe%20a%20project%20commitment>Describe a project commitment</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close proposal" data-i18n-aria-label=Close%20proposal><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <div class="intent-composer-body">
+        <section id="commitment-drafting" class="commitment-drafting"><button type="button" class="button" id="draft-commitment-button" data-i18n=Draft%20from%20request%20and%20source>Draft from request and source</button><p class="field-hint" data-i18n=AI%20draft%20when%20available%20%C2%B7%20local%20fallback%20%C2%B7%20confirm%20before%20saving>AI draft when available · local fallback · confirm before saving</p><div id="commitment-draft-result" role="status" aria-live="polite"></div></section>
+        <label><span data-i18n=Original%20request>Original request</span><textarea name="request" rows="2" maxlength="8000" required autofocus placeholder="What did the person ask for?" data-i18n-placeholder=What%20did%20the%20person%20ask%20for%3F></textarea></label>
+        <div class="commitment-form-pair"><label><span data-i18n=Commitment%20title>Commitment title</span><input name="title" maxlength="240" required placeholder="A short name for the agreement" data-i18n-placeholder=A%20short%20name%20for%20the%20agreement></label><label><span data-i18n=Kind>Kind</span><select name="category"><option value="behavior" data-i18n=Behavior>Behavior</option><option value="interface" data-i18n=Interface>Interface</option><option value="compatibility" data-i18n=Compatibility>Compatibility</option><option value="dependency" data-i18n=Dependency>Dependency</option><option value="authority" data-i18n=Authority>Authority</option></select></label></div>
+        <label><span data-i18n=Our%20proposed%20interpretation>Our proposed interpretation</span><textarea name="statement" rows="3" maxlength="4000" required placeholder="What exactly should remain true or become true?" data-i18n-placeholder=What%20exactly%20should%20remain%20true%20or%20become%20true%3F></textarea></label>
+        <label><span data-i18n=Why%20this%20interpretation%3F>Why this interpretation?</span><textarea name="reason" rows="2" minlength="8" maxlength="4000" required placeholder="Record the choice and the reasoning behind it." data-i18n-placeholder=Record%20the%20choice%20and%20the%20reasoning%20behind%20it.></textarea></label>
+        <fieldset class="commitment-file-field"><legend data-i18n=Files%20carrying%20this%20commitment>Files carrying this commitment</legend><div id="commitment-files"></div></fieldset>
+        <details class="source-readings-editor"><summary><span data-i18n=Source%20readings>Source readings</span> <span data-i18n=Optional%20%C2%B7%20interpretations%2C%20not%20test%20evidence>Optional · interpretations, not test evidence</span></summary><p class="field-hint" data-i18n=Connect%20a%20short%20interpretation%20to%201%E2%80%9312%20lines%20in%20the%20target%20snapshot.%20The%20server%20captures%20the%20actual%20source%3B%20these%20notes%20do%20not%20satisfy%20verification.>Connect a short interpretation to 1–12 lines in the target snapshot. The server captures the actual source; these notes do not satisfy verification.</p><div id="commitment-source-readings"></div><button type="button" class="button button-small" data-reading-add data-i18n=Add%20source%20reading>Add source reading</button></details>
+        <label><span data-i18n=How%20will%20we%20verify%20it%3F>How will we verify it?</span><textarea name="verification" rows="2" minlength="8" maxlength="2000" required placeholder="Which observation or check would support this exact statement?" data-i18n-placeholder=Which%20observation%20or%20check%20would%20support%20this%20exact%20statement%3F></textarea><small class="field-hint" data-i18n=Recorded%20as%20an%20evidence%20requirement%20for%20this%20target%20revision.%20Saving%20a%20proposal%20does%20not%20verify%20it.>Recorded as an evidence requirement for this target revision. Saving a proposal does not verify it.</small></label>
+        <p id="commitment-error" class="form-error" role="alert"></p>
+      </div>
+      <div class="intent-composer-footer"><p class="field-hint" data-i18n=The%20agreed%20project%20state%20changes%20only%20after%20authorized%20approval.>The agreed project state changes only after authorized approval.</p><div class="dialog-actions"><button type="button" class="button" id="commitment-reload" hidden data-i18n=Reload%20%26%20keep%20draft>Reload & keep draft</button><button type="button" class="button button-quiet" data-close-dialog data-i18n=Close%20draft>Close draft</button><button type="submit" class="button button-primary" data-i18n=Save%20proposal>Save proposal</button></div></div>
+    </form>
+  </dialog>
+  <dialog id="intent-dialog" class="intent-composer" aria-labelledby="intent-dialog-title">
+    <form method="dialog" id="intent-form" novalidate>
+      <div class="dialog-head"><div><h2 id="intent-dialog-title" data-i18n=What%20should%20change%3F>What should change?</h2><p id="intent-project-label" class="field-hint"></p></div><button class="icon-button" data-close-dialog type="button" aria-label="Close draft" data-i18n-aria-label=Close%20draft><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <div class="intent-composer-body">
+        <section id="intent-request-step" aria-label="Describe the request">
+          <p class="dialog-copy" data-i18n=Start%20with%20the%20outcome%20and%20the%20constraints.%20Then%20compare%20interpretations%20before%20committing%20to%20one.>Start with the outcome and the constraints. Then compare interpretations before committing to one.</p>
+          <p class="intent-scope-note" id="intent-composer-scope" data-i18n=This%20workflow%20compares%20Python%20import%20replacements.%20Each%20request%20needs%20at%20least%20two%20alternatives.>This workflow compares Python import replacements. Each request needs at least two alternatives.</p>
+          <label><span data-i18n=What%20do%20you%20want%20to%20change%3F>What do you want to change?</span><textarea name="request" rows="4" required maxlength="8000" autofocus placeholder="Remove the legacy billing dependency without changing how rates are calculated." data-i18n-placeholder=Remove%20the%20legacy%20billing%20dependency%20without%20changing%20how%20rates%20are%20calculated.></textarea></label>
+          <label><span data-i18n=What%20must%20stay%20true%3F>What must stay true?</span><textarea name="context" rows="3" required maxlength="8000" placeholder="Preserve behavior, limit access, or follow an architectural decision. Include the context needed to interpret your request." data-i18n-placeholder=Preserve%20behavior%2C%20limit%20access%2C%20or%20follow%20an%20architectural%20decision.%20Include%20the%20context%20needed%20to%20interpret%20your%20request.></textarea></label>
+          <details class="intent-base-settings"><summary><span data-i18n=Repository%20baseline>Repository baseline</span> <code id="intent-base-label"></code></summary><label><span data-i18n=Base%20revision>Base revision</span><input name="base_ref" required maxlength="200" spellcheck="false"><small class="field-hint" data-i18n=The%20current%20project%20revision%20is%20prefilled.%20Use%20another%20commit%20only%20if%20the%20request%20targets%20it.>The current project revision is prefilled. Use another commit only if the request targets it.</small></label></details>
+          <p id="intent-ai-status" class="field-hint" aria-live="polite"></p>
+        </section>
+        <section id="intent-candidates-step" aria-label="Check interpretations" hidden>
+          <p class="dialog-copy" data-i18n=Check%20each%20alternative%20and%20keep%20unanswered%20questions%20visible.%20Recording%20these%20proposals%20does%20not%20resolve%20or%20select%20any%20of%20them.>Check each alternative and keep unanswered questions visible. Recording these proposals does not resolve or select any of them.</p>
+          <details class="intent-request-recap"><summary data-i18n=Original%20request>Original request</summary><p id="intent-request-recap"></p></details>
+          <div id="intent-candidate-editors" class="intent-editor-grid"></div>
+          <datalist id="intent-python-files"></datalist>
+        </section>
+      </div>
+      <div class="intent-composer-footer">
+        <p class="form-error" id="intent-error" role="alert"></p>
+        <small id="intent-draft-note" data-i18n=Draft%20stays%20here%20while%20this%20page%20is%20open.>Draft stays here while this page is open.</small>
+        <div class="dialog-actions"><button class="button button-quiet" id="intent-composer-back" type="button" hidden data-i18n=Back%20to%20request>Back to request</button><button class="button button-quiet" data-close-dialog type="button" data-i18n=Close%20draft>Close draft</button><button class="button" id="intent-ai-suggest-button" type="button" data-i18n=Draft%20with%20AI>Draft with AI</button><button class="button button-primary" id="intent-composer-submit" type="submit" data-i18n=Write%20alternatives>Write alternatives</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="candidate-revision-dialog" class="intent-composer" aria-labelledby="candidate-revision-title" aria-describedby="candidate-revision-context">
+    <form method="dialog" id="candidate-revision-form" novalidate>
+      <div class="dialog-head"><div><h2 id="candidate-revision-title" data-i18n=Edit%20proposal>Edit proposal</h2><p id="candidate-revision-context" class="field-hint"></p></div><button class="icon-button" data-close-dialog type="button" aria-label="Close proposal draft"><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <div class="intent-composer-body">
+        <details class="intent-request-recap"><summary data-i18n=Original%20request%20and%20constraints>Original request and constraints</summary><p id="candidate-revision-request"></p><p id="candidate-revision-constraints"></p></details>
+        <section id="candidate-revision-conflict" aria-labelledby="candidate-revision-conflict-title" tabindex="-1" hidden><h3 id="candidate-revision-conflict-title" data-i18n=Review%20the%20latest%20version>Review the latest version</h3><p id="candidate-revision-conflict-copy" class="field-hint"></p><div id="candidate-revision-latest-content"></div><button id="candidate-revision-rebase" class="button" type="button" hidden data-i18n=Apply%20my%20edits%20to%20latest>Apply my edits to latest</button></section>
+        <label><span data-i18n=Approach%20name>Approach name</span><input name="title" required maxlength="240" autofocus></label>
+        <label><span data-i18n=Why%20this%20approach%3F>Why this approach?</span><textarea name="summary" rows="2" required maxlength="2000"></textarea></label>
+        <fieldset class="candidate-revision-change"><legend data-i18n=Proposed%20import%20change>Proposed import change</legend><label><span data-i18n=Python%20file>Python file</span><input name="path" required maxlength="1000" list="candidate-revision-files" spellcheck="false"><small class="field-hint" data-i18n=Repository-relative%20Python%20file.%20This%20edits%20the%20proposal%2C%20not%20the%20file.>Repository-relative Python file. This edits the proposal, not the file.</small></label><div class="form-pair"><label><span data-i18n=Current%20import>Current import</span><input name="from_module" required maxlength="500" spellcheck="false"></label><label><span data-i18n=Replace%20with>Replace with</span><input name="to_module" required maxlength="500" spellcheck="false"></label></div></fieldset>
+        <label><span data-i18n=Open%20questions%20(optional)>Open questions (optional)</span><textarea name="uncertainties" rows="2" aria-describedby="candidate-revision-question-hint"></textarea><small id="candidate-revision-question-hint" class="field-hint" data-i18n=One%20question%20per%20line.%20Keep%20unanswered%20questions%3B%20explain%20any%20removal%20below.>One question per line. Keep unanswered questions; explain any removal below.</small></label>
+        <label><span data-i18n=Why%20are%20you%20making%20this%20change%3F>Why are you making this change?</span><textarea name="reason" rows="2" required minlength="8" maxlength="4000" aria-describedby="candidate-revision-reason-hint"></textarea><small id="candidate-revision-reason-hint" class="field-hint" data-i18n=Recorded%20with%20your%20identity%20and%20the%20before%2Fafter%20versions.>Recorded with your identity and the before/after versions.</small></label>
+        <details id="candidate-revision-preview" class="intent-request-recap"><summary><span data-i18n=Compare%20proposed%20changes>Compare proposed changes</span> <span id="candidate-revision-change-count"></span></summary><div id="candidate-revision-changes"></div></details>
+        <datalist id="candidate-revision-files"></datalist>
+      </div>
+      <div class="intent-composer-footer">
+        <p id="candidate-revision-error" class="form-error" role="alert"></p>
+        <small id="candidate-revision-impact" aria-live="polite"></small>
+        <small id="candidate-revision-draft-note" data-i18n=Draft%20stays%20here%20while%20this%20page%20is%20open.%20Nothing%20is%20selected%20or%20executed.>Draft stays here while this page is open. Nothing is selected or executed.</small>
+        <div class="dialog-actions"><button id="candidate-revision-latest" class="button" type="button" hidden data-i18n=Review%20latest%20revision>Review latest revision</button><button class="button button-quiet" data-close-dialog type="button" data-i18n=Close%20draft>Close draft</button><button id="candidate-revision-submit" class="button button-primary" type="submit" data-i18n=Save%20proposal%20changes>Save proposal changes</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="clarification-dialog" class="intent-composer" aria-labelledby="clarification-title">
+    <form method="dialog" id="clarification-form">
+      <input type="hidden" name="intent_id">
+      <input type="hidden" name="candidate_id">
+      <input type="hidden" name="expected_revision">
+      <div class="dialog-head"><div><h2 id="clarification-title" data-i18n=Record%20a%20clarification>Record a clarification</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <div class="intent-composer-body">
+      <p class="signed-contract" id="clarification-candidate"></p>
+      <p class="dialog-copy" data-i18n=An%20answer%20can%20resolve%20part%20of%20the%20request.%20Keep%20every%20interpretation%20that%20is%20still%20possible%3B%20mark%20only%20the%20questions%20this%20answer%20settles.>An answer can resolve part of the request. Keep every interpretation that is still possible; mark only the questions this answer settles.</p>
+      <label><span data-i18n=What%20did%20you%20ask%3F>What did you ask?</span><textarea name="question" rows="2" required maxlength="2000" autofocus placeholder="Must this migration preserve the current rate semantics?" data-i18n-placeholder=Must%20this%20migration%20preserve%20the%20current%20rate%20semantics%3F></textarea></label>
+      <label><span data-i18n=What%20did%20you%20learn%3F>What did you learn?</span><textarea name="answer" rows="3" required maxlength="4000" placeholder="Preserve rate semantics. We still need to check whether the adapter can remain." data-i18n-placeholder=Preserve%20rate%20semantics.%20We%20still%20need%20to%20check%20whether%20the%20adapter%20can%20remain.></textarea></label>
+      <div id="clarification-choices"></div>
+      </div>
+      <div class="intent-composer-footer">
+      <p id="clarification-impact" class="intent-scope-note" aria-live="polite"></p>
+      <p class="form-error" id="clarification-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Record%20clarification>Record clarification</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="selection-dialog">
+    <form method="dialog" id="selection-form">
+      <input type="hidden" name="intent_id">
+      <input type="hidden" name="candidate_id">
+      <input type="hidden" name="expected_revision">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Human%20selection>Human selection</p><h2 data-i18n=Select%20structural%20proposal>Select structural proposal</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="signed-contract" id="selection-candidate"></p>
+      <p class="dialog-copy" data-i18n=This%20authorizes%20one%20interpretation%20for%20an%20isolated%20proposal.%20Other%20alternatives%20remain%20in%20the%20record%20as%20not%20selected.%20No%20files%20change%20until%20you%20run%20realization.>This authorizes one interpretation for an isolated proposal. Other alternatives remain in the record as not selected. No files change until you run realization.</p>
+      <label><span data-i18n=Selection%20rationale>Selection rationale</span><textarea name="reason" rows="3" required minlength="8" autofocus placeholder="Why this interpretation is authorized to enter realization." data-i18n-placeholder=Why%20this%20interpretation%20is%20authorized%20to%20enter%20realization.></textarea></label>
+      <p class="form-error" id="selection-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Select%20candidate>Select candidate</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="snapshot-file-dialog" aria-labelledby="snapshot-file-title" aria-describedby="snapshot-file-context">
+    <div class="snapshot-reader">
+      <header class="dialog-head"><div><h2 id="snapshot-file-title" data-i18n=Read%20snapshot%20file>Read snapshot file</h2><p id="snapshot-file-context"></p></div><button type="button" class="icon-button" data-close-dialog aria-label="Close snapshot file" autofocus><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></header>
+      <div class="snapshot-reader-tools">
+        <label for="snapshot-file-search"><span data-i18n=Find%20in%20file>Find in file</span><input type="search" id="snapshot-file-search" autocomplete="off" spellcheck="false" maxlength="500" disabled></label>
+        <div class="snapshot-search-actions"><button type="button" class="button" id="snapshot-match-previous" aria-label="Previous matching line" disabled data-i18n=Previous>Previous</button><button type="button" class="button" id="snapshot-match-next" aria-label="Next matching line" disabled data-i18n=Next>Next</button><button type="button" class="button" id="snapshot-file-wrap" aria-pressed="false" disabled data-i18n=Wrap%20lines>Wrap lines</button></div>
+        <p id="snapshot-file-search-status" role="status"></p>
+        <p id="snapshot-file-limit" role="status"></p>
+      </div>
+      <div id="snapshot-file-body" class="snapshot-reader-body" aria-busy="false">
+        <p id="snapshot-file-notice" role="status"></p>
+        <div id="snapshot-file-error" role="alert" hidden><p></p><button type="button" class="button" id="snapshot-file-retry" data-i18n=Retry%20file>Retry file</button><button type="button" class="button" id="snapshot-file-reload" hidden data-i18n=Reload%20workspace>Reload workspace</button></div>
+        <pre id="snapshot-file-code" tabindex="0" role="region" aria-label="Read-only file content" aria-describedby="snapshot-file-limit" hidden></pre>
+      </div>
+      <footer class="snapshot-reader-footer"><details id="snapshot-file-details"><summary data-i18n=Snapshot%20details>Snapshot details</summary><dl id="snapshot-file-metadata"></dl></details><button type="button" class="button" data-close-dialog data-i18n=Close%20file>Close file</button></footer>
+    </div>
+  </dialog>
+
+  <dialog id="review-source-dialog" class="review-source-dialog" aria-labelledby="review-source-title">
+    <div class="dialog-head"><div><h2 id="review-source-title" data-i18n=Review%20a%20change>Review a change</h2><p class="dialog-copy" data-i18n=Choose%20the%20code%20to%20analyze.%20Nothing%20is%20merged.>Choose the code to analyze. Nothing is merged.</p></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+    <div class="review-source-options">
+      <button type="button" id="review-source-github" class="review-source-option" autofocus><svg class="ui-icon" aria-hidden="true"><use href="#icon-github"></use></svg><span><strong data-i18n=GitHub%20pull%20request>GitHub pull request</strong><small data-i18n=Choose%20an%20open%20PR%2C%20inspect%20its%20changes%20and%20evidence.>Choose an open PR, inspect its changes and evidence.</small></span><span aria-hidden="true">→</span></button>
+      <button type="button" id="review-source-local" class="review-source-option"><svg class="ui-icon" aria-hidden="true"><use href="#icon-git-rebase"></use></svg><span><strong data-i18n=Local%20revisions>Local revisions</strong><small><span data-i18n=Compare%20a%20branch%20or%20commit%20in>Compare a branch or commit in</span> <b id="review-source-project"></b>.</small></span><span aria-hidden="true">→</span></button>
+    </div>
+    <p class="review-source-note" data-i18n=Analysis%20prepares%20a%20review.%20An%20authorized%20person%20records%20the%20final%20decision.>Analysis prepares a review. An authorized person records the final decision.</p>
+  </dialog>
+
+  <dialog id="review-dialog" aria-labelledby="review-dialog-title">
+    <form method="dialog" id="review-form">
+      <div class="dialog-head"><div><h2 id="review-dialog-title" data-i18n=Compare%20two%20revisions>Compare two revisions</h2><p id="review-project-context" class="comparison-project"></p></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <div class="comparison-body">
+      <fieldset id="review-create-fields">
+        <p id="revision-comparison-context" class="review-continuation" hidden></p>
+        <legend class="sr-only" data-i18n=Comparison%20details>Comparison details</legend>
+        <p class="dialog-copy" data-i18n=Analyze%20a%20change%20against%20the%20project%20baseline.%20Both%20revisions%20resolve%20to%20commits%3B%20project%20tests%20run%20against%20the%20target.%20Nothing%20is%20merged.>Analyze a change against the project baseline. Both revisions resolve to commits; project tests run against the target. Nothing is merged.</p>
+        <label><span data-i18n=Target%20revision>Target revision</span><input name="target_ref" required maxlength="200" autofocus autocomplete="off" spellcheck="false" placeholder="agent/change or commit SHA" aria-describedby="review-target-help"><small id="review-target-help" data-i18n=A%20branch%2C%20tag%20or%20commit%20available%20in%20this%20repository.>A branch, tag or commit available in this repository.</small></label>
+        <label><span data-i18n=Change%20intent>Change intent</span><textarea name="intent_summary" rows="3" required maxlength="1200" placeholder="What should this change do, and what must stay true?" data-i18n-placeholder=What%20should%20this%20change%20do%2C%20and%20what%20must%20stay%20true%3F></textarea></label>
+        <details class="comparison-options" id="review-compare-options"><summary><span data-i18n=Baseline%20and%20proposer>Baseline and proposer</span> <span id="review-base-summary"></span></summary>
+          <label><span data-i18n=Base%20revision>Base revision</span><input name="base_ref" required maxlength="200" autocomplete="off" spellcheck="false" placeholder="main or commit SHA"><small data-i18n=Prefilled%20from%20the%20governed%20project%20state%3B%20change%20it%20to%20compare%20another%20baseline.>Prefilled from the governed project state; change it to compare another baseline.</small></label>
+          <label><span data-i18n=Proposer>Proposer</span><input name="proposer" value="coding-agent" required maxlength="200" placeholder="coding-agent/archive-connector"><small data-i18n=The%20proposing%20person%20or%20agent.%20This%20label%20does%20not%20grant%20approval%20authority.>The proposing person or agent. This label does not grant approval authority.</small></label>
+        </details>
+        <button type="button" class="text-button comparison-alternative" id="switch-to-github-intake"><svg class="ui-icon" aria-hidden="true"><use href="#icon-github"></use></svg><span data-i18n=Use%20a%20GitHub%20pull%20request%20instead>Use a GitHub pull request instead</span></button>
+      </fieldset>
+      <section id="review-created-receipt" class="comparison-receipt" tabindex="-1" role="status" hidden><h3 data-i18n=Review%20created>Review created</h3><p id="review-created-title"></p><p class="field-hint" data-i18n=The%20review%20is%20saved.%20Open%20it%20to%20continue%3B%20you%20do%20not%20need%20to%20analyze%20this%20change%20again.>The review is saved. Open it to continue; you do not need to analyze this change again.</p><button type="button" class="text-button" id="new-comparison-button" data-i18n=Start%20another%20comparison>Start another comparison</button></section>
+      <p class="form-error" id="review-error" role="alert" tabindex="-1"></p>
+      <div class="comparison-draft-note"><p id="review-draft-note" role="status"></p><button type="button" class="text-button" id="discard-review-draft" data-i18n=Discard%20draft>Discard draft</button></div>
+      </div>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" id="close-comparison-button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Analyze%20change>Analyze change</button><button class="button button-primary" type="button" id="open-created-review" hidden data-i18n=Open%20review>Open review</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="test-command-dialog">
+    <form method="dialog" id="test-command-form">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Resolve%20blocker>Resolve blocker</p><h2 id="test-command-dialog-title" data-i18n=Run%20target%20tests>Run target tests</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy" data-i18n=The%20command%20runs%20without%20a%20shell%20against%20this%20review%E2%80%99s%20immutable%20target%20commit.%20A%20passing%20result%20replaces%20the%20missing%20test%20evidence.>The command runs without a shell against this review’s immutable target commit. A passing result replaces the missing test evidence.</p>
+      <label><span data-i18n=Test%20command>Test command</span><input name="test_command" required autofocus autocomplete="off" spellcheck="false" placeholder="python3 -m unittest -q"><small class="field-hint" id="test-command-hint" data-i18n=The%20exact%20command%20is%20recorded%20in%20the%20review%20audit%20trail.>The exact command is recorded in the review audit trail.</small></label>
+      <p class="form-error" id="test-command-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button" type="button" data-close-dialog data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Run%20tests>Run tests</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="decision-dialog">
+    <form method="dialog" id="decision-form">
+      <input type="hidden" name="action">
+      <input type="hidden" name="finding_ids">
+      <input type="hidden" name="obligation_ids">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Human%20decision>Human decision</p><h2 id="decision-title" data-i18n=Record%20decision>Record decision</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy" id="decision-copy"></p>
+      <p class="signed-contract hidden" id="decision-context"></p>
+      <p class="identity-note"><span data-i18n=Decision%20identity%3A>Decision identity:</span> <strong class="authenticated-actor"></strong></p>
+      <div class="form-pair">
+        <label><span data-i18n=Governing%20policy>Governing policy</span><input name="policy_id" readonly required></label>
+        <label><span data-i18n=Asserted%20authority>Asserted authority</span><select name="authority" required></select></label>
+      </div>
+      <label><span data-i18n=Reason>Reason</span><textarea name="reason" rows="3" autofocus placeholder="Why this decision is justified" data-i18n-placeholder=Why%20this%20decision%20is%20justified></textarea></label>
+      <div id="waiver-fields" class="hidden">
+        <label><span data-i18n=Bounded%20scope>Bounded scope</span><input name="scope" placeholder="service.module or migration slice"></label>
+        <label><span data-i18n=Expires%20at>Expires at</span><input name="expires_at" type="datetime-local" required><small class="field-hint" data-i18n=The%20waiver%20lapses%20automatically%20at%20this%20time%20and%20the%20finding%20reopens.>The waiver lapses automatically at this time and the finding reopens.</small></label>
+      </div>
+      <p class="form-error" id="decision-error"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Confirm%20decision>Confirm decision</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="evidence-dialog" aria-labelledby="evidence-dialog-title">
+    <form method="dialog" id="evidence-form">
+      <input type="hidden" name="obligation_ids">
+      <div class="dialog-head"><div><h2 id="evidence-dialog-title" data-i18n=Attach%20an%20evidence%20record>Attach an evidence record</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <section class="evidence-check-context" aria-labelledby="evidence-obligation-label">
+        <h3 id="evidence-obligation-label" data-no-i18n></h3>
+        <p id="evidence-target-hint" data-no-i18n></p>
+        <div class="evidence-plan-heading"><span data-i18n=Verification%20plan>Verification plan</span><span data-i18n=Not%20a%20test%20result>Not a test result</span></div>
+        <ol id="evidence-verification-plan" data-no-i18n></ol>
+      </section>
+      <p class="field-hint" data-i18n=Record%20a%20check%20you%20have%20already%20performed.%20Attaching%20evidence%20does%20not%20run%20tests%20or%20approve%20the%20review.>Record a check you have already performed. Attaching evidence does not run tests or approve the review.</p>
+      <p class="identity-note"><span data-i18n=Evidence%20recorder%3A>Evidence recorder:</span> <strong class="authenticated-actor"></strong></p>
+      <div class="form-pair">
+        <label><span data-i18n=Governing%20policy>Governing policy</span><input name="policy_id" readonly required></label>
+        <label><span data-i18n=Asserted%20authority>Asserted authority</span><select name="authority" required></select></label>
+      </div>
+      <label><span data-i18n=Evidence%20summary>Evidence summary</span><textarea name="summary" rows="3" required minlength="8" autofocus aria-describedby="evidence-summary-hint" placeholder="What you checked, the observed result, and any limitations" data-i18n-placeholder=What%20you%20checked%2C%20the%20observed%20result%2C%20and%20any%20limitations></textarea><small class="field-hint" id="evidence-summary-hint" data-i18n=Describe%20the%20observation%20that%20supports%20this%20requirement.%20Do%20not%20claim%20a%20check%20passed%20unless%20it%20did.>Describe the observation that supports this requirement. Do not claim a check passed unless it did.</small></label>
+      <label><span data-i18n=Evidence%20source>Evidence source</span><input name="provenance" required aria-describedby="evidence-provenance-hint" placeholder="trusted-runner/check-name/run-id"><small class="field-hint" id="evidence-provenance-hint" data-i18n=Cite%20a%20retrievable%20run%2C%20report%2C%20or%20trace%20so%20another%20reviewer%20can%20verify%20the%20observation.>Cite a retrievable run, report, or trace so another reviewer can verify the observation.</small></label>
+      <p class="form-error" id="evidence-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Attach%20evidence>Attach evidence</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dsse-dialog" aria-labelledby="dsse-dialog-title">
+    <form method="dialog" id="dsse-form">
+      <input type="hidden" name="obligation_ids">
+      <div class="dialog-head"><div><h2 id="dsse-dialog-title" data-i18n=Import%20signed%20verification>Import signed verification</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy" id="dsse-obligation-label"></p>
+      <p class="signed-contract" id="dsse-contract"></p>
+      <label><span data-i18n=DSSE%20envelope%20file>DSSE envelope file</span><input name="envelope_file" type="file" accept="application/json,.json"><small class="field-hint" data-i18n=The%20file%20is%20read%20locally%2C%20then%20submitted%20as%20JSON%20for%20signature%20and%20policy%20verification.>The file is read locally, then submitted as JSON for signature and policy verification.</small></label>
+      <label><span data-i18n=DSSE%20envelope%20JSON>DSSE envelope JSON</span><textarea name="envelope_json" rows="10" required autofocus spellcheck="false" placeholder='{"payloadType":"application/vnd.in-toto+json","payload":"…","signatures":[…]}'></textarea></label>
+      <p class="form-error" id="dsse-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Verify%20and%20attach>Verify and attach</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="trust-dialog">
+    <form method="dialog" id="trust-form">
+      <input type="hidden" name="action">
+      <input type="hidden" name="expected_project_version">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Evidence%20trust>Evidence trust</p><h2 id="trust-title" data-i18n=Change%20attestation%20trust>Change attestation trust</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="signed-contract" id="trust-contract"></p>
+      <p class="identity-note"><span data-i18n=Trust%20administrator%3A>Trust administrator:</span> <strong class="authenticated-actor"></strong></p>
+      <div class="form-pair">
+        <label><span data-i18n=Governing%20policy>Governing policy</span><input name="policy_id" readonly required></label>
+        <label><span data-i18n=Asserted%20authority>Asserted authority</span><input name="authority" readonly required></label>
+      </div>
+      <label><span data-i18n=Reason>Reason</span><textarea name="reason" rows="3" required minlength="8" autofocus placeholder="Why this trust change is necessary"></textarea></label>
+      <div id="trust-existing-fields" class="rule-box hidden">
+        <p class="eyebrow" data-i18n=Current%20key>Current key</p>
+        <label><span data-i18n=Key%20to%20replace%20or%20revoke>Key to replace or revoke</span><select name="key_id"></select></label>
+        <label><span data-i18n=Revocation%20mode>Revocation mode</span><select name="revocation_mode"><option value="prospective" data-i18n=Prospective%20%C2%B7%20block%20future%20imports>Prospective · block future imports</option><option value="retroactive" data-i18n=Retroactive%20%C2%B7%20invalidate%20prior%20evidence>Retroactive · invalidate prior evidence</option></select></label>
+        <label class="retroactive-confirm hidden" id="retroactive-confirm"><input name="confirm_retroactive" type="checkbox" value="yes"> I understand that prior evidence signed by this key will become stale.</label>
+      </div>
+      <div id="trust-new-fields" class="rule-box">
+        <p class="eyebrow" data-i18n=New%20key%20and%20possession%20proof>New key and possession proof</p>
+        <div class="form-pair">
+          <label><span data-i18n=New%20key%20ID>New key ID</span><input name="new_key_id" placeholder="ci-source-ed25519-2027"></label>
+          <label><span data-i18n=Evidence%20authority>Evidence authority</span><input name="new_authority" placeholder="security owner"></label>
+        </div>
+        <label><span data-i18n=Ed25519%20public%20key%20%C2%B7%20base64>Ed25519 public key · base64</span><input name="new_public_key_base64" autocomplete="off" spellcheck="false" placeholder="32-byte public key encoded as base64"></label>
+        <label><span data-i18n=Verifier%20ID>Verifier ID</span><input name="new_verifier_id" placeholder="https://ci.example.com/verifiers/source-policy/v1"></label>
+        <label><span data-i18n=Resource%20URI%20prefix>Resource URI prefix</span><input name="new_resource_uri_prefix" placeholder="git+https://example.com/org/repo@"></label>
+        <div class="form-pair">
+          <label><span data-i18n=Valid%20from>Valid from</span><input name="valid_from" type="datetime-local"></label>
+          <label><span data-i18n=Valid%20until%20%C2%B7%20optional>Valid until · optional</span><input name="valid_until" type="datetime-local"></label>
+        </div>
+        <div class="proof-template-actions">
+          <button class="button button-small" id="trust-proof-template-button" type="button" data-i18n=Build%20signing%20template>Build signing template</button>
+          <span data-i18n=Creates%20the%20exact%20DSSE%20payload%20for%20the%20external%20key%20to%20sign.%20It%20does%20not%20access%20a%20private%20key.>Creates the exact DSSE payload for the external key to sign. It does not access a private key.</span>
+        </div>
+        <p class="signed-contract" id="trust-proof-contract" data-i18n=Build%20a%20template%20to%20see%20the%20required%20policy%2C%20verified%20level%2C%20target%2C%20and%20signing%20bytes.>Build a template to see the required policy, verified level, target, and signing bytes.</p>
+        <label><span data-i18n=DSSE%20PAE%20signing%20input%20%C2%B7%20base64>DSSE PAE signing input · base64</span><textarea id="trust-signing-input" rows="4" readonly spellcheck="false" placeholder="Build the signing template first"></textarea><small class="field-hint"><span data-i18n=Decode%20this%20value%2C%20sign%20the%20bytes%20with%20the%20new%20Ed25519%20private%20key%2C%20then%20place%20the%20base64%20signature%20in>Decode this value, sign the bytes with the new Ed25519 private key, then place the base64 signature in</span> <code>signatures[0].sig</code>.</small></label>
+        <div class="proof-download-actions">
+          <button class="button button-small" id="copy-trust-signing-input" type="button" disabled data-i18n=Copy%20signing%20input>Copy signing input</button>
+          <button class="button button-small" id="trust-proof-download-button" type="button" disabled data-i18n=Download%20signing%20package>Download signing package</button>
+        </div>
+        <label><span data-i18n=Signed%20proof%20file>Signed proof file</span><input name="new_key_proof_file" type="file" accept="application/json,.json"><small class="field-hint" data-i18n=A%20dedicated%20possession%20VSA%20signed%20by%20the%20new%20key%20and%20bound%20to%20the%20current%20governed%20head.>A dedicated possession VSA signed by the new key and bound to the current governed head.</small></label>
+        <label><span data-i18n=Signed%20proof%20JSON>Signed proof JSON</span><textarea name="new_key_proof_json" rows="8" spellcheck="false" placeholder='{"payloadType":"application/vnd.in-toto+json","payload":"…","signatures":[…]}'></textarea></label>
+      </div>
+      <p class="form-error" id="trust-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" id="trust-submit-button" type="submit" data-i18n=Apply%20trust%20change>Apply trust change</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="users-dialog">
+    <form method="dialog" id="user-form">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Access%20control>Access control</p><h2 data-i18n=Operator%20identities>Operator identities</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy" data-i18n=Global%20roles%20control%20console%20access.%20Project%20authority%20grants%20still%20decide%20who%20may%20attest%2C%20waive%2C%20commit%2C%20or%20manage%20trust.>Global roles control console access. Project authority grants still decide who may attest, waive, commit, or manage trust.</p>
+      <div class="user-list" id="user-list"></div>
+      <div class="subhead"><h3 data-i18n=Identity%20audit>Identity audit</h3><span data-i18n=Append%20only>Append only</span></div>
+      <div class="auth-event-list" id="auth-event-list"></div>
+      <div class="rule-box">
+        <p class="eyebrow" data-i18n=Add%20identity>Add identity</p>
+        <div class="form-pair">
+          <label><span data-i18n=Username>Username</span><input name="username" required autocomplete="off" placeholder="reviewer"></label>
+          <label><span data-i18n=Role>Role</span><select name="role"><option value="viewer" data-i18n=Viewer>Viewer</option><option value="operator" data-i18n=Operator>Operator</option><option value="admin" data-i18n=Administrator>Administrator</option></select></label>
+        </div>
+        <label><span data-i18n=Audit%20identity>Audit identity</span><input name="actor" required autocomplete="off" placeholder="reviewer@example.com"></label>
+        <label><span data-i18n=Temporary%20password>Temporary password</span><input name="password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+      </div>
+      <p class="form-error" id="user-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Close>Close</button><button class="button button-primary" type="submit" data-i18n=Add%20identity>Add identity</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="password-dialog">
+    <form method="dialog" id="password-form">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Account%20security>Account security</p><h2 data-i18n=Change%20password>Change password</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy" data-i18n=Confirm%20the%20current%20password.%20A%20successful%20change%20rotates%20this%20session%20and%20revokes%20every%20other%20session%20for%20your%20identity.>Confirm the current password. A successful change rotates this session and revokes every other session for your identity.</p>
+      <label><span data-i18n=Current%20password>Current password</span><input name="current_password" type="password" required maxlength="1024" autocomplete="current-password" autofocus></label>
+      <label><span data-i18n=New%20password>New password</span><input name="new_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+      <label><span data-i18n=Confirm%20new%20password>Confirm new password</span><input name="confirm_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+      <p class="form-error" id="password-error" role="alert"></p>
+      <div class="session-control"><button class="button button-quiet" id="revoke-sessions-button" type="button" data-i18n=Sign%20out%20other%20sessions>Sign out other sessions</button><span id="session-control-note" data-i18n=Keep%20this%20browser%20signed%20in.>Keep this browser signed in.</span></div>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Change%20password>Change password</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="reset-password-dialog">
+    <form method="dialog" id="reset-password-form">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Administrator%20reset>Administrator reset</p><h2 data-i18n=Issue%20temporary%20password>Issue temporary password</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <p class="dialog-copy"><span data-i18n=Reset>Reset</span> <strong id="reset-password-actor"></strong>. All active sessions for this identity will be revoked, and the user must replace this password at next sign-in.</p>
+      <label><span data-i18n=Temporary%20password>Temporary password</span><input name="new_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password" autofocus></label>
+      <label><span data-i18n=Confirm%20temporary%20password>Confirm temporary password</span><input name="confirm_password" type="password" required minlength="12" maxlength="1024" autocomplete="new-password"></label>
+      <p class="form-error" id="reset-password-error" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-quiet" data-close-dialog type="button" data-i18n=Cancel>Cancel</button><button class="button button-primary" type="submit" data-i18n=Reset%20and%20revoke%20sessions>Reset and revoke sessions</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="shortcuts-dialog" class="shortcuts-dialog">
+    <form method="dialog">
+      <div class="dialog-head"><div><p class="eyebrow" data-i18n=Keyboard>Keyboard</p><h2 data-i18n=Shortcuts>Shortcuts</h2></div><button class="icon-button" data-close-dialog type="button" aria-label="Close" data-i18n-aria-label=Close><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
+      <dl class="shortcut-list">
+        <div><dt><kbd>⌘</kbd><kbd>K</kbd></dt><dd data-i18n=Open%20the%20command%20palette>Open the command palette</dd></div>
+        <div><dt><kbd>0</kbd></dt><dd data-i18n=Project%20state>Project state</dd></div>
+        <div><dt><kbd>J</kbd> / <kbd>K</kbd></dt><dd data-i18n=Next%20or%20previous%20review>Next or previous review</dd></div>
+        <div><dt><kbd>1</kbd> – <kbd>4</kbd></dt><dd data-i18n=Decision%2C%20Changes%2C%20Evidence%2C%20Audit>Decision, Changes, Evidence, Audit</dd></div>
+        <div><dt><kbd>/</kbd></dt><dd data-i18n=Search%20the%20audit%20graph>Search the audit graph</dd></div>
+        <div><dt><kbd>⌘</kbd><kbd>Enter</kbd></dt><dd data-i18n=Ask%20the%20review%20assistant>Ask the review assistant</dd></div>
+        <div><dt><kbd>Esc</kbd></dt><dd data-i18n=Close%20menus%2C%20dialogs%2C%20and%20the%20inspector%20on%20narrow%20screens>Close menus, dialogs, and the inspector on narrow screens</dd></div>
+        <div><dt><kbd>?</kbd></dt><dd data-i18n=Show%20this%20list>Show this list</dd></div>
+      </dl>
+    </form>
+  </dialog>
+
+  <dialog id="command-dialog" class="command-dialog" aria-label="Command palette" data-i18n-aria-label=Command%20palette>
+    <div class="command-shell">
+      <div class="command-input-row"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg><input id="command-input" type="text" placeholder="Jump to a review, section, or action…" aria-label="Command palette" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="command-results" aria-autocomplete="list" data-i18n-placeholder=Jump%20to%20a%20review%2C%20section%2C%20or%20action%E2%80%A6 data-i18n-aria-label=Command%20palette><kbd>Esc</kbd></div>
+      <div id="command-results" class="command-results" role="listbox" aria-label="Commands" data-i18n-aria-label=Commands></div>
+      <footer class="command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></footer>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/static/vendor/cytoscape-3.34.2.min.js" data-entry-optional defer></script>
+  <script src="/static/canvas-model.js?v=0.23.0-project-state-1" defer></script>
+  <script src="/static/intent-model.js?v=0.22.14-task-outcomes-1" defer></script>
+  <script src="/static/diff-model.js?v=0.22.3-review-1" defer></script>
+  <script src="/static/evidence-model.js?v=0.27.0-workflow" defer></script>
+  <script src="/static/assistant-model.js?v=0.22.4-assistant-1" defer></script>
+  <script src="/static/decision-model.js?v=0.31.0-followup" defer></script>
+  <script src="/static/motion-model.js?v=0.22.12-workspace-finish-1" defer></script>
+  <script src="/static/commitment-model.js?v=0.31.0-followup" defer></script>
+  <script src="/static/commitment-ui.js?v=0.32.0-llm-advice" defer></script>
+  <script src="/static/paper-demo.js?v=0.33.0-paper-session" defer></script>
+  <script src="/static/app.js?v=0.32.0-llm-advice" defer></script>
+</body>
+</html>

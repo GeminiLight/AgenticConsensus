@@ -1,0 +1,123 @@
+name: AgenticConsensus
+version: 0.22.3
+purpose: Evidence-backed control of agent-generated code changes
+mode: authenticated_local_multi_user
+decision_owner: human
+model_role: advisory_only
+authentication:
+  first_user: atomic_administrator_bootstrap
+  password_hash: argon2id
+  roles: [admin, operator, viewer]
+  audit_identity: unique_case_insensitive_actor
+  actor_binding: authenticated_session_identity
+  sessions:
+    credential: opaque_random_256_bit
+    persistence: server_side_sha256_digest
+    lifetime_seconds: 28800
+    cookie: http_only_same_site_strict
+    secure_mode_cookie: __Host_prefix_and_secure
+  csrf: synchronizer_token_header
+  identity_administration:
+    authorization: administrator_only
+    lifecycle: [create, disable, enable]
+    audit: append_only_without_credentials
+    disable_effect: revoke_all_sessions
+    last_administrator_protection: true
+  password_lifecycle:
+    administrator_created_identity: temporary_password_change_required
+    self_change: current_password_reauthentication
+    self_change_session_effect: rotate_current_and_revoke_others
+    administrator_reset: other_identity_only
+    administrator_reset_session_effect: revoke_all_and_require_change
+    other_session_revocation: preserve_current_session
+    audit_payload: credential_free
+    offline_recovery:
+      runtime_requirement: exclusive_maintenance_lock
+      credential_input: hidden_prompt_or_named_environment_variable
+      pre_change_backup: verified_automatic_snapshot
+      session_effect: revoke_all_and_require_change
+      audit_actor: local_maintenance_with_operator_and_reason
+  login_throttling:
+    windows: [independent_username, independent_client]
+    persistence: in_process
+  network_boundary:
+    default_bind: loopback_only
+    non_loopback_requires_secure_cookies: true
+    browser_headers: [csp, frame_deny, nosniff, no_referrer, permissions_policy, no_store]
+state_authority:
+  - git
+  - ast_analyzer
+  - policy_checker
+  - test_runner
+  - authorized_human_attestation
+intent_synchronization:
+  request_record: versioned_with_context_and_provenance
+  interpretations: minimum_two_candidates
+  clarification: attributed_before_and_after_snapshots
+  selection: explicit_human_action
+  phi:
+    scope: single_line_python_from_import_substitution
+    workspace: isolated_temporary_git_worktree
+    persistence: dedicated_proposal_ref
+    caller_worktree_mutation: forbidden
+  psi:
+    source: independent_ast_comparison_of_artifact_diff
+    output: candidate_deltas_plus_unobservable_state
+  diagnostics: [round_trip_discrepancy, observable_coverage]
+  linkage: [intent, interpretation, realization, rehydration, review, decision]
+github_repository_intake:
+  first_use_setup: browser_github_app_manifest_flow
+  ordinary_user_setup: none
+  authentication: github_app_user_access_token_with_pkce
+  repository_scope: user_and_app_installation_intersection
+  remote_permissions: [metadata_read, contents_read, pull_requests_read]
+  token_storage: encrypted_with_operator_owned_mode_0600_key
+  app_credentials: encrypted_singleton_or_advanced_deployment_override
+  unused_manifest_secrets: discarded
+  import: server_revalidated_pull_request_base_and_head_managed_fetch
+  primary_activation: repository_then_open_pull_request_then_decision_brief
+  provenance: [repository, installation, branch, visibility, actor, imported_at]
+  remote_writes: forbidden
+  disconnect: local_credentials_removed_and_remote_revocation_result_reported
+evidence_admission:
+  target_binding: immutable_review_target
+  authorization_action: attest
+  provenance_constraint: optional_prefix_match
+  cryptographic_signature_verification:
+    envelope: dsse_v1
+    algorithm: ed25519
+    trust: project_pinned_public_keys
+    statement: in_toto_v1
+    predicate: slsa_verification_summary_v1
+    target_binding: subject_gitCommit_and_resourceUri
+trust_root_lifecycle:
+  authorization_action: manage_trust
+  operations: [add, revoke, rotate]
+  new_key_proof:
+    envelope: dsse_ed25519_vsa
+    target: current_project_head
+    policy_uri: https://agentic-consensus.local/policies/trust-root-possession/v1
+    required_verified_level: CONSENSUS_TRUST_ROOT_POSSESSION_V1
+    signing_template: downloadable_exact_payload_and_base64_dsse_pae_without_private_key
+    offline_signer:
+      command: sign-trust-proof
+      private_key: matching_ed25519_pkcs8_pem
+      encrypted_key_password: named_environment_variable_only
+      output_overwrite: refused
+  key_identity: unique_key_id_and_public_key_material
+  revocation_modes: [prospective, retroactive]
+  retroactive_confirmation: server_required
+  persistence: versioned_project_transition_plus_append_only_event
+durable_evolution:
+  trust_roots: governed_versioned
+  policy_and_agent_profiles: proposal_only
+  legacy_trust_admin_upgrade: offline_existing_commit_authority_only
+recovery:
+  backup_format: agentic-consensus/database-backup@0.1
+  integrity: sqlite_integrity_plus_model_validation
+  manifest_digest: sha256
+  restore_requires_offline_runtime: true
+  pre_restore_recovery_copy: true
+  corrupt_state_preservation: raw_bytes_with_sidecar_digests
+  authentication_tables: identities_sessions_and_identity_audit_validated
+  sqlite_connections: explicitly_closed_after_every_maintenance_operation

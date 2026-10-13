@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["id", "role", "authority", "inputs", "outputs"],
+  "properties": {
+    "id": {"type": "string"},
+    "role": {"type": "string"},
+    "authority": {"enum": ["advisory", "deterministic_evidence"]},
+    "inputs": {"type": "array", "items": {"type": "string"}},
+    "outputs": {"type": "array", "items": {"type": "string"}}
+  }
+}

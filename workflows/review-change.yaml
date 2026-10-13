@@ -1,0 +1,53 @@
+id: review-change
+trigger: operator_creates_review
+stages:
+  - name: authenticate
+    requires: [server_side_session, nonexpired_identity, completed_temporary_password_change, role_permission]
+    mutation_requires: [synchronizer_csrf_token, operator_or_administrator]
+    actor_binding: authenticated_audit_identity
+    note: global_role_does_not_replace_project_authority
+  - name: capture
+    outputs: [base_ref, target_ref, claims, frozen_evidence_obligations]
+  - name: analyze
+    tools: [git_diff, python_ast, policy_checker, test_runner]
+    outputs: [findings, evidence, unknowns]
+  - name: summarize
+    authority: advisory_only
+    outputs: [interpretation]
+  - name: attest_authorized_record
+    actor: policy_authorized_human
+    requires: [immutable_target_ref, explicit_obligation_ids, governing_policy, asserted_authority, provenance]
+    action: attest
+    outputs: [linked_evidence, obligation_coverage, append_only_event]
+  - name: attest_signed_ci
+    actor: project_pinned_verifier
+    requires: [dsse_envelope, ed25519_signature, in_toto_statement_v1, slsa_vsa_v1, target_git_commit, verifier_binding, resource_uri, required_verified_level]
+    outputs: [verified_envelope, linked_evidence, obligation_coverage, append_only_event]
+  - name: govern_attestation_trust
+    actor: policy_authorized_trust_administrator
+    action: manage_trust
+    requires: [current_project_version, governing_policy, default_authority, substantive_reason]
+    operations:
+      add: [active_validity_window, purpose_bound_new_key_possession_proof]
+      revoke: [active_key, revocation_mode]
+      rotate: [active_old_key, active_new_key, purpose_bound_new_key_possession_proof, revocation_mode]
+    outputs: [updated_trust_registry, append_only_project_event]
+    offline_signing: [downloaded_canonical_package, matching_ed25519_private_key, completed_dsse_envelope]
+  - name: decide
+    actor: policy_authorized_human
+    requires: [current_project_version, current_review_revision, governing_policy, asserted_authority, obligation_coverage]
+    actions: [commit, waive, rebase, reject]
+  - name: audit
+    transaction: atomic
+    outputs: [decision_record, append_only_event, updated_review, updated_project_state]
+rollback:
+  actor: policy_authorized_human
+  effect: create_compensating_project_state
+offline_maintenance:
+  lock: exclusive_database_ownership
+  password_recovery:
+    input: hidden_prompt_or_named_environment_variable
+    requires: [active_identity, substantive_reason, named_host_operator, verified_pre_change_backup]
+    effects: [argon2id_temporary_password, revoke_all_sessions, force_password_change, append_only_identity_event]
+  trust_admin_upgrade:
+    requires: [existing_commit_authority, current_project_version]

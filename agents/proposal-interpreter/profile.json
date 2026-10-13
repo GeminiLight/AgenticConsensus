@@ -1,0 +1,1 @@
+{"id":"proposal-interpreter","role":"Translate a patch and claims into a candidate state-transition interpretation","authority":"advisory","inputs":["patch","claims","base_version"],"outputs":["candidate_interpretation","unknowns"]}

@@ -1,0 +1,1 @@
+{"id":"change-auditor","role":"Produce deterministic evidence for a proposed change","authority":"deterministic_evidence","inputs":["repository","base_ref","target_ref","claims","test_command"],"outputs":["evidence","findings","unknowns"]}

@@ -1,0 +1,85 @@
+[
+  {
+    "id": "safe_commit",
+    "title": "Current evidence and authorized safe change",
+    "facts": [
+      {"id":"f1-01","sequence":1,"source_id":"state-c42","source_type":"state","source_label":"C42","relation":"proposes","target_id":"proposal-safe","target_type":"proposal","target_label":"Task-scoped connector update","attributes":{"base_version":42,"current_version":42}},
+      {"id":"f1-02","sequence":2,"source_id":"proposal-safe","source_type":"proposal","source_label":"Task-scoped connector update","relation":"changes","target_id":"artifact-connector","target_type":"artifact","target_label":"connectors/archive.py","attributes":{"scope":"archive connector"}},
+      {"id":"f1-03","sequence":3,"source_id":"artifact-connector","source_type":"artifact","source_label":"connectors/archive.py","relation":"realizes","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"status":"satisfied"}},
+      {"id":"f1-04","sequence":4,"source_id":"evidence-tests","source_type":"evidence","source_label":"Target tests","relation":"supports","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"outcome":"supports","freshness":"current","artifact_version":"target"}},
+      {"id":"f1-05","sequence":5,"source_id":"evidence-policy","source_type":"evidence","source_label":"Credential provenance trace","relation":"supports","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"outcome":"supports","freshness":"current","artifact_version":"target"}},
+      {"id":"f1-06","sequence":6,"source_id":"authority-security","source_type":"authority","source_label":"Security owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["commit","waive","rebase","reject"]}},
+      {"id":"f1-07","sequence":7,"source_id":"actor-alice","source_type":"actor","source_label":"alice@example.test","relation":"requests","target_id":"action-commit","target_type":"action","target_label":"Commit proposal","attributes":{"action":"commit"}}
+    ],
+    "gold":{"violation_fact_ids":[],"evidence_adequacy":"adequate","disposition":"commit","authorization_compliance":"compliant"}
+  },
+  {
+    "id": "unobservable_authority_drift",
+    "title": "Passing tests with unobservable credential authority and stale trace",
+    "facts": [
+      {"id":"f2-01","sequence":1,"source_id":"state-c42","source_type":"state","source_label":"C42","relation":"proposes","target_id":"proposal-archive","target_type":"proposal","target_label":"Archive connector","attributes":{"base_version":42,"current_version":42}},
+      {"id":"f2-02","sequence":2,"source_id":"proposal-archive","source_type":"proposal","source_label":"Archive connector","relation":"changes","target_id":"artifact-provider","target_type":"artifact","target_label":"connectors/archive.py","attributes":{"dynamic_provider":true}},
+      {"id":"f2-03","sequence":3,"source_id":"evidence-tests","source_type":"evidence","source_label":"Target tests","relation":"supports","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"outcome":"supports","freshness":"current","artifact_version":"target"}},
+      {"id":"f2-04","sequence":4,"source_id":"claim-task-scope","source_type":"claim","source_label":"Connectors use task-scoped capabilities","relation":"governs","target_id":"artifact-provider","target_type":"artifact","target_label":"connectors/archive.py","attributes":{"severity":"critical","unknown_blocks_commit":true}},
+      {"id":"f2-05","sequence":5,"source_id":"finding-dynamic","source_type":"finding","source_label":"Credential provider unresolved","relation":"contests","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"status":"unobservable","severity":"critical","review_signal":"unobservable"}},
+      {"id":"f2-06","sequence":6,"source_id":"evidence-old-trace","source_type":"evidence","source_label":"Broad-token runtime trace","relation":"inconclusive","target_id":"claim-task-scope","target_type":"claim","target_label":"Connectors use task-scoped capabilities","attributes":{"outcome":"inconclusive","freshness":"stale","artifact_version":"base","review_signal":"stale"}},
+      {"id":"f2-07","sequence":7,"source_id":"authority-security","source_type":"authority","source_label":"Security owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["commit","waive","rebase","reject"]}},
+      {"id":"f2-08","sequence":8,"source_id":"actor-alice","source_type":"actor","source_label":"alice@example.test","relation":"requests","target_id":"action-commit","target_type":"action","target_label":"Commit proposal","attributes":{"action":"commit"}}
+    ],
+    "gold":{"violation_fact_ids":["f2-05","f2-06"],"evidence_adequacy":"inadequate","disposition":"reject","authorization_compliance":"compliant"}
+  },
+  {
+    "id": "stale_base",
+    "title": "Proposal based on superseded governed state",
+    "facts": [
+      {"id":"f3-01","sequence":1,"source_id":"state-c41","source_type":"state","source_label":"C41","relation":"proposes","target_id":"proposal-stale","target_type":"proposal","target_label":"Checkout protocol update","attributes":{"base_version":41}},
+      {"id":"f3-02","sequence":2,"source_id":"proposal-stale","source_type":"proposal","source_label":"Checkout protocol update","relation":"conflicts_with","target_id":"state-c42","target_type":"state","target_label":"C42 current state","attributes":{"current_version":42,"status":"stale_base","review_signal":"stale"}},
+      {"id":"f3-03","sequence":3,"source_id":"evidence-tests","source_type":"evidence","source_label":"Tests on stale target","relation":"supports","target_id":"proposal-stale","target_type":"proposal","target_label":"Checkout protocol update","attributes":{"outcome":"supports","freshness":"current","base_version":41}},
+      {"id":"f3-04","sequence":4,"source_id":"authority-owner","source_type":"authority","source_label":"Architecture owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["rebase","reject","commit"]}},
+      {"id":"f3-05","sequence":5,"source_id":"actor-alice","source_type":"actor","source_label":"alice@example.test","relation":"requests","target_id":"action-review","target_type":"action","target_label":"Review proposal","attributes":{"action":"review"}}
+    ],
+    "gold":{"violation_fact_ids":["f3-02"],"evidence_adequacy":"inadequate","disposition":"rebase","authorization_compliance":"compliant"}
+  },
+  {
+    "id": "authorized_exception",
+    "title": "Current bounded exception under explicit waiver authority",
+    "facts": [
+      {"id":"f4-01","sequence":1,"source_id":"proposal-migration","source_type":"proposal","source_label":"Migration connector","relation":"changes","target_id":"artifact-legacy-helper","target_type":"artifact","target_label":"connectors/migration.py","attributes":{"base_version":42,"current_version":42}},
+      {"id":"f4-02","sequence":2,"source_id":"claim-no-broad-token","source_type":"claim","source_label":"No workspace-wide credentials","relation":"governs","target_id":"artifact-legacy-helper","target_type":"artifact","target_label":"connectors/migration.py","attributes":{"severity":"critical","waivable":true}},
+      {"id":"f4-03","sequence":3,"source_id":"finding-broad-token","source_type":"finding","source_label":"Workspace token dependency","relation":"contests","target_id":"claim-no-broad-token","target_type":"claim","target_label":"No workspace-wide credentials","attributes":{"status":"open","severity":"critical","review_signal":"violation"}},
+      {"id":"f4-04","sequence":4,"source_id":"evidence-tests","source_type":"evidence","source_label":"Target tests","relation":"supports","target_id":"proposal-migration","target_type":"proposal","target_label":"Migration connector","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f4-05","sequence":5,"source_id":"policy-exception","source_type":"policy","source_label":"Migration exception EX-17","relation":"permits_waiver","target_id":"finding-broad-token","target_type":"finding","target_label":"Workspace token dependency","attributes":{"scope":"migration connector only","expires":"2026-09-15","status":"current"}},
+      {"id":"f4-06","sequence":6,"source_id":"evidence-exception-owner","source_type":"evidence","source_label":"Exception owner attestation","relation":"supports","target_id":"policy-exception","target_type":"policy","target_label":"Migration exception EX-17","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f4-07","sequence":7,"source_id":"authority-security","source_type":"authority","source_label":"Security owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["waive","commit"]}},
+      {"id":"f4-08","sequence":8,"source_id":"actor-alice","source_type":"actor","source_label":"alice@example.test","relation":"requests","target_id":"action-waiver","target_type":"action","target_label":"Waive then commit","attributes":{"action":"waive_then_commit"}}
+    ],
+    "gold":{"violation_fact_ids":["f4-03"],"evidence_adequacy":"adequate","disposition":"waive_then_commit","authorization_compliance":"compliant"}
+  },
+  {
+    "id": "unauthorized_actor",
+    "title": "Safe evidence package proposed by actor without commit authority",
+    "facts": [
+      {"id":"f5-01","sequence":1,"source_id":"proposal-safe","source_type":"proposal","source_label":"Typed client update","relation":"changes","target_id":"artifact-client","target_type":"artifact","target_label":"client/protocol.py","attributes":{"base_version":42,"current_version":42}},
+      {"id":"f5-02","sequence":2,"source_id":"evidence-tests","source_type":"evidence","source_label":"Target tests","relation":"supports","target_id":"claim-protocol","target_type":"claim","target_label":"Protocol compatibility","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f5-03","sequence":3,"source_id":"evidence-replay","source_type":"evidence","source_label":"Mixed-version replay","relation":"supports","target_id":"claim-protocol","target_type":"claim","target_label":"Protocol compatibility","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f5-04","sequence":4,"source_id":"authority-owner","source_type":"authority","source_label":"Architecture owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["commit","rebase","reject"]}},
+      {"id":"f5-05","sequence":5,"source_id":"actor-bob","source_type":"actor","source_label":"bob@example.test","relation":"requests","target_id":"action-commit","target_type":"action","target_label":"Commit proposal","attributes":{"action":"commit"}},
+      {"id":"f5-06","sequence":6,"source_id":"actor-bob","source_type":"actor","source_label":"bob@example.test","relation":"lacks_authority","target_id":"action-commit","target_type":"action","target_label":"Commit proposal","attributes":{"required_authority":"Architecture owner","review_signal":"authorization_mismatch"}}
+    ],
+    "gold":{"violation_fact_ids":["f5-06"],"evidence_adequacy":"adequate","disposition":"escalate_authority","authorization_compliance":"noncompliant"}
+  },
+  {
+    "id": "overlapping_proposals",
+    "title": "Concurrent proposals modify the same protocol path",
+    "facts": [
+      {"id":"f6-01","sequence":1,"source_id":"proposal-a","source_type":"proposal","source_label":"Async protocol option A","relation":"changes","target_id":"artifact-protocol","target_type":"artifact","target_label":"protocol/client.py","attributes":{"base_version":42}},
+      {"id":"f6-02","sequence":2,"source_id":"proposal-b","source_type":"proposal","source_label":"Async protocol option B","relation":"changes","target_id":"artifact-protocol","target_type":"artifact","target_label":"protocol/client.py","attributes":{"base_version":42}},
+      {"id":"f6-03","sequence":3,"source_id":"proposal-a","source_type":"proposal","source_label":"Async protocol option A","relation":"overlaps","target_id":"proposal-b","target_type":"proposal","target_label":"Async protocol option B","attributes":{"paths":["protocol/client.py"],"semantic_conflict":true,"review_signal":"conflict"}},
+      {"id":"f6-04","sequence":4,"source_id":"evidence-tests-a","source_type":"evidence","source_label":"Option A tests","relation":"supports","target_id":"proposal-a","target_type":"proposal","target_label":"Async protocol option A","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f6-05","sequence":5,"source_id":"evidence-tests-b","source_type":"evidence","source_label":"Option B tests","relation":"supports","target_id":"proposal-b","target_type":"proposal","target_label":"Async protocol option B","attributes":{"outcome":"supports","freshness":"current"}},
+      {"id":"f6-06","sequence":6,"source_id":"authority-owner","source_type":"authority","source_label":"Architecture owner","relation":"authorizes","target_id":"actor-alice","target_type":"actor","target_label":"alice@example.test","attributes":{"actions":["rebase","reject","commit"]}},
+      {"id":"f6-07","sequence":7,"source_id":"actor-alice","source_type":"actor","source_label":"alice@example.test","relation":"requests","target_id":"action-review","target_type":"action","target_label":"Review option A","attributes":{"action":"review"}}
+    ],
+    "gold":{"violation_fact_ids":["f6-03"],"evidence_adequacy":"inadequate","disposition":"rebase","authorization_compliance":"compliant"}
+  }
+]

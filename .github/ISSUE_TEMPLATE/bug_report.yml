@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a reproducible problem in AgenticConsensus.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include API keys, passwords, local repository contents, or unredacted audit exports.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: 0.11.0 or a commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Review workflow
+        - Contract Graph
+        - Authentication and users
+        - Evidence and attestations
+        - Backup and recovery
+        - Model integration
+        - CLI or packaging
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use a synthetic repository whenever possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and sanitized evidence
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, tokens, private paths, and sensitive repository content.
+          required: true

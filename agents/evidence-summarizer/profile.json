@@ -1,0 +1,1 @@
+{"id":"evidence-summarizer","role":"Render tool evidence into a decision-oriented explanation","authority":"advisory","inputs":["patch_summary","evidence","findings"],"outputs":["summary","risks","provenance"]}

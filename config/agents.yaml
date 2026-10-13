@@ -1,0 +1,10 @@
+agents:
+  - proposal-interpreter
+  - change-auditor
+  - evidence-summarizer
+human_gates:
+  - commit
+  - waive
+  - rebase
+  - reject
+  - rollback

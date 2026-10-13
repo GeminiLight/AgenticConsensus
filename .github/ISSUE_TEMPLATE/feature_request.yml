@@ -1,0 +1,31 @@
+name: Feature request
+description: Propose a product or governance improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: user
+    attributes:
+      label: User and decision context
+      description: Who needs this, and what governed decision are they trying to make?
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current problem
+      description: Describe the obstacle without prescribing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Verifiable outcome
+      description: What observable behavior would demonstrate success?
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authority and evidence impact
+      description: Note any effect on permissions, evidence, provenance, or audit records.

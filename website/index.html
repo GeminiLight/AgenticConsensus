@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgenticConsensus — Shared state for human–AI coding</title>
+  <meta name="description" content="Connect intent, code, version-bound evidence, and authorized human decisions. AgenticConsensus is an open-source, local-first research prototype for human–AI coding collaboration.">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta property="og:title" content="AgenticConsensus">
+  <meta property="og:description" content="Shared state for human–AI coding. Connect intent, code, evidence, and human decisions.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tianfuwang.tech/AgenticConsensus/">
+  <link rel="canonical" href="https://tianfuwang.tech/AgenticConsensus/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="alternate" href="./llms.txt" type="text/plain" title="Project summary">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner wrap">
+      <a class="brand" href="./" aria-label="AgenticConsensus home"><img src="./favicon.svg" width="30" height="30" alt=""><span>AgenticConsensus</span></a>
+      <nav aria-label="Main navigation">
+        <a class="nav-about" href="#approach" data-i18n="navApproach">Approach</a>
+        <a href="#start" data-i18n="navStart">Get started</a>
+        <a href="https://github.com/GeminiLight/AgenticConsensus">GitHub <span aria-hidden="true">↗</span></a>
+        <button id="language" class="language" type="button" aria-label="Switch to Chinese" hidden>中文</button>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span><span data-i18n="eyebrow">Open source · Research prototype</span></p>
+        <h1 id="hero-title"><span data-i18n="hero1">Build with agents.</span><br><span class="blue" data-i18n="hero2">Decide with evidence.</span></h1>
+        <p class="hero-description" data-i18n="heroDescription">A shared, versioned project state for human–AI coding. Keep intent, code, requirements, and evidence connected to the human decision that moves a project forward.</p>
+        <div class="hero-actions"><a class="button primary" href="#start"><span data-i18n="runLocally">Run locally</span><span aria-hidden="true">↗</span></a><a class="button text-button" href="https://github.com/GeminiLight/AgenticConsensus"><span data-i18n="viewSource">Explore the source</span><span aria-hidden="true">→</span></a></div>
+        <p class="hero-footnote" data-i18n="heroFootnote">Local first. Model advice is optional. Decisions stay with people.</p>
+      </div>
+      <div class="state-map" aria-label="Illustrative project state: intent connects to a requirement, a code change, evidence, and an authorized human decision">
+        <div class="map-heading"><span data-i18n="projectState">PROJECT STATE</span><span class="version">vₜ → vₜ₊₁</span></div>
+        <div class="map-body">
+          <svg class="connections" viewBox="0 0 440 328" preserveAspectRatio="none" aria-hidden="true"><path d="M220 51v26M220 77H106v22M220 77h114v22M106 169v30h114M334 169v30H220M220 199v26"/></svg>
+          <div class="map-node intent-node"><span class="node-icon" aria-hidden="true">↗</span><div><small data-i18n="intentLabel">01 / INTENT</small><strong data-i18n="intentValue">What should change?</strong></div></div>
+          <div class="map-row"><div class="map-node"><small data-i18n="requirementLabel">02 / REQUIREMENT</small><strong data-i18n="requirementValue">Keep the promise</strong><span class="node-tag" data-i18n="versionBound">Version bound</span></div><div class="map-node"><small data-i18n="codeLabel">03 / CODE</small><strong data-i18n="codeValue">Inspect the change</strong><span class="node-tag" data-i18n="immutableRevision">Git revision</span></div></div>
+          <div class="map-node decision-node"><span class="node-icon" aria-hidden="true">✓</span><div><small data-i18n="decisionLabel">04 / EVIDENCE → DECISION</small><strong data-i18n="decisionValue">Verify. Then authorize.</strong></div></div>
+        </div>
+        <div class="map-footer"><span class="small-dot" aria-hidden="true"></span><span data-i18n="mapFooter">One connected record. An inspectable trail.</span></div>
+      </div>
+    </section>
+    <section id="approach" class="approach wrap" aria-labelledby="approach-title">
+      <div class="section-intro"><p class="eyebrow" data-i18n="approachEyebrow">THE APPROACH</p><h2 id="approach-title" data-i18n="approachTitle">Give collaboration a shared state.</h2><p data-i18n="approachDescription">A conversation can explain a change. A project also needs a record of its requirements, the version that was checked, and who authorized the next step.</p></div>
+      <div class="steps">
+        <article><span class="step-number">01</span><h3 data-i18n="step1Title">Preserve intent</h3><p data-i18n="step1Description">Keep the original request, candidate interpretations, and clarifications attached to the proposed change.</p></article>
+        <article><span class="step-number">02</span><h3 data-i18n="step2Title">Bind the evidence</h3><p data-i18n="step2Description">Inspect code and test results against declared requirements. See missing checks and evidence from an older revision.</p></article>
+        <article><span class="step-number">03</span><h3 data-i18n="step3Title">Record the decision</h3><p data-i18n="step3Description">Apply project authority and version checks before an authorized person records a decision in the audit trail.</p></article>
+      </div>
+    </section>
+    <section id="example" class="example-section" aria-labelledby="example-title">
+      <div class="example-grid wrap">
+        <div class="example-copy"><p class="eyebrow" data-i18n="exampleEyebrow">A SMALL EXAMPLE</p><h2 id="example-title" data-i18n="exampleTitle">Tests pass. Is the promise covered?</h2><p data-i18n="exampleDescription">An agent adds affiliation to a public participant export. The existing tests pass, but a broad dictionary expansion also exposes private fields.</p><p class="example-promise"><span data-i18n="promiseLabel">The requirement</span><strong data-i18n="promise">Public exports must exclude email and internal notes.</strong></p><p class="example-note" data-i18n="exampleNote">Illustrative states from a synthetic case. This panel does not run tests or record a decision.</p></div>
+        <div class="review-example">
+          <div class="review-heading"><span class="review-project">StudyShare <span>/ participant export</span></span><span class="preview-label" data-i18n="illustration">Illustration</span></div>
+          <div class="example-tabs" role="tablist" aria-label="Compare illustrative revisions" hidden><button id="tab-proposal" role="tab" aria-selected="true" aria-controls="proposal" tabindex="0" data-panel="proposal" data-i18n="proposal">Proposed change</button><button id="tab-revision" role="tab" aria-selected="false" aria-controls="revision" tabindex="-1" data-panel="revision" data-i18n="revision">Revised change</button></div>
+          <div id="proposal" class="review-panel" role="tabpanel" aria-labelledby="tab-proposal" tabindex="0">
+            <div class="code-label">public_record.py <span>diff</span></div><pre class="diff"><code><span class="diff-add">+ return {**participant,</span>&#10;+   "affiliation": affiliation}</code></pre>
+            <div class="check"><span class="check-mark pass" aria-hidden="true">✓</span><div><strong data-i18n="existingTests">Existing tests</strong><span data-i18n="existingTestsValue">Passing; private fields are not covered</span></div><span class="pill pass-pill" data-i18n="pass">Pass</span></div>
+            <div class="check"><span class="check-mark missing" aria-hidden="true">!</span><div><strong data-i18n="privacyCheck">Privacy requirement</strong><span data-i18n="privacyCheckValue">Fresh verification still needed</span></div><span class="pill missing-pill" data-i18n="missing">Missing</span></div>
+            <div class="decision-strip"><span class="decision-indicator" aria-hidden="true"></span><span data-i18n="proposalDecision">Human decision: request a focused revision</span></div>
+          </div>
+          <div id="revision" class="review-panel" role="tabpanel" aria-labelledby="tab-revision" tabindex="0" hidden>
+            <div class="code-label">public_record.py <span>diff</span></div><pre class="diff"><code>+ return {"participant_id": participant_id,&#10;<span class="diff-add">+   "affiliation": affiliation}</span></code></pre>
+            <div class="check"><span class="check-mark pass" aria-hidden="true">↗</span><div><strong data-i18n="carriedRequirement">Privacy requirement</strong><span data-i18n="carriedRequirementValue">Carried into the new revision</span></div><span class="pill pass-pill" data-i18n="retained">Retained</span></div>
+            <div class="check"><span class="check-mark missing" aria-hidden="true">!</span><div><strong data-i18n="newEvidence">Evidence for this revision</strong><span data-i18n="newEvidenceValue">Add and inspect the negative privacy check</span></div><span class="pill missing-pill" data-i18n="pending">Pending</span></div>
+            <div class="decision-strip"><span class="decision-indicator" aria-hidden="true"></span><span data-i18n="revisionDecision">Approval waits for fresh evidence and authorization</span></div>
+          </div>
+          <noscript><p class="example-note">The revised change uses an explicit public-field allowlist. The requirement carries forward; fresh evidence and human authorization are still required.</p></noscript>
+        </div>
+      </div>
+    </section>
+    <section id="start" class="start-grid wrap" aria-labelledby="start-title">
+      <div><p class="eyebrow" data-i18n="startEyebrow">TRY THE WORKSPACE</p><h2 id="start-title" data-i18n="startTitle">Start on your machine.</h2><p class="start-description" data-i18n="startDescription">Explore a synthetic project, inspect its changes, and follow the evidence to a human decision. The core demo needs no model key.</p><div class="requirements"><span>Python 3.11+</span><span>Git</span><span data-i18n="localFirst">Local first</span></div><a class="inline-link" href="https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/usage.md"><span data-i18n="fullGuide">Read the full guide</span> <span aria-hidden="true">↗</span></a></div>
+      <div class="terminal"><div class="terminal-bar"><span data-i18n="quickstart">QUICK START</span><button class="copy-button" id="copy" type="button" data-i18n="copy" hidden>Copy</button><span id="copy-status" role="status" class="sr-only"></span></div><pre><code id="install">git clone https://github.com/GeminiLight/AgenticConsensus.git
+cd AgenticConsensus
+python3 -m venv .venv
+.venv/bin/python -m pip install -e '.[dev]'
+.venv/bin/agentic-consensus demo --reset
+.venv/bin/agentic-consensus serve</code></pre><p class="terminal-note" data-i18n="openLocal">Open http://127.0.0.1:8765. Create the first account with the demo audit identity security-lead@example.test.</p><p class="reset-note" data-i18n="resetNote">To reopen your workspace, run serve again. demo --reset rebuilds the demo data.</p></div>
+    </section>
+    <section class="scope wrap" aria-labelledby="scope-title"><h3 id="scope-title" data-i18n="scopeTitle">An early prototype, with a defined scope.</h3><p data-i18n="scopeDescription">Current source analysis focuses on Python imports, with one bounded import-substitution realization path. GitHub access imports read-only snapshots. A recorded decision does not merge a pull request. Optional model advice cannot authorize a change.</p><a class="inline-link" href="https://github.com/GeminiLight/AgenticConsensus/blob/main/SECURITY.md"><span data-i18n="securityBoundary">Read the security boundary</span> ↗</a></section>
+  </main>
+  <footer class="wrap site-footer"><div><a class="brand footer-brand" href="./"><img src="./favicon.svg" width="22" height="22" alt=""><span>AgenticConsensus</span></a><p data-i18n="footerDescription">Shared state for human–AI coding.</p></div><div class="footer-links"><a href="https://github.com/GeminiLight/AgenticConsensus">GitHub ↗</a><a href="https://github.com/GeminiLight/AgenticConsensus/blob/main/CONTRIBUTING.md" data-i18n="contribute">Contribute</a><a href="https://github.com/GeminiLight/AgenticConsensus/blob/main/LICENSE">Apache-2.0</a></div></footer>
+</body>
+</html>

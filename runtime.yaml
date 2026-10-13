@@ -1,0 +1,14 @@
+server:
+  host: 127.0.0.1
+  port: 8765
+storage:
+  database: var/agentic-consensus.db
+execution:
+  git_timeout_seconds: 15
+  test_timeout_seconds: 60
+  tests_disabled_by_default: true
+llm:
+  enabled_env: CONSENSUS_LLM_ENABLED
+  timeout_seconds: 30
+  max_tokens: 700
+  max_retries: 1

@@ -1,0 +1,16 @@
+# AgenticConsensus
+
+> An early, local-first research prototype for a shared, versioned project state in human–AI coding collaboration.
+
+AgenticConsensus connects intent, code, version-bound requirements and evidence,
+and authorized human decisions. It reviews Git revisions and read-only GitHub
+pull-request snapshots. Optional model advice has no decision authority.
+Source analysis currently focuses on Python imports; automated realization is
+bounded to Python import substitution. A recorded decision does not merge a PR.
+Examples are synthetic; no general security or developer-outcome claims are made.
+
+- [Public source](https://github.com/GeminiLight/AgenticConsensus)
+- [Official website](https://tianfuwang.tech/AgenticConsensus/)
+- [Getting started](https://github.com/GeminiLight/AgenticConsensus/blob/main/README.md)
+- [Architecture](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/architecture.md)
+- [Security boundary](https://github.com/GeminiLight/AgenticConsensus/blob/main/SECURITY.md)
