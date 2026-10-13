@@ -1,95 +1,1142 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AgenticConsensus — Shared state for human–AI coding</title>
-  <meta name="description" content="Connect intent, code, version-bound evidence, and authorized human decisions. AgenticConsensus is an open-source, local-first research prototype for human–AI coding collaboration.">
-  <meta name="theme-color" content="#f6f7f9">
-  <meta property="og:title" content="AgenticConsensus">
-  <meta property="og:description" content="Shared state for human–AI coding. Connect intent, code, evidence, and human decisions.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tianfuwang.tech/AgenticConsensus/">
-  <link rel="canonical" href="https://tianfuwang.tech/AgenticConsensus/">
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="alternate" href="./llms.txt" type="text/plain" title="Project summary">
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./script.js" defer></script>
-</head>
-<body>
-  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner wrap">
-      <a class="brand" href="./" aria-label="AgenticConsensus home"><img src="./favicon.svg" width="30" height="30" alt=""><span>AgenticConsensus</span></a>
-      <nav aria-label="Main navigation">
-        <a class="nav-about" href="#approach" data-i18n="navApproach">Approach</a>
-        <a href="#start" data-i18n="navStart">Get started</a>
-        <a href="https://github.com/GeminiLight/AgenticConsensus">GitHub <span aria-hidden="true">↗</span></a>
-        <button id="language" class="language" type="button" aria-label="Switch to Chinese" hidden>中文</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgenticConsensus — Build with agents. Stay in control.</title>
+    <meta
+      name="description"
+      content="A shared, versioned project state for human and AI coding collaboration. Connect intent, code, evidence, and human decisions with AgenticConsensus and Consensus Control."
+    />
+    <meta
+      name="author"
+      content="Tianfu Wang, Zhezheng Hao, Yin Wu, Wei Wu, Qiang Lin, Hande Dong, Nicholas Jing Yuan, Hui Xiong"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#f7f7f2" />
+    <link
+      rel="canonical"
+      href="https://tianfuwang.tech/AgenticConsensus/"
+    />
+    <link rel="icon" href="./assets/mark.svg" type="image/svg+xml" />
+    <link
+      rel="apple-touch-icon"
+      href="./assets/agentic-consensus-icon-192.png"
+    />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link
+      rel="alternate"
+      type="application/pdf"
+      title="AgenticConsensus arXiv paper"
+      href="https://arxiv.org/pdf/2604.17883"
+    />
+    <link
+      rel="alternate"
+      type="text/plain"
+      title="Project summary"
+      href="./llms.txt"
+    />
+    <link
+      rel="preload"
+      href="./assets/fonts/instrument-serif.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="./assets/fonts/dm-sans.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./styles.css?v=20261014-original" />
+    <script src="./script.js?v=20261014-original" defer></script>
+    <noscript
+      ><style>
+        .demo-panel[hidden],
+        .screen-panel[hidden] {
+          display: block !important;
+        }
+        .demo-panel,
+        .screen-panel {
+          border-top: 1px solid #d8dcd2;
+        }
+        .demo-tabs,
+        .showcase-tabs,
+        .next-step {
+          display: none !important;
+        }
+        .demo-body {
+          display: block;
+        }
+        @media (max-width: 600px) {
+          .header-inner {
+            flex-wrap: wrap;
+            height: auto;
+            padding-block: 12px;
+          }
+          .top-nav {
+            display: flex;
+            order: 3;
+            width: 100%;
+            justify-content: space-between;
+          }
+        }
+      </style></noscript
+    >
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AgenticConsensus" />
+    <meta
+      property="og:title"
+      content="AgenticConsensus — Build with agents. Stay in control."
+    />
+    <meta
+      property="og:description"
+      content="Build with agents. Keep intent, code, evidence, and human decisions connected. Explore the research and the open-source review workspace."
+    />
+    <meta
+      property="og:url"
+      content="https://tianfuwang.tech/AgenticConsensus/"
+    />
+    <meta
+      property="og:image"
+      content="https://tianfuwang.tech/AgenticConsensus/assets/agentic-consensus-og.png?v=20261013-r2"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="AgenticConsensus: Build with agents. Stay in control. Intent, commitments, code, and evidence, linked by human decisions."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="AgenticConsensus — Build with agents. Stay in control."
+    />
+    <meta
+      name="twitter:description"
+      content="A shared project state for human and AI coding collaboration. Research, an interactive walkthrough, and open-source software."
+    />
+    <meta
+      name="twitter:image"
+      content="https://tianfuwang.tech/AgenticConsensus/assets/agentic-consensus-og.png?v=20261013-r2"
+    />
+    <meta
+      name="citation_title"
+      content="Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer"
+    />
+    <meta name="citation_author" content="Wang, Tianfu" />
+    <meta name="citation_author" content="Hao, Zhezheng" />
+    <meta name="citation_author" content="Wu, Yin" />
+    <meta name="citation_author" content="Wu, Wei" />
+    <meta name="citation_author" content="Lin, Qiang" />
+    <meta name="citation_author" content="Dong, Hande" />
+    <meta name="citation_author" content="Yuan, Nicholas Jing" />
+    <meta name="citation_author" content="Xiong, Hui" />
+    <meta name="citation_publication_date" content="2026/04/20" />
+    <meta name="citation_arxiv_id" content="2604.17883" />
+    <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2604.17883" />
+    <meta
+      name="citation_fulltext_html_url"
+      content="https://tianfuwang.tech/AgenticConsensus/"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://tianfuwang.tech/AgenticConsensus/#website",
+            "name": "AgenticConsensus",
+            "url": "https://tianfuwang.tech/AgenticConsensus/",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://tianfuwang.tech/AgenticConsensus/#paper",
+            "headline": "Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer",
+            "description": "A research preprint on a governable consensus layer for human-AI coding collaboration.",
+            "datePublished": "2026-04-20",
+            "identifier": "arXiv:2604.17883",
+            "sameAs": [
+              "https://arxiv.org/abs/2604.17883",
+              "https://www.alphaxiv.org/abs/2604.17883"
+            ],
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "url": "https://tianfuwang.tech/AgenticConsensus/#research",
+            "encoding": {
+              "@type": "MediaObject",
+              "contentUrl": "https://arxiv.org/pdf/2604.17883",
+              "encodingFormat": "application/pdf"
+            },
+            "author": [
+              { "@type": "Person", "name": "Tianfu Wang" },
+              { "@type": "Person", "name": "Zhezheng Hao" },
+              { "@type": "Person", "name": "Yin Wu" },
+              { "@type": "Person", "name": "Wei Wu" },
+              { "@type": "Person", "name": "Qiang Lin" },
+              { "@type": "Person", "name": "Hande Dong" },
+              { "@type": "Person", "name": "Nicholas Jing Yuan" },
+              { "@type": "Person", "name": "Hui Xiong" }
+            ]
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Consensus Control",
+            "description": "A local-first, authenticated review workspace for evidence-backed agentic code changes.",
+            "codeRepository": "https://github.com/GeminiLight/AgenticConsensus",
+            "programmingLanguage": ["Python", "JavaScript"],
+            "license": "https://www.apache.org/licenses/LICENSE-2.0",
+            "runtimePlatform": "Python 3.11+"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="AgenticConsensus home"
+          ><img src="./assets/mark.svg" width="34" height="34" alt="" /><span
+            >AgenticConsensus</span
+          ></a
+        >
+        <nav class="top-nav" aria-label="Primary navigation">
+          <a href="#walkthrough">The idea</a
+          ><a href="#workspace">The workspace</a
+          ><a href="#research">The research</a>
+        </nav>
+        <a
+          class="header-code"
+          href="https://github.com/GeminiLight/AgenticConsensus"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m8 7-5 5 5 5m8-10 5 5-5 5M14 4l-4 16" /></svg
+          >Code <span aria-hidden="true">↗</span></a
+        >
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          hidden
+        >
+          Menu <span aria-hidden="true">+</span>
+        </button>
+      </div>
+      <nav
+        class="mobile-nav"
+        id="mobile-nav"
+        aria-label="Mobile navigation"
+        hidden
+      >
+        <a href="#walkthrough">The idea</a><a href="#workspace">The workspace</a
+        ><a href="#research">The research</a><a href="#resources">Resources</a>
       </nav>
-    </div>
-  </header>
-  <main id="main">
-    <section class="hero wrap" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span><span data-i18n="eyebrow">Open source · Research prototype</span></p>
-        <h1 id="hero-title"><span data-i18n="hero1">Build with agents.</span><br><span class="blue" data-i18n="hero2">Decide with evidence.</span></h1>
-        <p class="hero-description" data-i18n="heroDescription">A shared, versioned project state for human–AI coding. Keep intent, code, requirements, and evidence connected to the human decision that moves a project forward.</p>
-        <div class="hero-actions"><a class="button primary" href="#start"><span data-i18n="runLocally">Run locally</span><span aria-hidden="true">↗</span></a><a class="button text-button" href="https://github.com/GeminiLight/AgenticConsensus"><span data-i18n="viewSource">Explore the source</span><span aria-hidden="true">→</span></a></div>
-        <p class="hero-footnote" data-i18n="heroFootnote">Local first. Model advice is optional. Decisions stay with people.</p>
-      </div>
-      <div class="state-map" aria-label="Illustrative project state: intent connects to a requirement, a code change, evidence, and an authorized human decision">
-        <div class="map-heading"><span data-i18n="projectState">PROJECT STATE</span><span class="version">vₜ → vₜ₊₁</span></div>
-        <div class="map-body">
-          <svg class="connections" viewBox="0 0 440 328" preserveAspectRatio="none" aria-hidden="true"><path d="M220 51v26M220 77H106v22M220 77h114v22M106 169v30h114M334 169v30H220M220 199v26"/></svg>
-          <div class="map-node intent-node"><span class="node-icon" aria-hidden="true">↗</span><div><small data-i18n="intentLabel">01 / INTENT</small><strong data-i18n="intentValue">What should change?</strong></div></div>
-          <div class="map-row"><div class="map-node"><small data-i18n="requirementLabel">02 / REQUIREMENT</small><strong data-i18n="requirementValue">Keep the promise</strong><span class="node-tag" data-i18n="versionBound">Version bound</span></div><div class="map-node"><small data-i18n="codeLabel">03 / CODE</small><strong data-i18n="codeValue">Inspect the change</strong><span class="node-tag" data-i18n="immutableRevision">Git revision</span></div></div>
-          <div class="map-node decision-node"><span class="node-icon" aria-hidden="true">✓</span><div><small data-i18n="decisionLabel">04 / EVIDENCE → DECISION</small><strong data-i18n="decisionValue">Verify. Then authorize.</strong></div></div>
+    </header>
+
+    <main id="main">
+      <section class="hero wrap" id="top" aria-labelledby="hero-title">
+        <div class="hero-eyebrow">
+          <span class="eyebrow"
+            ><i class="status-dot" aria-hidden="true"></i>Human + agent
+            collaboration</span
+          ><span class="edition"
+            >Research &amp; open-source software / 2026</span
+          >
         </div>
-        <div class="map-footer"><span class="small-dot" aria-hidden="true"></span><span data-i18n="mapFooter">One connected record. An inspectable trail.</span></div>
-      </div>
-    </section>
-    <section id="approach" class="approach wrap" aria-labelledby="approach-title">
-      <div class="section-intro"><p class="eyebrow" data-i18n="approachEyebrow">THE APPROACH</p><h2 id="approach-title" data-i18n="approachTitle">Give collaboration a shared state.</h2><p data-i18n="approachDescription">A conversation can explain a change. A project also needs a record of its requirements, the version that was checked, and who authorized the next step.</p></div>
-      <div class="steps">
-        <article><span class="step-number">01</span><h3 data-i18n="step1Title">Preserve intent</h3><p data-i18n="step1Description">Keep the original request, candidate interpretations, and clarifications attached to the proposed change.</p></article>
-        <article><span class="step-number">02</span><h3 data-i18n="step2Title">Bind the evidence</h3><p data-i18n="step2Description">Inspect code and test results against declared requirements. See missing checks and evidence from an older revision.</p></article>
-        <article><span class="step-number">03</span><h3 data-i18n="step3Title">Record the decision</h3><p data-i18n="step3Description">Apply project authority and version checks before an authorized person records a decision in the audit trail.</p></article>
-      </div>
-    </section>
-    <section id="example" class="example-section" aria-labelledby="example-title">
-      <div class="example-grid wrap">
-        <div class="example-copy"><p class="eyebrow" data-i18n="exampleEyebrow">A SMALL EXAMPLE</p><h2 id="example-title" data-i18n="exampleTitle">Tests pass. Is the promise covered?</h2><p data-i18n="exampleDescription">An agent adds affiliation to a public participant export. The existing tests pass, but a broad dictionary expansion also exposes private fields.</p><p class="example-promise"><span data-i18n="promiseLabel">The requirement</span><strong data-i18n="promise">Public exports must exclude email and internal notes.</strong></p><p class="example-note" data-i18n="exampleNote">Illustrative states from a synthetic case. This panel does not run tests or record a decision.</p></div>
-        <div class="review-example">
-          <div class="review-heading"><span class="review-project">StudyShare <span>/ participant export</span></span><span class="preview-label" data-i18n="illustration">Illustration</span></div>
-          <div class="example-tabs" role="tablist" aria-label="Compare illustrative revisions" hidden><button id="tab-proposal" role="tab" aria-selected="true" aria-controls="proposal" tabindex="0" data-panel="proposal" data-i18n="proposal">Proposed change</button><button id="tab-revision" role="tab" aria-selected="false" aria-controls="revision" tabindex="-1" data-panel="revision" data-i18n="revision">Revised change</button></div>
-          <div id="proposal" class="review-panel" role="tabpanel" aria-labelledby="tab-proposal" tabindex="0">
-            <div class="code-label">public_record.py <span>diff</span></div><pre class="diff"><code><span class="diff-add">+ return {**participant,</span>&#10;+   "affiliation": affiliation}</code></pre>
-            <div class="check"><span class="check-mark pass" aria-hidden="true">✓</span><div><strong data-i18n="existingTests">Existing tests</strong><span data-i18n="existingTestsValue">Passing; private fields are not covered</span></div><span class="pill pass-pill" data-i18n="pass">Pass</span></div>
-            <div class="check"><span class="check-mark missing" aria-hidden="true">!</span><div><strong data-i18n="privacyCheck">Privacy requirement</strong><span data-i18n="privacyCheckValue">Fresh verification still needed</span></div><span class="pill missing-pill" data-i18n="missing">Missing</span></div>
-            <div class="decision-strip"><span class="decision-indicator" aria-hidden="true"></span><span data-i18n="proposalDecision">Human decision: request a focused revision</span></div>
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <h1 id="hero-title">
+              Build with agents.<br />Stay in <em>control.</em>
+            </h1>
+            <p class="hero-description">
+              See what an agent’s change means for your project. Connect the
+              intent, code, and evidence. Make an informed decision.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#walkthrough"
+                >See how it works <span aria-hidden="true">↓</span></a
+              >
+              <a
+                class="button secondary"
+                href="https://arxiv.org/abs/2604.17883"
+                >Read the paper <span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <p class="hero-definition">
+              <strong>AgenticConsensus</strong> is a shared, versioned project
+              state for humans and coding agents.
+            </p>
           </div>
-          <div id="revision" class="review-panel" role="tabpanel" aria-labelledby="tab-revision" tabindex="0" hidden>
-            <div class="code-label">public_record.py <span>diff</span></div><pre class="diff"><code>+ return {"participant_id": participant_id,&#10;<span class="diff-add">+   "affiliation": affiliation}</span></code></pre>
-            <div class="check"><span class="check-mark pass" aria-hidden="true">↗</span><div><strong data-i18n="carriedRequirement">Privacy requirement</strong><span data-i18n="carriedRequirementValue">Carried into the new revision</span></div><span class="pill pass-pill" data-i18n="retained">Retained</span></div>
-            <div class="check"><span class="check-mark missing" aria-hidden="true">!</span><div><strong data-i18n="newEvidence">Evidence for this revision</strong><span data-i18n="newEvidenceValue">Add and inspect the negative privacy check</span></div><span class="pill missing-pill" data-i18n="pending">Pending</span></div>
-            <div class="decision-strip"><span class="decision-indicator" aria-hidden="true"></span><span data-i18n="revisionDecision">Approval waits for fresh evidence and authorization</span></div>
+          <div
+            class="hero-trace"
+            role="group"
+            aria-label="Illustrative review: follow a change from intent to a human decision"
+          >
+            <div class="trace-heading">
+              <span class="eyebrow">One change. The whole context.</span
+              ><button class="trace-replay" type="button" data-replay-trace hidden aria-label="Replay the illustrative review trace"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1.5 7M4 4v6h6"/></svg><span>Replay</span></button>
+            </div>
+            <div class="trace-nodes">
+              <a class="trace-node" href="#walkthrough" data-jump-step="intent">
+                <span class="trace-index" aria-hidden="true">01</span
+                ><span class="trace-content"
+                  ><small>The intent</small
+                  ><strong>Task-scoped access</strong></span
+                ><span class="trace-tag">Agreed</span
+                ><span class="trace-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a
+                class="trace-node trace-change"
+                href="#walkthrough"
+                data-jump-step="change"
+              >
+                <span class="trace-index" aria-hidden="true">02</span
+                ><span class="trace-content"
+                  ><small>The agent’s change</small
+                  ><strong>Workspace-wide token</strong></span
+                ><span class="trace-tag amber">Mismatch</span
+                ><span class="trace-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a
+                class="trace-node"
+                href="#walkthrough"
+                data-jump-step="evidence"
+              >
+                <span class="trace-index" aria-hidden="true">03</span
+                ><span class="trace-content"
+                  ><small>The evidence</small
+                  ><strong>Tests pass. A check is missing.</strong></span
+                ><span class="trace-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a
+                class="trace-node trace-human"
+                href="#walkthrough"
+                data-jump-step="decision"
+              >
+                <span class="trace-index" aria-hidden="true">04</span
+                ><span class="trace-content"
+                  ><small>The human decision</small
+                  ><strong>Resolve the gap before approval.</strong></span
+                ><span class="trace-arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <div class="trace-playback" aria-hidden="true"><span data-trace-status>Intent → change → evidence → decision</span><span class="trace-time" data-trace-count>04 / 04</span><div class="trace-timeline"><span></span></div></div>
+            <p class="trace-caption">Illustrative scenario <span>Explore any step ↗</span></p>
           </div>
-          <noscript><p class="example-note">The revised change uses an explicit public-field allowlist. The requirement carries forward; fresh evidence and human authorization are still required.</p></noscript>
         </div>
-      </div>
-    </section>
-    <section id="start" class="start-grid wrap" aria-labelledby="start-title">
-      <div><p class="eyebrow" data-i18n="startEyebrow">TRY THE WORKSPACE</p><h2 id="start-title" data-i18n="startTitle">Start on your machine.</h2><p class="start-description" data-i18n="startDescription">Explore a synthetic project, inspect its changes, and follow the evidence to a human decision. The core demo needs no model key.</p><div class="requirements"><span>Python 3.11+</span><span>Git</span><span data-i18n="localFirst">Local first</span></div><a class="inline-link" href="https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/usage.md"><span data-i18n="fullGuide">Read the full guide</span> <span aria-hidden="true">↗</span></a></div>
-      <div class="terminal"><div class="terminal-bar"><span data-i18n="quickstart">QUICK START</span><button class="copy-button" id="copy" type="button" data-i18n="copy" hidden>Copy</button><span id="copy-status" role="status" class="sr-only"></span></div><pre><code id="install">git clone https://github.com/GeminiLight/AgenticConsensus.git
+        <div class="hero-credits" role="group" aria-label="Research team">
+          <div class="credits-heading">
+            <p class="eyebrow">Behind the project</p>
+            <h2>Built on research.<br /><em>Made for collaboration.</em></h2>
+          </div>
+          <div class="credits-team">
+            <p class="hero-authors">
+              <span>Tianfu Wang<sup>1</sup></span><span>Zhezheng Hao<sup>2</sup></span>
+              <span>Yin Wu<sup>1</sup></span><span>Wei Wu<sup>1</sup></span>
+              <span>Qiang Lin<sup>3</sup></span><span>Hande Dong<sup>3</sup></span>
+              <span>Nicholas Jing Yuan<sup>1</sup></span><span>Hui Xiong<sup>1</sup></span>
+            </p>
+            <div class="credits-meta">
+              <p class="hero-institutions"><span><sup>1</sup> HKUST (Guangzhou)</span><span><sup>2</sup> Zhejiang University</span><span><sup>3</sup> Tencent</span></p>
+              <a class="text-link" href="#research">Paper &amp; team <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="walkthrough wrap"
+        id="walkthrough"
+        aria-labelledby="walkthrough-title"
+      >
+        <div class="walkthrough-intro">
+          <div>
+            <p class="eyebrow">01 / A closer look</p>
+            <h2 id="walkthrough-title">
+              The tests pass.<br /><em>Does the change belong?</em>
+            </h2>
+          </div>
+          <p>
+            A working connector quietly broadens access. Follow the mismatch
+            from the original request to the review decision.
+          </p>
+        </div>
+        <div class="review-demo" data-tabs>
+          <div class="demo-topbar">
+            <span class="demo-name"
+              ><img src="./assets/mark.svg" width="24" height="24" alt="" />
+              Consensus Control <span class="demo-divider">/</span>
+              <span>Capability migration</span></span
+            ><span class="demo-label">Illustrative walkthrough</span>
+          </div>
+          <div class="demo-progress" aria-hidden="true"><span></span></div>
+          <div class="demo-body">
+            <div
+              class="demo-tabs"
+              role="tablist"
+              aria-label="Walkthrough steps"
+              aria-orientation="vertical"
+            >
+              <button
+                id="step-intent"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-intent"
+                tabindex="0"
+              >
+                <span class="step-number">01</span
+                ><span>Clarify intent<small>What did we agree?</small></span
+                ><span class="step-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button
+                id="step-change"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-change"
+                tabindex="-1"
+              >
+                <span class="step-number">02</span
+                ><span
+                  >Trace the change<small>What actually changed?</small></span
+                ><span class="step-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button
+                id="step-evidence"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-evidence"
+                tabindex="-1"
+              >
+                <span class="step-number">03</span
+                ><span
+                  >Check the evidence<small
+                    >Does the proof still apply?</small
+                  ></span
+                ><span class="step-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button
+                id="step-decision"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-decision"
+                tabindex="-1"
+              >
+                <span class="step-number">04</span
+                ><span
+                  >Make the decision<small>Who can authorize it?</small></span
+                ><span class="step-arrow" aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div class="demo-content">
+              <section
+                class="demo-panel"
+                id="panel-intent"
+                role="tabpanel"
+                aria-labelledby="step-intent"
+                tabindex="0"
+              >
+                <div class="panel-meta">
+                  <span>REQUEST → COMMITMENT</span
+                  ><span class="pill">Versioned intent</span>
+                </div>
+                <blockquote>
+                  “Use task-scoped access.<br />Keep the existing connectors
+                  working.”
+                </blockquote>
+                <div class="intent-line" aria-hidden="true">
+                  <span></span><span>clarify &amp; agree</span><span></span>
+                </div>
+                <div class="commitment">
+                  <span class="commitment-symbol">C<span>01</span></span>
+                  <div>
+                    <span class="small-label">The shared commitment</span>
+                    <h3>
+                      Use only the capabilities granted to the current task.
+                    </h3>
+                    <p>Legacy exceptions need a scope and an expiry.</p>
+                  </div>
+                </div>
+                <p class="panel-note">
+                  <span aria-hidden="true">↳</span> Keep the interpretation and
+                  who agreed on record.
+                </p>
+              </section>
+              <section
+                class="demo-panel"
+                id="panel-change"
+                role="tabpanel"
+                aria-labelledby="step-change"
+                tabindex="0"
+                hidden
+              >
+                <div class="panel-meta">
+                  <span>COMMITMENT → ARTIFACT</span
+                  ><span class="pill warning">Needs inspection</span>
+                </div>
+                <h3 class="panel-title">
+                  A small import.<br />A bigger change in authority.
+                </h3>
+                <div
+                  class="code-diff"
+                  role="group"
+                  aria-label="Illustrative Python import change"
+                >
+                  <div class="code-file">
+                    connector.py <span>Illustrative diff</span>
+                  </div>
+                  <code
+                    ><span class="line-removed"
+                      >− from task_auth import get_token</span
+                    ><span class="line-added"
+                      >+ from workspace_auth import get_token</span
+                    ></code
+                  >
+                </div>
+                <div class="relation-path">
+                  <span>Connector</span><span aria-hidden="true">→</span
+                  ><span class="risk-node">Workspace token</span
+                  ><span aria-hidden="true">≠</span><span>Task scope</span>
+                </div>
+                <p class="panel-note">
+                  The new dependency may violate task scope. Dynamic credential
+                  resolution can remain unobservable.
+                </p>
+              </section>
+              <section
+                class="demo-panel"
+                id="panel-evidence"
+                role="tabpanel"
+                aria-labelledby="step-evidence"
+                tabindex="0"
+                hidden
+              >
+                <div class="panel-meta">
+                  <span>ARTIFACT → EVIDENCE</span
+                  ><span class="pill warning">Coverage gap</span>
+                </div>
+                <h3 class="panel-title">
+                  Passing tests.<br />Unanswered questions.
+                </h3>
+                <div class="evidence-list">
+                  <div>
+                    <span
+                      ><b>Unit tests</b
+                      ><small>Mocks allow every tool</small></span
+                    ><span class="evidence-status pass"
+                      >Pass · limited scope</span
+                    >
+                  </div>
+                  <div>
+                    <span
+                      ><b>Runtime access trace</b
+                      ><small>Recorded against an older revision</small></span
+                    ><span class="evidence-status stale">Stale</span>
+                  </div>
+                  <div>
+                    <span
+                      ><b>Denied-capability check</b
+                      ><small>Required for the proposed revision</small></span
+                    ><span class="evidence-status missing">Missing</span>
+                  </div>
+                </div>
+                <p class="panel-note">
+                  Evidence must support this claim, on this version—not just
+                  show a passing result.
+                </p>
+              </section>
+              <section
+                class="demo-panel"
+                id="panel-decision"
+                role="tabpanel"
+                aria-labelledby="step-decision"
+                tabindex="0"
+                hidden
+              >
+                <div class="panel-meta">
+                  <span>EVIDENCE → HUMAN DECISION</span
+                  ><span class="pill warning">Admission blocked</span>
+                </div>
+                <h3 class="panel-title">
+                  Agents propose.<br />Humans authorize.
+                </h3>
+                <div class="decision-reason">
+                  <span class="decision-icon" aria-hidden="true">!</span>
+                  <div>
+                    <b>Not ready to approve</b>
+                    <p>
+                      Resolve the access-policy mismatch and supply current
+                      evidence.
+                    </p>
+                  </div>
+                </div>
+                <div class="decision-options">
+                  <span>Request a rebase</span
+                  ><span>Record a bounded waiver*</span
+                  ><span>Reject the proposal</span>
+                </div>
+                <p class="panel-note">
+                  * Only where policy permits. Every decision records its actor,
+                  rationale, scope, and exact project version.
+                </p>
+              </section>
+            </div>
+          </div>
+          <div class="demo-footer">
+            <span
+              ><i class="status-dot" aria-hidden="true"></i>Shared state.
+              Traceable evidence. Human authority.</span
+            ><button type="button" class="next-step" data-next-step>
+              Next: trace the change <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+        <p class="figure-note">
+          Illustrative capability-migration scenario. No live repository actions
+          or measured results.
+        </p>
+      </section>
+
+      <section
+        class="concept wrap section-space"
+        id="layer"
+        aria-labelledby="concept-title"
+      >
+        <div class="section-heading">
+          <p class="eyebrow">02 / The consensus layer</p>
+          <h2 id="concept-title">
+            Keep the context.<br /><em>Across every change.</em>
+          </h2>
+          <p>
+            Prompts get buried. Code keeps changing. A shared project state
+            preserves the decisions that connect them.
+          </p>
+        </div>
+        <div
+          class="state-model"
+          role="group"
+          aria-label="Four parts of the versioned project state"
+        >
+          <article>
+            <span class="state-symbol">I<sup>t</sup></span>
+            <div>
+              <h3>Intent</h3>
+              <p>The request and its agreed interpretation.</p>
+            </div>
+            <span class="state-verb">Clarify</span>
+          </article>
+          <article class="state-highlight">
+            <span class="state-symbol">C<sup>t</sup></span>
+            <div>
+              <h3>Commitments</h3>
+              <p>The interfaces, dependencies, and rules to preserve.</p>
+            </div>
+            <span class="state-verb">Agree</span>
+          </article>
+          <article>
+            <span class="state-symbol">A<sup>t</sup></span>
+            <div>
+              <h3>Artifacts</h3>
+              <p>The code and configuration at a specific revision.</p>
+            </div>
+            <span class="state-verb">Inspect</span>
+          </article>
+          <article>
+            <span class="state-symbol">E<sup>t</sup></span>
+            <div>
+              <h3>Evidence</h3>
+              <p>What was checked, for which claim and version.</p>
+            </div>
+            <span class="state-verb">Verify</span>
+          </article>
+        </div>
+        <div class="concept-bottom">
+          <p>
+            <strong>Consensus means an authorized project state.</strong>
+            Disagreements, uncertainty, and scoped exceptions remain visible.
+          </p>
+          <p>
+            <strong>Context travels both ways.</strong> Agreed changes guide
+            implementation; changed artifacts reveal conflicts and stale
+            evidence.
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="workspace-section section-space"
+        id="workspace"
+        aria-labelledby="workspace-title"
+      >
+        <div class="wrap">
+          <div class="section-heading split-heading">
+            <div>
+              <p class="eyebrow">03 / The working system</p>
+              <h2 id="workspace-title">Meet <em>Consensus Control.</em></h2>
+            </div>
+            <p>
+              The open-source review workspace. Inspect a commitment, follow it
+              into the code, and see what still needs evidence.
+            </p>
+          </div>
+          <div class="workspace-showcase" data-tabs>
+            <div class="showcase-toolbar">
+              <div
+                class="showcase-tabs"
+                role="tablist"
+                aria-label="Workspace views"
+              >
+                <button
+                  id="view-commitments"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="screen-commitments"
+                  tabindex="0"
+                >
+                  Shared meaning</button
+                ><button
+                  id="view-map"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="screen-map"
+                  tabindex="-1"
+                >
+                  Change map</button
+                ><button
+                  id="view-decision"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="screen-decision"
+                  tabindex="-1"
+                >
+                  Decision brief
+                </button>
+              </div>
+              <span class="capture-label">Actual workspace captures</span>
+            </div>
+            <div class="showcase-content">
+            <div
+              id="screen-commitments"
+              class="screen-panel"
+              role="tabpanel"
+              aria-labelledby="view-commitments"
+              tabindex="0"
+            >
+              <a
+                class="screenshot-link"
+                href="./assets/workspace.png?v=20261013-en"
+                target="_blank"
+                rel="noopener"
+                aria-label="Open full-size shared meaning workspace screenshot"
+                ><img
+                  src="./assets/workspace.png?v=20261013-en"
+                  width="1600"
+                  height="1100"
+                  alt="English-only StudyShare demo: an agreed public-export commitment beside version-pinned source code. Two linked files are marked Not interpreted; the temporary-demo notice remains visible."
+                  loading="lazy"
+                /><span class="image-expand">Enlarge image ⤢</span></a
+              >
+              <p class="screen-caption">
+                <b>An agreed commitment, beside the code.</b> An English-only
+                synthetic demo. Linked files are marked “Not interpreted” until
+                a source reading is recorded.
+              </p>
+            </div>
+            <div
+              id="screen-map"
+              class="screen-panel"
+              role="tabpanel"
+              aria-labelledby="view-map"
+              tabindex="0"
+              hidden
+            >
+              <a
+                class="screenshot-link"
+                href="./assets/change-map.png"
+                target="_blank"
+                rel="noopener"
+                aria-label="Open full-size change map screenshot"
+                ><img
+                  src="./assets/change-map.png"
+                  width="2484"
+                  height="1698"
+                  alt="A real review change map groups 17 files by directory, with evidence records and tests marked not run. Tile area represents changed lines, not risk."
+                  loading="lazy"
+                /><span class="image-expand">Enlarge image ⤢</span></a
+              >
+              <p class="screen-caption">
+                <b>See the shape of a change.</b> Tile size shows changed lines,
+                not risk. Evidence gaps remain visible.
+              </p>
+            </div>
+            <div
+              id="screen-decision"
+              class="screen-panel"
+              role="tabpanel"
+              aria-labelledby="view-decision"
+              tabindex="0"
+              hidden
+            >
+              <div class="decision-screen">
+                <span class="eyebrow">The decision follows the evidence</span
+                ><a
+                  class="screenshot-link"
+                  href="./assets/decision.png"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Open full-size decision brief screenshot"
+                  ><img
+                    src="./assets/decision.png"
+                    width="2484"
+                    height="369"
+                    alt="Not ready to approve. Approval is blocked by tests that have not run and three missing evidence records."
+                    loading="lazy"
+                /></a>
+                <p>
+                  Three claims still need evidence. Approval stays blocked until
+                  the requirements are resolved.
+                </p>
+              </div>
+              <p class="screen-caption">
+                <b>Know what blocks approval.</b> An AI answer can inform a
+                decision; it cannot authorize one.
+              </p>
+            </div>
+          </div>
+          </div>
+          <div class="workspace-details">
+            <p>
+              <strong
+                >Local-first. Read-only GitHub import. Optional AI.</strong
+              >
+              Captures from the development workspace. See the FAQ for
+              implementation scope.
+            </p>
+            <a
+              class="text-link"
+              href="https://github.com/GeminiLight/AgenticConsensus#run-locally"
+              >Run the workspace <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="research wrap section-space"
+        id="research"
+        aria-labelledby="research-title"
+      >
+        <div class="paper-main">
+          <p class="eyebrow">04 / The research</p>
+          <h2 id="research-title">
+            Scaling Human-AI Coding Collaboration Requires a
+            <em>Governable Consensus Layer.</em>
+          </h2>
+          <p class="paper-position">
+            Our position: more agent-written code needs a shared account of what
+            the project means—and who can change it.
+          </p>
+          <div class="authors">
+            Tianfu Wang<sup>1</sup>, Zhezheng Hao<sup>2</sup>, Yin
+            Wu<sup>1</sup>, Wei Wu<sup>1</sup>, Qiang Lin<sup>3</sup>, Hande
+            Dong<sup>3,*</sup>, Nicholas Jing Yuan<sup>1</sup>, Hui Xiong<sup
+              >1,*</sup
+            >
+          </div>
+          <p class="affiliations">
+            <sup>1</sup> HKUST (Guangzhou) &nbsp; <sup>2</sup> Zhejiang
+            University &nbsp; <sup>3</sup> Tencent<br /><span
+              >* Corresponding authors</span
+            >
+          </p>
+          <div class="paper-actions">
+            <a class="button primary" href="https://arxiv.org/abs/2604.17883"
+              >Read on arXiv <span aria-hidden="true">↗</span></a
+            ><a
+              class="button secondary"
+              href="https://www.alphaxiv.org/abs/2604.17883"
+              >Read on alphaXiv <span aria-hidden="true">↗</span></a
+            ><a class="text-link" href="#citation">Cite this work ↓</a>
+          </div>
+          <p class="paper-version">
+            arXiv:2604.17883 · Updated version coming soon. This site follows
+            our newer research and implementation.
+          </p>
+          <details class="abstract">
+            <summary>
+              Current research summary <span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Code records what was built. It does not, by itself, explain the
+              choices a project has agreed to preserve. AgenticConsensus links
+              intent, commitments, artifacts, and evidence in a versioned
+              project state that people and agents can inspect and revise.
+            </p>
+            <p>
+              Agreed changes guide implementation. Updated artifacts reveal
+              conflicts, gaps, and stale evidence. Consensus Control puts this
+              approach into a review workspace, with humans retaining decision
+              authority.
+            </p>
+          </details>
+        </div>
+        <aside
+          class="research-note"
+          id="evaluation"
+          aria-labelledby="study-title"
+        >
+          <span class="eyebrow">When a diff is not enough</span>
+          <h3 id="study-title">Some changes reach beyond the file.</h3>
+          <div class="research-questions">
+            <div>
+              <span>01</span>
+              <p><b>Shared interfaces</b>Will existing callers still work?</p>
+            </div>
+            <div>
+              <span>02</span>
+              <p><b>Authority &amp; policy</b>Who gains access or control?</p>
+            </div>
+            <div>
+              <span>03</span>
+              <p>
+                <b>Evidence across versions</b>Does yesterday’s check cover
+                today’s change?
+              </p>
+            </div>
+          </div>
+          <p class="study-limit">
+            Use project-state review when commitments cross these boundaries.
+            Local edits can stay on the ordinary diff-and-test path.
+          </p>
+        </aside>
+      </section>
+
+      <section class="start-section" id="start" aria-labelledby="start-title">
+        <div class="wrap start-grid">
+          <div>
+            <p class="eyebrow">05 / Try it on your machine</p>
+            <h2 id="start-title">
+              Your project.<br /><em>Your review desk.</em>
+            </h2>
+            <p>
+              Try the demo, import a GitHub PR, or compare local Git revisions.
+            </p>
+            <div class="requirements">
+              <span>Python 3.11+</span><span>Git</span><span>uv</span>
+            </div>
+            <a
+              class="text-link"
+              href="https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/usage.md"
+              >Full setup &amp; configuration
+              <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span>Fresh installation / terminal</span
+              ><button
+                class="copy-button"
+                type="button"
+                data-copy="quickstart"
+                hidden
+              >
+                Copy commands
+              </button>
+            </div>
+            <pre
+              role="region"
+              tabindex="0"
+              aria-label="Local installation commands"
+            ><code id="quickstart">git clone https://github.com/GeminiLight/AgenticConsensus.git
 cd AgenticConsensus
-python3 -m venv .venv
-.venv/bin/python -m pip install -e '.[dev]'
-.venv/bin/agentic-consensus demo --reset
-.venv/bin/agentic-consensus serve</code></pre><p class="terminal-note" data-i18n="openLocal">Open http://127.0.0.1:8765. Create the first account with the demo audit identity security-lead@example.test.</p><p class="reset-note" data-i18n="resetNote">To reopen your workspace, run serve again. demo --reset rebuilds the demo data.</p></div>
-    </section>
-    <section class="scope wrap" aria-labelledby="scope-title"><h3 id="scope-title" data-i18n="scopeTitle">An early prototype, with a defined scope.</h3><p data-i18n="scopeDescription">Current source analysis focuses on Python imports, with one bounded import-substitution realization path. GitHub access imports read-only snapshots. A recorded decision does not merge a pull request. Optional model advice cannot authorize a change.</p><a class="inline-link" href="https://github.com/GeminiLight/AgenticConsensus/blob/main/SECURITY.md"><span data-i18n="securityBoundary">Read the security boundary</span> ↗</a></section>
-  </main>
-  <footer class="wrap site-footer"><div><a class="brand footer-brand" href="./"><img src="./favicon.svg" width="22" height="22" alt=""><span>AgenticConsensus</span></a><p data-i18n="footerDescription">Shared state for human–AI coding.</p></div><div class="footer-links"><a href="https://github.com/GeminiLight/AgenticConsensus">GitHub ↗</a><a href="https://github.com/GeminiLight/AgenticConsensus/blob/main/CONTRIBUTING.md" data-i18n="contribute">Contribute</a><a href="https://github.com/GeminiLight/AgenticConsensus/blob/main/LICENSE">Apache-2.0</a></div></footer>
-</body>
+uv venv .venv
+uv pip install --python .venv/bin/python -e '.[dev]'
+.venv/bin/agentic-consensus demo
+.venv/bin/agentic-consensus serve</code></pre>
+            <div class="terminal-note">
+              Open <code>http://127.0.0.1:8765</code> and create the local
+              administrator.<br />For the seeded demo, use audit identity
+              <code>security-lead@example.test</code>.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="resources wrap section-space"
+        id="resources"
+        aria-labelledby="resources-title"
+      >
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">06 / Go deeper</p>
+            <h2 id="resources-title">One project. <em>Open paths in.</em></h2>
+          </div>
+          <p>Read it. Run it. Build on it.</p>
+        </div>
+        <div class="resource-list">
+          <a href="https://arxiv.org/abs/2604.17883"
+            ><span class="resource-index">01</span
+            ><span
+              ><b>The paper</b
+              ><small
+                >The public preprint · updated version coming soon</small
+              ></span
+            ><span class="resource-kind">arXiv:2604.17883</span
+            ><span class="resource-arrow" aria-hidden="true">↗</span></a
+          ><a href="https://github.com/GeminiLight/AgenticConsensus"
+            ><span class="resource-index">02</span
+            ><span
+              ><b>The implementation</b
+              ><small
+                >Consensus Control · source, setup, and contributions</small
+              ></span
+            ><span class="resource-kind">GitHub / Apache-2.0</span
+            ><span class="resource-arrow" aria-hidden="true">↗</span></a
+          ><a href="https://github.com/GeminiLight/AgenticConsensus/tree/main/website"
+            ><span class="resource-index">03</span
+            ><span
+              ><b>The project website</b
+              ><small
+                >This page · design, walkthrough, and public resources</small
+              ></span
+            ><span class="resource-kind">GitHub</span
+            ><span class="resource-arrow" aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="citation" id="citation">
+          <div class="citation-heading">
+            <h3>Cite the arXiv preprint</h3>
+            <button class="copy-button" type="button" data-copy="bibtex" hidden>
+              Copy BibTeX
+            </button>
+          </div>
+          <details class="citation-source">
+            <summary>View BibTeX <span aria-hidden="true">+</span></summary>
+            <pre
+              role="region"
+              tabindex="0"
+              aria-label="BibTeX citation"
+            ><code id="bibtex">@misc{wang2026scalinghumanaicodingcollaboration,
+  title = {Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer},
+  author = {Wang, Tianfu and Hao, Zhezheng and Wu, Yin and Wu, Wei and Lin, Qiang and Dong, Hande and Yuan, Nicholas Jing and Xiong, Hui},
+  year = {2026},
+  eprint = {2604.17883},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/abs/2604.17883}
+}</code></pre>
+          </details>
+        </div>
+      </section>
+
+      <section class="faq wrap" id="faq" aria-labelledby="faq-title">
+        <div>
+          <p class="eyebrow">A few useful distinctions</p>
+          <h2 id="faq-title">Before you <em>dive in.</em></h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>
+              Is consensus a vote between agents?<span aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              No. Consensus is the authorized project state, including
+              unresolved claims and scoped exceptions. Agent agreement alone
+              does not establish truth or grant permission.
+            </p>
+          </details>
+          <details>
+            <summary>
+              How does this relate to code review?<span aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              It connects a diff to the commitments it affects, the intent
+              behind it, and the evidence that still applies. Your existing code
+              review gains a shared project context.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What can I run today?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Consensus Control supports local review, read-only GitHub PR
+              import, source inspection, evidence requirements, and authorized
+              decisions. Automated analysis covers Python imports; executable
+              changes are currently limited to a single import substitution.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Does approval merge my GitHub pull request?<span
+                aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              No. Approval updates local project state and its audit history.
+              The read-only GitHub connection cannot push code or merge a PR.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section class="closing wrap">
+        <p>Move the code forward.<br /><em>Keep the meaning with it.</em></p>
+        <a
+          class="button primary"
+          href="https://github.com/GeminiLight/AgenticConsensus"
+          >Explore the source <span aria-hidden="true">↗</span></a
+        >
+      </section>
+    </main>
+    <footer class="site-footer wrap">
+      <a class="brand" href="#top"
+        ><img src="./assets/mark.svg" width="28" height="28" alt="" /><span
+          >AgenticConsensus</span
+        ></a
+      ><span>Research in progress. Built for shared understanding.</span>
+      <div>
+        <a href="./llms.txt">Text summary</a><a href="#top">Back to top ↑</a>
+      </div>
+    </footer>
+    <dialog class="image-dialog" aria-labelledby="image-dialog-title">
+      <div class="image-dialog-bar">
+        <h2 id="image-dialog-title">Inside Consensus Control</h2>
+        <div>
+          <button type="button" data-image-zoom aria-pressed="false">
+            Actual size</button
+          ><button
+            type="button"
+            data-image-close
+            aria-label="Close image viewer"
+          >
+            Close <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </div>
+      <div
+        class="image-dialog-viewport"
+        role="region"
+        tabindex="0"
+        aria-label="Workspace screenshot"
+      >
+        <img alt="" />
+      </div>
+      <p class="image-dialog-caption"></p>
+    </dialog>
+    <div
+      class="toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-toast
+    ></div>
+  </body>
 </html>

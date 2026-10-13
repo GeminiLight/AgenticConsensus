@@ -1,16 +1,57 @@
 # AgenticConsensus
 
-> An early, local-first research prototype for a shared, versioned project state in human–AI coding collaboration.
+> A versioned project-state model for human and AI coding collaboration, with an open-source review workspace called Consensus Control.
 
-AgenticConsensus connects intent, code, version-bound requirements and evidence,
-and authorized human decisions. It reviews Git revisions and read-only GitHub
-pull-request snapshots. Optional model advice has no decision authority.
-Source analysis currently focuses on Python imports; automated realization is
-bounded to Python import substitution. A recorded decision does not merge a PR.
-Examples are synthetic; no general security or developer-outcome claims are made.
+## Public resources
 
-- [Public source](https://github.com/GeminiLight/AgenticConsensus)
-- [Official website](https://tianfuwang.tech/AgenticConsensus/)
-- [Getting started](https://github.com/GeminiLight/AgenticConsensus/blob/main/README.md)
-- [Architecture](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/architecture.md)
-- [Security boundary](https://github.com/GeminiLight/AgenticConsensus/blob/main/SECURITY.md)
+- [Project website](https://tianfuwang.tech/AgenticConsensus/): overview, illustrative walkthrough, real workspace captures, paper, and setup.
+- [arXiv preprint](https://arxiv.org/abs/2604.17883)
+- [alphaXiv reader](https://www.alphaxiv.org/abs/2604.17883)
+- [Implementation](https://github.com/GeminiLight/AgenticConsensus): Python and JavaScript, Apache-2.0.
+- [Website source](https://github.com/GeminiLight/AgenticConsensus/tree/main/website)
+
+## Paper
+
+Title: Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer
+Authors: Tianfu Wang, Zhezheng Hao, Yin Wu, Wei Wu, Qiang Lin, Hande Dong, Nicholas Jing Yuan, Hui Xiong.
+Current project affiliations: The Hong Kong University of Science and Technology (Guangzhou), Zhejiang University, Tencent. The earlier arXiv version lists its own publication-time affiliations.
+Year: 2026. arXiv:2604.17883 [cs.SE], first submitted 20 April 2026.
+Version note: This website describes the current research and implementation. The linked arXiv preprint is an earlier version; the authors are preparing an update. No conference acceptance is asserted.
+
+## Core idea
+
+AgenticConsensus connects selected intent, structural commitments, executable artifacts, evidence, and authorized decisions in a versioned project state. Consensus means the currently authorized state, not agent voting or a guarantee of truth. Contested claims, uncertainties, and scoped waivers remain explicit.
+
+- Intent (I): the original request, alternatives, clarification, and selection.
+- Commitments (C): interfaces, dependencies, invariants, and authority policies.
+- Artifacts (A): exact code, configuration, and revisions.
+- Evidence (E): checks linked to claims and artifact versions, with scope and freshness.
+- Realization (Phi) links a selected structural change to candidate artifacts.
+- Rehydration (Psi) reads artifact changes back into the model and records discrepancies and unobservable state.
+
+Project-state review applies to shared interfaces, authority or policy changes, compatibility windows, and evidence obligations beyond the diff. Local edits can stay on ordinary diff-and-test review.
+
+## What is implemented
+
+Consensus Control is an authenticated local review workspace with read-only GitHub pull-request import, commitment and source inspection, a change map, evidence obligations, authorized decisions, and an audit history. AI assistance is optional and advisory. Automated source analysis covers Python imports. The executable realization path is bounded to a single Python import substitution; it is not general code synthesis.
+
+The GitHub connector does not push, merge, create, or delete pull requests. A local governed decision is not a GitHub merge. Deployment is localhost or behind operator-managed TLS; this is not a hosted multi-tenant SaaS.
+
+## Research status
+
+The planned comparative evaluation separates native practice (B0), a governance ledger (B1), and equivalent relational review (B2). Controlled causal benefits and the incremental value of graph navigation remain future evaluation questions.
+
+The homepage capability-migration walkthrough is illustrative. Workspace screenshots are recorded system captures. A source reading is not behavioral verification, and recorded evidence does not automatically satisfy an obligation.
+
+## Citation
+
+```bibtex
+@misc{wang2026scalinghumanaicodingcollaboration,
+  title = {Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer},
+  author = {Wang, Tianfu and Hao, Zhezheng and Wu, Yin and Wu, Wei and Lin, Qiang and Dong, Hande and Yuan, Nicholas Jing and Xiong, Hui},
+  year = {2026},
+  eprint = {2604.17883},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/abs/2604.17883}
+}
+```

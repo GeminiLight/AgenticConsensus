@@ -12,3 +12,9 @@
 - Vendored file SHA-256: `b85c213252b880cbb2d86c10dc537f673560e82494da4330f1ccc18fbcb5f145`
 
 Cytoscape.js is used only for the interactive Canvas rendering layer. AgenticConsensus's graph payload, accessible relation table, node detail view, and deterministic SVG export remain application-owned behavior.
+
+## Website fonts
+
+DM Sans and Instrument Serif are bundled in `website/assets/fonts/` under the
+SIL Open Font License 1.1. Their copyright notices and full license texts are
+retained in `DM-Sans-OFL.txt` and `Instrument-Serif-OFL.txt` in that directory.
