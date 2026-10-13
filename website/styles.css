@@ -191,21 +191,35 @@ b {
 .top-nav a[aria-current] {
   color: var(--green);
 }
-.header-code {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.header-link {
   display: flex;
   gap: 10px;
   align-items: center;
   min-height: 44px;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
 }
-.header-code svg {
+.header-link:hover {
+  color: var(--green);
+}
+.header-link svg {
   width: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+.header-code svg {
+  fill: currentColor;
+  stroke: none;
 }
 .menu-toggle,
 .mobile-nav {
@@ -1368,7 +1382,7 @@ details[open] > summary > span {
   .top-nav a {
     font-size: 11px;
   }
-  .header-code {
+  .header-link {
     font-size: 12px;
   }
   .hero {
@@ -1669,26 +1683,12 @@ details[open] > summary > span {
     grid-template-columns: 25px minmax(0, 1fr) auto 25px;
   }
 }
-@media (max-width: 600px) {
-  .wrap {
-    width: calc(100% - 36px);
-  }
-  .header-inner {
-    width: calc(100% - 36px);
-    gap: 16px;
-    height: 64px;
-  }
+@media (max-width: 760px) {
   .top-nav {
     display: none;
   }
-  .header-code {
+  .header-actions {
     margin-left: auto;
-    min-height: 44px;
-    font-size: 11px;
-    gap: 6px;
-  }
-  .header-code svg {
-    width: 16px;
   }
   .menu-toggle:not([hidden]) {
     display: flex;
@@ -1713,6 +1713,30 @@ details[open] > summary > span {
   .mobile-nav a {
     padding: 13px 0;
     font-size: 13px;
+  }
+}
+@media (max-width: 600px) {
+  .wrap {
+    width: calc(100% - 36px);
+  }
+  .header-inner {
+    width: calc(100% - 36px);
+    gap: 16px;
+    height: 64px;
+  }
+  .header-actions {
+    gap: 10px;
+  }
+  .header-link {
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+    font-size: 11px;
+    gap: 0;
+  }
+  .header-link svg,
+  .header-link > span {
+    display: none;
   }
   .hero {
     padding-top: 31px;
