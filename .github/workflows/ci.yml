@@ -49,3 +49,16 @@ jobs:
         run: node --test tests/*.test.cjs
       - name: Check website JavaScript
         run: node --check website/script.js
+
+  website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify website links, paper metadata, assets and licenses
+        run: python3 scripts/website/verify-content.py
+      - name: Verify canonical URL and sitemap
+        working-directory: website
+        env:
+          SITE_URL: https://tianfuwang.tech/AgenticConsensus/
+          OLD_SITE_URL: https://tianfuwang.tech/agentic-consensus/
+        run: python3 ../scripts/website/verify-site-seo.py
