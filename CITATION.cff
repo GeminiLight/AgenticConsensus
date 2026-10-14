@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+message: "If you use AgenticConsensus in research, please cite the arXiv preprint below."
+type: software
+title: AgenticConsensus
+abstract: "AgenticConsensus is a shared, versioned project state for human–AI coding collaboration."
+url: "https://tianfuwang.tech/AgenticConsensus/"
+repository-code: "https://github.com/GeminiLight/AgenticConsensus"
+license: Apache-2.0
+authors:
+  - family-names: Wang
+    given-names: Tianfu
+  - family-names: Hao
+    given-names: Zhezheng
+  - family-names: Wu
+    given-names: Yin
+  - family-names: Wu
+    given-names: Wei
+  - family-names: Lin
+    given-names: Qiang
+  - family-names: Dong
+    given-names: Hande
+  - family-names: Yuan
+    given-names: Nicholas Jing
+  - family-names: Xiong
+    given-names: Hui
+preferred-citation:
+  type: generic
+  title: "Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer"
+  authors:
+    - family-names: Wang
+      given-names: Tianfu
+    - family-names: Hao
+      given-names: Zhezheng
+    - family-names: Wu
+      given-names: Yin
+    - family-names: Wu
+      given-names: Wei
+    - family-names: Lin
+      given-names: Qiang
+    - family-names: Dong
+      given-names: Hande
+    - family-names: Yuan
+      given-names: Nicholas Jing
+    - family-names: Xiong
+      given-names: Hui
+  year: 2026
+  date-published: "2026-04-20"
+  doi: "10.48550/arXiv.2604.17883"
+  url: "https://arxiv.org/abs/2604.17883"
+  identifiers:
+    - type: other
+      value: "arXiv:2604.17883"
+  notes: "arXiv preprint. The project website describes newer research and implementation than this public preprint."

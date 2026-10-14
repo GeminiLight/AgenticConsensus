@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AgenticConsensus — Build with agents. Stay in control.</title>
+    <title>AgenticConsensus — Human–AI Coding Collaboration</title>
     <meta
       name="description"
-      content="A shared, versioned project state for human and AI coding collaboration. Connect intent, code, evidence, and human decisions with AgenticConsensus and Consensus Control."
+      content="AgenticConsensus is a shared, versioned project state for human–AI coding collaboration. Connect intent, code, evidence, and human decisions."
     />
     <meta
       name="author"
@@ -89,11 +89,11 @@
     <meta property="og:site_name" content="AgenticConsensus" />
     <meta
       property="og:title"
-      content="AgenticConsensus — Build with agents. Stay in control."
+      content="AgenticConsensus — Human–AI Coding Collaboration"
     />
     <meta
       property="og:description"
-      content="Build with agents. Keep intent, code, evidence, and human decisions connected. Explore the research and the open-source review workspace."
+      content="AgenticConsensus is a shared, versioned project state for human–AI coding collaboration. Connect intent, code, evidence, and human decisions."
     />
     <meta
       property="og:url"
@@ -112,11 +112,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="AgenticConsensus — Build with agents. Stay in control."
+      content="AgenticConsensus — Human–AI Coding Collaboration"
     />
     <meta
       name="twitter:description"
-      content="A shared project state for human and AI coding collaboration. Research, an interactive walkthrough, and open-source software."
+      content="AgenticConsensus is a shared, versioned project state for human–AI coding collaboration. Connect intent, code, evidence, and human decisions."
     />
     <meta
       name="twitter:image"
@@ -136,11 +136,8 @@
     <meta name="citation_author" content="Xiong, Hui" />
     <meta name="citation_publication_date" content="2026/04/20" />
     <meta name="citation_arxiv_id" content="2604.17883" />
+    <meta name="citation_doi" content="10.48550/arXiv.2604.17883" />
     <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2604.17883" />
-    <meta
-      name="citation_fulltext_html_url"
-      content="https://tianfuwang.tech/AgenticConsensus/"
-    />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -150,7 +147,26 @@
             "@id": "https://tianfuwang.tech/AgenticConsensus/#website",
             "name": "AgenticConsensus",
             "url": "https://tianfuwang.tech/AgenticConsensus/",
+            "description": "AgenticConsensus is a shared, versioned project state for human–AI coding collaboration.",
+            "about": { "@id": "https://tianfuwang.tech/AgenticConsensus/#project" },
             "inLanguage": "en"
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://tianfuwang.tech/AgenticConsensus/#project",
+            "name": "AgenticConsensus",
+            "description": "AgenticConsensus is a shared, versioned project state for human–AI coding collaboration.",
+            "url": "https://tianfuwang.tech/AgenticConsensus/",
+            "sameAs": "https://github.com/GeminiLight/AgenticConsensus",
+            "subjectOf": { "@id": "https://tianfuwang.tech/AgenticConsensus/#paper" },
+            "hasPart": { "@id": "https://tianfuwang.tech/AgenticConsensus/#code" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://tianfuwang.tech/#person",
+            "name": "Tianfu Wang",
+            "url": "https://tianfuwang.tech/",
+            "sameAs": "https://github.com/GeminiLight"
           },
           {
             "@type": "ScholarlyArticle",
@@ -161,18 +177,20 @@
             "identifier": "arXiv:2604.17883",
             "sameAs": [
               "https://arxiv.org/abs/2604.17883",
-              "https://www.alphaxiv.org/abs/2604.17883"
+              "https://www.alphaxiv.org/abs/2604.17883",
+              "https://doi.org/10.48550/arXiv.2604.17883"
             ],
+            "about": { "@id": "https://tianfuwang.tech/AgenticConsensus/#project" },
             "inLanguage": "en",
             "isAccessibleForFree": true,
-            "url": "https://tianfuwang.tech/AgenticConsensus/#research",
+            "url": "https://arxiv.org/abs/2604.17883",
             "encoding": {
               "@type": "MediaObject",
               "contentUrl": "https://arxiv.org/pdf/2604.17883",
               "encodingFormat": "application/pdf"
             },
             "author": [
-              { "@type": "Person", "name": "Tianfu Wang" },
+              { "@type": "Person", "@id": "https://tianfuwang.tech/#person", "name": "Tianfu Wang" },
               { "@type": "Person", "name": "Zhezheng Hao" },
               { "@type": "Person", "name": "Yin Wu" },
               { "@type": "Person", "name": "Wei Wu" },
@@ -184,9 +202,12 @@
           },
           {
             "@type": "SoftwareSourceCode",
+            "@id": "https://tianfuwang.tech/AgenticConsensus/#code",
             "name": "Consensus Control",
             "description": "A local-first, authenticated review workspace for evidence-backed agentic code changes.",
+            "url": "https://github.com/GeminiLight/AgenticConsensus",
             "codeRepository": "https://github.com/GeminiLight/AgenticConsensus",
+            "isBasedOn": { "@id": "https://tianfuwang.tech/AgenticConsensus/#paper" },
             "programmingLanguage": ["Python", "JavaScript"],
             "license": "https://www.apache.org/licenses/LICENSE-2.0",
             "runtimePlatform": "Python 3.11+"
@@ -284,7 +305,7 @@
             </div>
             <p class="hero-definition">
               <strong>AgenticConsensus</strong> is a shared, versioned project
-              state for humans and coding agents.
+              state for human–AI coding collaboration.
             </p>
           </div>
           <div
@@ -351,7 +372,7 @@
           </div>
           <div class="credits-team">
             <p class="hero-authors">
-              <span>Tianfu Wang<sup>1</sup></span><span>Zhezheng Hao<sup>2</sup></span>
+              <span><a href="https://tianfuwang.tech/">Tianfu Wang</a><sup>1</sup></span><span>Zhezheng Hao<sup>2</sup></span>
               <span>Yin Wu<sup>1</sup></span><span>Wei Wu<sup>1</sup></span>
               <span>Qiang Lin<sup>3</sup></span><span>Hande Dong<sup>3</sup></span>
               <span>Nicholas Jing Yuan<sup>1</sup></span><span>Hui Xiong<sup>1</sup></span>
@@ -856,7 +877,7 @@
             the project means—and who can change it.
           </p>
           <div class="authors">
-            Tianfu Wang<sup>1</sup>, Zhezheng Hao<sup>2</sup>, Yin
+            <a href="https://tianfuwang.tech/">Tianfu Wang</a><sup>1</sup>, Zhezheng Hao<sup>2</sup>, Yin
             Wu<sup>1</sup>, Wei Wu<sup>1</sup>, Qiang Lin<sup>3</sup>, Hande
             Dong<sup>3,*</sup>, Nicholas Jing Yuan<sup>1</sup>, Hui Xiong<sup
               >1,*</sup
@@ -878,7 +899,8 @@
             ><a class="text-link" href="#citation">Cite this work ↓</a>
           </div>
           <p class="paper-version">
-            arXiv:2604.17883 · Updated version coming soon. This site follows
+            arXiv:2604.17883 · First submitted 20 April 2026.
+            Updated version coming soon. This site follows
             our newer research and implementation.
           </p>
           <details class="abstract">
@@ -1021,6 +1043,14 @@ uv pip install --python .venv/bin/python -e '.[dev]'
               ></span
             ><span class="resource-kind">GitHub</span
             ><span class="resource-arrow" aria-hidden="true">↗</span></a
+          ><a href="https://tianfuwang.tech/publications/#consensus-layer"
+            ><span class="resource-index">04</span
+            ><span
+              ><b>The author's publication page</b
+              ><small>Tianfu Wang · related research, paper, website, and code</small
+              ></span
+            ><span class="resource-kind">Personal website</span
+            ><span class="resource-arrow" aria-hidden="true">↗</span></a
           >
         </div>
         <div class="citation" id="citation">
@@ -1042,6 +1072,7 @@ uv pip install --python .venv/bin/python -e '.[dev]'
   year = {2026},
   eprint = {2604.17883},
   archivePrefix = {arXiv},
+  doi = {10.48550/arXiv.2604.17883},
   url = {https://arxiv.org/abs/2604.17883}
 }</code></pre>
           </details>
@@ -1119,7 +1150,7 @@ uv pip install --python .venv/bin/python -e '.[dev]'
         ></a
       ><span>Research in progress. Built for shared understanding.</span>
       <div>
-        <a href="./llms.txt">Text summary</a><a href="#top">Back to top ↑</a>
+        <a href="https://tianfuwang.tech/">Tianfu Wang</a><a href="./llms.txt">Text summary</a><a href="#top">Back to top ↑</a>
       </div>
     </footer>
     <dialog class="image-dialog" aria-labelledby="image-dialog-title">

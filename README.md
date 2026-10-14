@@ -1,12 +1,15 @@
 # AgenticConsensus
 
-A shared, versioned project state for human–AI coding collaboration.
+**[Paper](https://arxiv.org/abs/2604.17883)** ·
+**[Website](https://tianfuwang.tech/AgenticConsensus/)** ·
+**[Personal website](https://tianfuwang.tech/publications/#consensus-layer)**
+
+AgenticConsensus is a shared, versioned project state for human–AI coding collaboration.
 
 AgenticConsensus connects a change request, its interpretation, code changes,
 requirements, evidence, and an authorized human decision. It helps a reviewer
 inspect what changed, which requirements are covered, and what still needs checking.
 
-**[Website](https://tianfuwang.tech/AgenticConsensus/)** ·
 **[Getting started](docs/usage.md)** ·
 **[Architecture](docs/architecture.md)**
 
@@ -46,6 +49,14 @@ a decision. Optional model configuration is documented in [.env.example](.env.ex
 
 Runtime data stays in the local `var/` directory. Use the default localhost
 address; see [SECURITY.md](SECURITY.md) for the deployment boundary.
+
+## Paper and citation
+
+[Scaling Human-AI Coding Collaboration Requires a Governable Consensus Layer](https://arxiv.org/abs/2604.17883)
+is an arXiv preprint, first submitted on 20 April 2026. The website describes
+the newer research and implementation; the linked preprint is an earlier version.
+Use [CITATION.cff](CITATION.cff) or the website's
+[BibTeX citation](https://tianfuwang.tech/AgenticConsensus/#citation) to cite the paper.
 
 ## Development and website
 
