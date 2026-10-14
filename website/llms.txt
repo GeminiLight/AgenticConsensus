@@ -1,6 +1,8 @@
 # AgenticConsensus
 
-> A versioned project-state model for human and AI coding collaboration, with an open-source review workspace called Consensus Control.
+> AgenticConsensus is a shared, versioned project state for human–AI coding collaboration.
+
+Consensus Control is the project's open-source local review workspace.
 
 ## Public resources
 
@@ -9,6 +11,10 @@
 - [alphaXiv reader](https://www.alphaxiv.org/abs/2604.17883)
 - [Implementation](https://github.com/GeminiLight/AgenticConsensus): Python and JavaScript, Apache-2.0.
 - [Website source](https://github.com/GeminiLight/AgenticConsensus/tree/main/website)
+- [Getting started](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/usage.md)
+- [Architecture](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/architecture.md)
+- [Citation metadata](https://github.com/GeminiLight/AgenticConsensus/blob/main/CITATION.cff)
+- [Tianfu Wang's publication page](https://tianfuwang.tech/publications/#consensus-layer): personal-site entry linking the paper, project website, and code.
 
 ## Paper
 
@@ -16,6 +22,7 @@ Title: Scaling Human-AI Coding Collaboration Requires a Governable Consensus Lay
 Authors: Tianfu Wang, Zhezheng Hao, Yin Wu, Wei Wu, Qiang Lin, Hande Dong, Nicholas Jing Yuan, Hui Xiong.
 Current project affiliations: The Hong Kong University of Science and Technology (Guangzhou), Zhejiang University, Tencent. The earlier arXiv version lists its own publication-time affiliations.
 Year: 2026. arXiv:2604.17883 [cs.SE], first submitted 20 April 2026.
+DOI: https://doi.org/10.48550/arXiv.2604.17883
 Version note: This website describes the current research and implementation. The linked arXiv preprint is an earlier version; the authors are preparing an update. No conference acceptance is asserted.
 
 ## Core idea
@@ -52,6 +59,7 @@ The homepage capability-migration walkthrough is illustrative. Workspace screens
   year = {2026},
   eprint = {2604.17883},
   archivePrefix = {arXiv},
+  doi = {10.48550/arXiv.2604.17883},
   url = {https://arxiv.org/abs/2604.17883}
 }
 ```
