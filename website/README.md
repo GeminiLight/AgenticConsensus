@@ -1,6 +1,6 @@
 # Website maintenance
 
-The official website is https://tianfuwang.tech/AgenticConsensus/.
+The official website is https://tianfu.wang/AgenticConsensus/.
 This directory is the only maintained website source. It preserves the original
 project website's layout, typography, walkthrough, motion and workspace captures,
 migrated from `GeminiLight/agentic-consensus-site` at commit
@@ -25,7 +25,7 @@ Run the original site's verification tools from the repository root:
 
 ```sh
 python3 scripts/website/verify-content.py
-(cd website && SITE_URL=https://tianfuwang.tech/AgenticConsensus/ OLD_SITE_URL=https://tianfuwang.tech/agentic-consensus/ python3 ../scripts/website/verify-site-seo.py)
+(cd website && SITE_URL=https://tianfu.wang/AgenticConsensus/ OLD_SITE_URL=https://tianfu.wang/agentic-consensus/ python3 ../scripts/website/verify-site-seo.py)
 node --check website/script.js
 # With a local preview and agent-browser available:
 node scripts/website/verify-browser.cjs http://127.0.0.1:8080
@@ -65,10 +65,10 @@ order, first submission date and DOI come from
 [arXiv](https://arxiv.org/abs/2604.17883); keep `CITATION.cff`, citation meta tags
 and both BibTeX copies consistent. This overview is not the paper's full text.
 
-The authority for crawler rules is **https://tianfuwang.tech/robots.txt** in
+The authority for crawler rules is **https://tianfu.wang/robots.txt** in
 the personal website repository. The `website/robots.txt` file documents this
 project's sitemap but cannot override domain-root rules. The root file must
-advertise **https://tianfuwang.tech/AgenticConsensus/sitemap.xml** and allow
+advertise **https://tianfu.wang/AgenticConsensus/sitemap.xml** and allow
 search crawlers to fetch the page and its resources. Keep search and training
 bot policies separate when changing access rules.
 
