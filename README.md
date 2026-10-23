@@ -1,8 +1,8 @@
 # AgenticConsensus
 
 **[Paper](https://arxiv.org/abs/2604.17883)** ·
-**[Website](https://tianfuwang.tech/AgenticConsensus/)** ·
-**[Personal website](https://tianfuwang.tech/publications/#consensus-layer)**
+**[Website](https://tianfu.wang/AgenticConsensus/)** ·
+**[Personal website](https://tianfu.wang/publications/#consensus-layer)**
 
 AgenticConsensus is a shared, versioned project state for human–AI coding collaboration.
 
@@ -56,7 +56,7 @@ address; see [SECURITY.md](SECURITY.md) for the deployment boundary.
 is an arXiv preprint, first submitted on 20 April 2026. The website describes
 the newer research and implementation; the linked preprint is an earlier version.
 Use [CITATION.cff](CITATION.cff) or the website's
-[BibTeX citation](https://tianfuwang.tech/AgenticConsensus/#citation) to cite the paper.
+[BibTeX citation](https://tianfu.wang/AgenticConsensus/#citation) to cite the paper.
 
 ## Development and website
 

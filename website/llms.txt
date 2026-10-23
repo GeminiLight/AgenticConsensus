@@ -6,7 +6,7 @@ Consensus Control is the project's open-source local review workspace.
 
 ## Public resources
 
-- [Project website](https://tianfuwang.tech/AgenticConsensus/): overview, illustrative walkthrough, real workspace captures, paper, and setup.
+- [Project website](https://tianfu.wang/AgenticConsensus/): overview, illustrative walkthrough, real workspace captures, paper, and setup.
 - [arXiv preprint](https://arxiv.org/abs/2604.17883)
 - [alphaXiv reader](https://www.alphaxiv.org/abs/2604.17883)
 - [Implementation](https://github.com/GeminiLight/AgenticConsensus): Python and JavaScript, Apache-2.0.
@@ -14,7 +14,7 @@ Consensus Control is the project's open-source local review workspace.
 - [Getting started](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/usage.md)
 - [Architecture](https://github.com/GeminiLight/AgenticConsensus/blob/main/docs/architecture.md)
 - [Citation metadata](https://github.com/GeminiLight/AgenticConsensus/blob/main/CITATION.cff)
-- [Tianfu Wang's publication page](https://tianfuwang.tech/publications/#consensus-layer): personal-site entry linking the paper, project website, and code.
+- [Tianfu Wang's publication page](https://tianfu.wang/publications/#consensus-layer): personal-site entry linking the paper, project website, and code.
 
 ## Paper
 

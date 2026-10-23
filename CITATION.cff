@@ -3,7 +3,7 @@ message: "If you use AgenticConsensus in research, please cite the arXiv preprin
 type: software
 title: AgenticConsensus
 abstract: "AgenticConsensus is a shared, versioned project state for human–AI coding collaboration."
-url: "https://tianfuwang.tech/AgenticConsensus/"
+url: "https://tianfu.wang/AgenticConsensus/"
 repository-code: "https://github.com/GeminiLight/AgenticConsensus"
 license: Apache-2.0
 authors:

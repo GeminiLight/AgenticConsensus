@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://tianfuwang.tech/AgenticConsensus/"
+Homepage = "https://tianfu.wang/AgenticConsensus/"
 Repository = "https://github.com/GeminiLight/AgenticConsensus"
 Issues = "https://github.com/GeminiLight/AgenticConsensus/issues"
 
