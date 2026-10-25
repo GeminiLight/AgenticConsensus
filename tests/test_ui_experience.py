@@ -49,7 +49,10 @@ def test_selected_review_leads_with_one_verdict_then_actions_then_checks(tmp_pat
         assert render.index('class="decision-bar"') < render.index("renderAdmission(manifest)")
         assert render.count("renderReviewVerdict(review, manifest)") == 1
         assert render.count("renderAdmission(manifest)") == 1
-        assert 'class="decision-options"' in render
+        assert 'class="decision-options"' not in render
+        assert 'reviewDecisionBoundary(review, manifest)' in render
+        assert 'data-action="rebase"' in render
+        assert 'data-action="reject"' in render
         assert 'id="next-review-inspection"' in javascript
         assert 'DecisionModel.nextInspection' in javascript
         assert "Not ready to approve" in javascript
@@ -58,7 +61,7 @@ def test_selected_review_leads_with_one_verdict_then_actions_then_checks(tmp_pat
         assert "Only the configured checks have passed." in javascript
         assert "Ready to approve" not in javascript
         assert "Record approval" in javascript
-        assert "Resolve the blocking check below to enable approval." in javascript
+        assert "Approval requires all blocking checks to pass." in javascript
 
 
 def test_primary_navigation_has_four_clear_work_views(tmp_path: Path):

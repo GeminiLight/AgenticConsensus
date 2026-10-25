@@ -4,6 +4,20 @@ const model = require("../system/web/static/canvas-model.js");
 const project = { name: "Capability control", version: 42, head_ref: "abc123", claims: [{ id: "C1", title: "Scoped authority", status: "validated" }] };
 const review = (id, values = {}) => ({ id, status: "open", created_at: "2026-10-01T00:00:00Z", intent_summary: `Change ${id}`, changed_paths: ["connectors/archive.py"], findings: [], ...values });
 
+test("attention includes stale, contested and missing test evidence but preserves final decisions", () => {
+  for (const evidence of [
+    { freshness: "stale" }, { outcome: "contests" },
+    ...["not_run", "fail", "unknown"].map(status => ({kind: "tests", status})),
+  ]) {
+    const pending = review("pending", {evidence: [evidence]});
+    assert.equal(model.reviewTone(pending), "attention");
+    assert.equal(model.reviewTone({...pending, status: "committed"}), "committed");
+    assert.equal(model.reviewTone({...pending, status: "rejected"}), "rejected");
+    assert.equal(model.reviewTone({...pending, status: "rebase_required"}), "stale");
+  }
+  assert.equal(model.reviewTone(review("passing", {evidence: [{kind: "tests", status: "pass", freshness: "fresh"}]})), "open");
+});
+
 test("attention is prioritized without mutating the source review order", () => {
   const input = [review("new", { created_at: "2026-10-03T00:00:00Z" }), review("old", { findings: [{ status: "open", severity: "critical" }] }), review("stale", { status: "rebase_required" })];
   assert.deepEqual(model.orderedReviews(input).map((item) => item.id), ["old", "stale", "new"]);

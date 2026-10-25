@@ -19,6 +19,23 @@ The language model is deliberately bounded. It can answer questions over one rev
 
 The interface follows the decision task instead of presenting one undifferentiated graph: reviews open with a Decision brief, Changes focuses on one file, and Evidence separates outstanding requirements from records and claim observations. The Audit graph offers evidence coverage and decision-trail lenses; paper view shows the full contract. Search isolates an immediate control path, and the relation table remains available to keyboard users and when Canvas rendering is unavailable.
 
+Within the current session, returning from Project or Rules restores the selected
+review and its section for that project. Changes, Evidence and Audit each offer
+**Back to decision**. A blocking check disables approval while leaving **Request
+update** and **Reject** available to operators; the decision area also shows the
+governing authority or rollback consequence. **AI risk analysis** opens on demand
+and identifies unavailable model analysis explicitly. The commitment Canvas keeps
+its file reader independently scrollable on desktop, with **Focus reading** for a
+wider source view; narrow screens use normal page scrolling.
+
+Decision keeps the current outcome and available actions first. Revision history,
+commitment details and verification plans expand in place; deep links open the
+relevant commitment automatically. Changes holds the file map, while Audit holds
+request-to-decision links. The Canvas uses compact rows for files without an authored
+reading, and the reader keeps the selected path and source controls together. A
+completed Request leads with **Open linked review**, with interpretation history
+and implementation checks available below as expandable details.
+
 The Rules view keeps each claim compact until expanded. Its detail shows the current
 configured evidence requirements, accepted sources and waiver boundaries, then
 links to reviews that actually reference the claim. Review requirements are frozen

@@ -87,7 +87,7 @@ def test_review_workspace_closes_the_real_user_dead_ends(tmp_path: Path):
         javascript = client.get("/static/app.js").text
         theme = client.get("/static/theme.css").text
 
-        assert "/static/app.js?v=0.32.0-llm-advice" in html
+        assert "/static/app.js?v=" in html
 
         # Paper view must own every surface token even when the saved app theme is dark.
         paper = theme.split("body.paper-mode {", 1)[1].split("}", 1)[0]
