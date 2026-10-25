@@ -278,6 +278,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 @media (min-width:901px) {
   .project-canvas[data-surface="state"]:has(.meaning-workspace) .project-canvas-heading { display:flex; align-items:baseline; gap:16px; }
   .project-canvas[data-surface="state"]:has(.meaning-workspace) #project-canvas-copy { margin:0; }
+  #review-canvas:has(.meaning-workspace) { margin-bottom:0; }
   .project-canvas[data-surface="state"]:has(.meaning-workspace) { height:calc(100dvh - var(--topbar-height)); min-height:560px; grid-template-rows:auto minmax(0,1fr); }
   #project-state-overview:has(.meaning-workspace) { display:flex; min-height:0; }
   .meaning-workspace { flex:1; min-width:0; }
