@@ -2,6 +2,36 @@
 (function(root){
   'use strict';
   const messages={
+    'No reading':'尚无解读',
+    'Selected interpretation':'已选解释',
+    'Files without a reading':'尚未解读的文件',
+    'No commitment linked':'尚未关联约定',
+    'Draft commitment':'起草约定',
+    'Configured checks passed.':'已通过配置的检查。',
+    'Follow-up':'复审',
+    'Approval requires all blocking checks to pass.':'处理全部阻碍项后才可批准。',
+    'No outstanding evidence items':'没有待处理的证据事项',
+    'Other checks need attention. Return to Decision.':'其他检查仍需处理，请返回决策页。',
+    '{requirements} requirements · {findings} findings':'{requirements} 项要求 · {findings} 个问题',
+    'Approval is recorded separately.':'批准需另行记录。',
+    'No outstanding requirements.':'没有待处理的证据要求。',
+    'No open findings.':'没有待处理的问题。',
+    'Verification details':'验证详情',
+    'Add commitment':'添加约定',
+    'Proposed requirement':'拟议要求',
+    'Proposed by {actor}':'提案人：{actor}',
+    'Not analyzed':'尚未分析',
+    'Advice from the request, source and checks. Approval remains yours.':'依据需求、源码和检查提供建议，由你决定是否批准。',
+    'Analyze the current version for risks.':'分析当前版本的风险。',
+    'Pending reviews':'待评审变更',
+    'No reviews yet':'暂无评审',
+    'Define the behavior this project must preserve.':'明确项目必须保持的行为。',
+    'Implementation check':'实现检查',
+    'Implementation':'实现',
+    'Checked':'已检查',
+    'Implementation ready for review':'实现已就绪，可以评审',
+    'Open linked review':'打开关联评审',
+    'Compare Python import changes.':'比较 Python 导入变更。',
     'Decision brief':'决策摘要',
     'Your decision':'你的决定',
     'Approval is blocked by a check. You can still request an update or reject.':'检查尚未通过，仍可请求修改或拒绝。',
@@ -255,7 +285,11 @@
     return key;
   }
   function t(key,params={}){const source=String(key??'');let value=language==='zh-CN'?translated(source):source;
-    if(language==='en'&&Number(params.count)===1)value=({'{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed'})[source]||value;
+    if(language==='en'&&Number(params.count)===1)value=({'{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed','{count} blocking checks':'{count} blocking check','{count} items need attention':'{count} item needs attention'})[source]||value;
+    if(language==='en'&&source==='{requirements} requirements · {findings} findings') {
+      if(Number(params.requirements)===1)value=value.replace(' requirements',' requirement');
+      if(Number(params.findings)===1)value=value.replace(' findings',' finding');
+    }
     return value.replace(/\{(\w+)\}/g,(match,name)=>Object.hasOwn(params,name)?String(params[name]):match);
   }
   function mark(key,params={}){return `<span data-i18n="${encode(key)}" data-i18n-params="${escape(JSON.stringify(params))}">${escape(t(key,params))}</span>`;}

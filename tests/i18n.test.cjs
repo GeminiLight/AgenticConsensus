@@ -54,6 +54,15 @@ test('canvas labels translate system framing, never the user title or file name'
   assert.equal(i18n.canvasLabel({type:'review',status:'open',label:'Open\nProject state'}),'进行中\nProject state');
   assert.equal(i18n.canvasLabel({type:'state',label:'Current state\nVersion 1'}),'当前共识\n版本 1');
 });
+test('mixed evidence counts preserve both parameters when one count is singular',()=>{
+  const {i18n}=load('en');
+  const key='{requirements} requirements · {findings} findings';
+  assert.equal(i18n.t(key,{requirements:1,findings:2}),'1 requirement · 2 findings');
+  assert.equal(i18n.t(key,{requirements:0,findings:1}),'0 requirements · 1 finding');
+  assert.equal(i18n.t(key,{requirements:1,findings:1}),'1 requirement · 1 finding');
+  i18n.setLanguage('zh-CN');
+  assert.equal(i18n.t(key,{requirements:1,findings:2}),'1 项要求 · 2 个问题');
+});
 test('continuity and next-action labels support Chinese and English',()=>{
   const {i18n}=load();
   for(const key of ['Current version','Decision history','Recheck existing commitments','Check this version','Resolve the source question','No assessment for this version'])assert.notEqual(i18n.t(key),key);

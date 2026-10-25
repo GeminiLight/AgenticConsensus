@@ -75,6 +75,7 @@ function rendering() {
   return vm.runInNewContext(`${helpers}\n({brief:renderEvidenceBrief, obligations:renderEvidenceObligations, records:renderEvidence, workspace:typeof renderEvidenceWorkspace === 'function' ? renderEvidenceWorkspace : null, error:typeof evidenceErrorMessage === 'function' ? evidenceErrorMessage : null})`, {
     EvidenceModel:model,
     I18n,
+    uiIcon:()=>'',
     state:{evidenceTab:'requirements',evidenceQuery:'',evidenceFilter:'all',activeProject:{claims:[{id:'c1',title:'Only task-scoped credentials'}],attestation_trust_roots:[]}},
     esc:value => String(value ?? '').replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
     sentence:value => String(value ?? ''), title:value => String(value ?? ''), plainVersion:value => value,
@@ -87,15 +88,23 @@ test('summary never claims approval from supporting records or calls stale evide
   assert.match(html, /need attention/);
   assert.doesNotMatch(html, /still missing|Recorded evidence supports this review/);
   const noRequirements = rendering().brief({...review,evidence_obligations:[],evidence:[record]}, {...manifest,obligation_statuses:[]});
-  assert.match(noRequirements, /Decision/);
-  assert.doesNotMatch(noRequirements, /ready to approve|supports this review/i);
+  assert.match(noRequirements, /Not ready to approve/);
+  assert.match(noRequirements, /Other checks need attention/);
+  assert.doesNotMatch(noRequirements, /No outstanding|supports this review/i);
+});
+
+test('completed evidence remains distinct from the approval decision',()=>{
+  const html=rendering().brief({...review,evidence_obligations:[]},{obligation_statuses:[],committable:true});
+  assert.match(html,/No outstanding evidence items/);
+  assert.match(html,/Approval is recorded separately/);
+  assert.match(html,/data-attention="false"/);
 });
 
 test('requirement leads with human-readable claim and explains stale evidence, with exact IDs on demand', () => {
   const html = rendering().obligations(review,manifest);
   assert.match(html, /Only task-scoped credentials/);
   assert.match(html, /target revision|current target/);
-  assert.match(html, /Requirement details/);
+  assert.match(html, /Verification details/);
   assert.match(html, /View linked records/);
   assert.match(html, /Unknown/);
 });
@@ -143,7 +152,7 @@ test('visible status has no second accessible label on a decorative symbol', () 
 
 test('waived findings return to attention after expiry, without relabelling them as missing records', () => {
   const input = {...review,evidence_obligations:[],findings:[{id:'f1',status:'waived'}],waivers:[{finding_ids:['f1'],expires_at:'2000-01-01T00:00:00Z'}]};
-  assert.match(rendering().brief(input,{...manifest,obligation_statuses:[]}), /1 open finding/);
+  assert.match(rendering().brief(input,{...manifest,obligation_statuses:[]}), /0 requirements · 1 finding/);
 });
 
 test('linked records filter uses exact obligation membership, not an ID substring', () => {

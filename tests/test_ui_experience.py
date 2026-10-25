@@ -61,7 +61,7 @@ def test_selected_review_leads_with_one_verdict_then_actions_then_checks(tmp_pat
         assert "Only the configured checks have passed." in javascript
         assert "Ready to approve" not in javascript
         assert "Record approval" in javascript
-        assert "Approval is blocked by a check. You can still request an update or reject." in javascript
+        assert "Approval requires all blocking checks to pass." in javascript
 
 
 def test_primary_navigation_has_four_clear_work_views(tmp_path: Path):

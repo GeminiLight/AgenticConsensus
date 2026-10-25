@@ -1473,7 +1473,6 @@ function renderProjectClaims() {
       <div class="claim-row-copy">
         <div class="claim-row-title"><strong>${esc(claim.title)}</strong><span class="tag" data-tone="${claimTone(claim)}">${esc(sentence(claim.status))}</span></div>
         <p>${esc(claim.rationale || "No rationale recorded.")}</p>
-        <span class="claim-row-prompt">Inspect requirements and related reviews</span>
       </div>
       <div class="claim-row-side"><span>${plural(obligations, "evidence requirement")}</span><span>${state.reviewsLoading ? "Loading related reviews…" : state.projectLoadError ? "Review context unavailable" : plural(touching.length, "related review")}</span></div>
       </summary>
@@ -1481,7 +1480,7 @@ function renderProjectClaims() {
         <p class="claim-state-context"><strong>Current project state · version ${esc(project.version)}</strong><span>${esc(sentence(claim.status))} is this claim’s recorded status, not an approval of a proposed change. Review evidence and readiness are assessed separately.</span></p>
         <div class="claim-detail-grid">
           <section aria-label="Evidence requirements for ${esc(claim.title)}"><h4>Evidence requirements</h4><p class="claim-detail-hint">Configured for this claim now. Each review keeps its own requirement snapshot.</p>${renderGovernanceRequirements(claim)}</section>
-          <section aria-label="Related reviews for ${esc(claim.title)}"><h4>Related reviews</h4><p class="claim-detail-hint">Open a review to inspect its frozen requirements and current evidence coverage.</p>${state.reviewsLoading ? '<p role="status">Loading related reviews…</p>' : state.projectLoadError ? `<div role="alert"><p>Project context could not be loaded. Related reviews are unavailable.</p><button type="button" class="button" data-retry-governance>Retry project</button></div>` : touching.length ? `<ul class="claim-related-reviews">${touching.map(review => `<li><button type="button" data-governance-review="${esc(review.id)}" data-governance-review-claim="${esc(claim.id)}"><strong>${esc(review.intent_summary || review.summary || reviewRef(review))}</strong><span>${esc(reviewRef(review))} · ${I18n.mark(reviewStatusLabel(review.status))}</span><span class="claim-review-action">Inspect evidence</span></button></li>`).join("")}</ul>` : '<p class="claim-detail-hint">No recorded review references this claim yet.</p>'}</section>
+          <section aria-label="Related reviews for ${esc(claim.title)}"><h4>Related reviews</h4>${state.reviewsLoading ? '<p role="status">Loading related reviews…</p>' : state.projectLoadError ? `<div role="alert"><p>Project context could not be loaded. Related reviews are unavailable.</p><button type="button" class="button" data-retry-governance>Retry project</button></div>` : touching.length ? `<ul class="claim-related-reviews">${touching.map(review => `<li><button type="button" data-governance-review="${esc(review.id)}" data-governance-review-claim="${esc(claim.id)}"><strong>${esc(review.intent_summary || review.summary || reviewRef(review))}</strong><span>${esc(reviewRef(review))} · ${I18n.mark(reviewStatusLabel(review.status))}</span><span class="claim-review-action">Inspect evidence</span></button></li>`).join("")}</ul>` : '<p class="claim-detail-hint">No recorded review references this claim yet.</p>'}</section>
         </div>
         <details class="claim-policy-details"><summary>Rule details</summary><dl><div><dt data-i18n=Claim%20ID>Claim ID</dt><dd>${esc(claim.id)}</dd></div><div><dt>Scope</dt><dd>${esc(claim.scope || "*")}</dd></div><div><dt>Severity</dt><dd>${esc(sentence(claim.severity))}</dd></div><div><dt data-i18n=Authority>Authority</dt><dd>${esc(claim.authority || project.default_authority || "Not assigned")}</dd></div><div><dt>Forbidden imports</dt><dd>${esc((claim.forbidden_modules || []).join(", ") || "None recorded")}</dd></div><div><dt>Validity</dt><dd>Version ${esc(claim.introduced_version)}${claim.superseded_version ? `–${esc(claim.superseded_version)}` : "–present"}</dd></div></dl></details>
       </div>
@@ -1613,10 +1612,7 @@ function renderIntentRealization(intent) {
   const diff = attempt.artifact_diff
     ? `<details class="intent-realization-diff"><summary>Inspect real artifact diff</summary><pre>${esc(attempt.artifact_diff)}</pre></details>`
     : "";
-  const linkedReview = intent.realized_review_id
-    ? `<button type="button" class="button button-small open-realized-review" data-review-link="${esc(intent.realized_review_id)}">Open linked review</button>`
-    : "";
-  return `<section class="intent-realization" data-status="${esc(attempt.status)}">
+  return `<details class="intent-realization" data-status="${esc(attempt.status)}"${succeeded?"":" open"}><summary class="intent-report-summary">${I18n.mark("Implementation check")}<span>${I18n.mark(succeeded?"Completed":"Needs attention")}</span></summary>
     <header class="intent-realization-head">
       <div><p class="eyebrow">Round-trip verification</p><h4>Structural proposal realized and independently checked</h4></div>
       <span class="status-pill">${esc(title(attempt.status))}</span>
@@ -1638,8 +1634,8 @@ function renderIntentRealization(intent) {
       </div>
       <div class="intent-rehydration-list">${rehydratedHtml}</div>
     </div>
-    <footer><span>${esc(attempt.id)}</span>${linkedReview}</footer>
-  </section>`;
+    <footer><span>${esc(attempt.id)}</span></footer>
+  </details>`;
 }
 
 function renderIntentWorkspace() {
@@ -1655,15 +1651,9 @@ function renderIntentWorkspace() {
   }
   list.innerHTML = state.intents.map((intent) => {
     const activeCandidates = intent.candidates.filter((candidate) => candidate.status === "active");
-    const statusLabel = ({clarification_required: "Open questions", ready_for_selection: "Ready to select", selected: "Selected", realized: "Realized"})[intent.status] || title(intent.status);
+    const statusLabel = ({clarification_required: "Open questions", ready_for_selection: "Ready to select", selected: "Selected", realized: "Review created"})[intent.status] || title(intent.status);
     const selectedCandidate = intent.candidates.find((candidate) => candidate.id === intent.selected_candidate_id);
     const latestAttempt = (intent.realization_attempts || []).at(-1);
-    const discrepancy = latestAttempt?.round_trip_discrepancy == null
-      ? "—"
-      : Number(latestAttempt.round_trip_discrepancy).toFixed(3);
-    const coverage = latestAttempt?.observable_coverage == null
-      ? "—"
-      : `${Math.round(Number(latestAttempt.observable_coverage) * 100)}%`;
     const openState = intent.status === "realized" ? "" : " open";
     const candidates = intent.candidates.map((candidate) => {
       const selected = candidate.id === intent.selected_candidate_id;
@@ -1688,19 +1678,21 @@ function renderIntentWorkspace() {
     }).join("");
     return `<details class="intent-map-card" data-intent-id="${esc(intent.id)}" data-status="${esc(intent.status)}"${openState}>
       <summary class="intent-map-summary">
-        <div class="intent-summary-status"><span class="intent-status-dot" aria-hidden="true"></span><span class="status-pill">${esc(statusLabel)}</span></div>
+        <div class="intent-summary-status"><span class="intent-status-dot" aria-hidden="true"></span><span class="status-pill">${I18n.mark(statusLabel)}</span></div>
         <div class="intent-summary-copy"><h3>${esc(intent.request)}</h3><p>${esc(selectedCandidate ? selectedCandidate.title : intent.context)}</p></div>
         <dl class="intent-summary-metrics">
           <div><dt data-i18n=Revision>Revision</dt><dd>#${intent.revision}</dd></div>
-          ${latestAttempt ? `<div><dt>Drift</dt><dd>${discrepancy}</dd></div><div><dt data-i18n=Evidence%20coverage>Evidence coverage</dt><dd>${coverage}</dd></div>` : `<div><dt>Interpretations</dt><dd>${intent.candidates.length}</dd></div><div><dt>Open questions</dt><dd>${activeCandidates.reduce((count, candidate) => count + candidate.uncertainties.length, 0)}</dd></div>`}
+          ${latestAttempt ? `<div><dt>${I18n.mark("Implementation")}</dt><dd>${I18n.mark(latestAttempt.status==="succeeded"?"Checked":"Needs attention")}</dd></div>` : `<div><dt>Interpretations</dt><dd>${intent.candidates.length}</dd></div><div><dt>Open questions</dt><dd>${activeCandidates.reduce((count, candidate) => count + candidate.uncertainties.length, 0)}</dd></div>`}
         </dl>
         <span class="intent-summary-chevron" aria-hidden="true">⌄</span>
       </summary>
       <div class="intent-map-detail">
-        <p class="intent-next-action"><strong>Next step</strong>${esc(IntentModel.nextAction(intent))}</p>
+        <div class="intent-next-action">${intent.realized_review_id?`<span>${I18n.mark("Implementation ready for review")}</span><button type="button" class="button button-small button-primary open-realized-review" data-review-link="${esc(intent.realized_review_id)}">${I18n.mark("Open linked review")} ${uiIcon("arrow-right")}</button>`:`<strong>${I18n.mark("Next step")}</strong>${esc(IntentModel.nextAction(intent))}`}</div>
+        ${intent.status === "realized" ? `<details class="intent-interpretations"><summary>${I18n.mark("Selected interpretation")}<span>${esc(selectedCandidate?.title || "")}</span></summary>` : ""}
         <div class="intent-context-line"><span>Request context</span><p>${esc(intent.context)}</p></div>
         <div class="intent-alternatives-toolbar"><h4>Compare interpretations</h4>${IntentModel.canRevise(intent) ? `<button type="button" class="button button-small button-quiet add-intent-candidate" data-intent="${esc(intent.id)}">Add alternative</button>` : ["clarification_required", "ready_for_selection"].includes(intent.status) ? '<small>20-interpretation limit reached, including ruled-out alternatives.</small>' : ""}</div>
         <div class="intent-candidate-grid">${candidates}</div>
+        ${intent.status === "realized" ? "</details>" : ""}
         ${renderClarificationHistory(intent)}
         ${renderIntentRealization(intent)}
         <footer><span>Base version ${intent.base_version} · ${esc(short(intent.base_ref))}</span><span>${plural(intent.clarification_history.length, "recorded turn")}</span><span>Created by ${esc(intent.created_by)}</span></footer>
@@ -2863,24 +2855,24 @@ function renderReviewVerdict(review, manifest) {
   const inspection = nextReviewInspection(review, manifest);
   const scope = DecisionModel.reviewScope(review, manifest);
   const coverage = DecisionModel.requirementCoverage(review, manifest);
-  const reasonHtml=terminal?esc(reason):ready?I18n.mark(reason):blockerClauses.length
-    ? I18n.mark('Approval is blocked by:')+' '+blockerClauses.map(clause=>I18n.mark(clause)).join(' · ')
+  const reasonHtml=terminal?esc(reason):ready?I18n.mark("Configured checks passed."):blockerClauses.length
+    ? blockerClauses.map(clause=>I18n.mark(clause)).join(' · ')
     : I18n.mark('{count} blocking checks must be resolved first.',{count:manifest.blockers.length});
   return `
     <section class="review-verdict" tabindex="-1" data-ready="${ready}" data-status="${esc(review.status)}" data-tone="${esc(verdictTone(review, manifest))}">
       <div class="verdict-brief">
-      <div><p class="eyebrow">${I18n.mark('Decision brief')}</p><h3>${I18n.mark(heading)}</h3><p class="verdict-reason">${reasonHtml}</p></div>
+      <div><h3>${I18n.mark(heading)}</h3><p class="verdict-reason">${reasonHtml}</p></div>
       <div class="review-next-inspection">
         <button type="button" class="button button-primary button-with-icon" id="next-review-inspection">${uiIcon("search")}<span>${I18n.mark(inspection.label)}</span></button>
       </div>
       </div>
-      ${!terminal?`<div class="requirement-coverage" data-coverage="${coverage.status}"><div><strong>${I18n.mark(coverage.status==='recorded'?'Evidence covers the recorded requirements, not every possible risk.':coverage.status==='unframed'?'Define what this change must preserve':'Requirements still to verify')}</strong>${coverage.status==='unframed'?`<p>${I18n.mark('Turn the request into a requirement you can check.')}</p>`:coverage.unverified.length?`<ul>${coverage.unverified.map(value=>`<li>${esc(value)}</li>`).join('')}</ul>`:''}</div>${coverage.status==='unframed'&&!document.body.classList.contains('viewer-mode')?`<button type="button" class="button" data-draft-commitment>${I18n.mark('Draft a verifiable commitment')} ${uiIcon('arrow-right')}</button>`:''}</div>`:''}
+      ${!terminal&&coverage.status==='unframed'?`<div class="requirement-coverage" data-coverage="unframed"><strong>${I18n.mark('No commitment linked')}</strong>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="text-button" data-draft-commitment>${I18n.mark('Draft commitment')} ${uiIcon('arrow-right')}</button>`:''}</div>`:''}
       <details class="review-scope-note"><summary data-i18n=Assessment%20details>Assessment details</summary>
       <p class="review-coverage-note" aria-label="Structure check scope"><span data-i18n=Structure%20scope>Structure scope</span><span><b>${scope.pythonFiles}</b> <span data-i18n=Python%20files%20in%20this%20change>Python files in this change</span></span><span><b>${scope.claims}</b> <span data-i18n=linked%20rules>linked rules</span></span></p>
       <dl class="review-facts" aria-label="Review facts">
         ${facts.map((fact) => `<div data-tone="${esc(fact.tone)}"><dt class="sr-only">${I18n.mark(fact.term)}</dt><dd>${I18n.mark(fact.label)}</dd></div>`).join("")}
       </dl>
-      <p>${I18n.mark(plainVersion(inspection.detail))}</p><p data-i18n=Structure%20checks%20inspect%20changed%20Python%20imports%20and%20configured%20project%20rules.%20Tests%20run%20only%20when%20a%20command%20is%20configured.%20This%20does%20not%20prove%20behavioral%20correctness%20or%20replace%20human%20review.>Structure checks inspect changed Python imports and configured project rules. Tests run only when a command is configured. This does not prove behavioral correctness or replace human review.</p><p class="review-deterministic-summary">Recorded summary: ${esc(plainVersion(review.summary))}</p></details>
+      <p>${I18n.mark(plainVersion(inspection.detail))}</p>${ready&&!terminal?`<p>${I18n.mark("Only the configured checks have passed. This is not a guarantee that the change meets every requirement.")}</p>`:""}<p data-i18n=Structure%20checks%20inspect%20changed%20Python%20imports%20and%20configured%20project%20rules.%20Tests%20run%20only%20when%20a%20command%20is%20configured.%20This%20does%20not%20prove%20behavioral%20correctness%20or%20replace%20human%20review.>Structure checks inspect changed Python imports and configured project rules. Tests run only when a command is configured. This does not prove behavioral correctness or replace human review.</p><p class="review-deterministic-summary">Recorded summary: ${esc(plainVersion(review.summary))}</p></details>
     </section>`;
 }
 
@@ -3218,10 +3210,11 @@ function renderEvidenceBrief(review, manifest) {
   const { pending } = EvidenceModel.requirements(review, manifest);
   const findings = (review.findings || []).filter(item => effectiveFindingStatus(review, item) === "open");
   const total = pending.length + findings.length;
+  const blocked = review.status === "open" && manifest.committable === false;
   const heading = review.status !== "open" ? "Evidence for this decision"
-    : total ? "{count} items need attention" : "No outstanding evidence requirements or findings";
-  return `<section class="evidence-brief module" data-attention="${review.status === "open" && total > 0}">
-    <div><h3>${I18n.mark(heading,{count:total})}</h3><p>${I18n.mark(total ? "{requirements} evidence requirements and {findings} open findings. Passing tests alone do not clear these items." : "Evidence coverage is not approval. Check Decision for the full admission result.",{requirements:pending.length,findings:findings.length})}</p></div>
+    : total ? "{count} items need attention" : blocked ? "Not ready to approve" : "No outstanding evidence items";
+  return `<section class="evidence-brief module" data-attention="${review.status === "open" && (total > 0 || blocked)}">
+    <div><h3>${I18n.mark(heading,{count:total})}</h3><p>${I18n.mark(total ? "{requirements} requirements · {findings} findings" : blocked ? "Other checks need attention. Return to Decision." : "Approval is recorded separately.",{requirements:pending.length,findings:findings.length})}</p></div>
   </section>`;
 }
 
@@ -3231,7 +3224,7 @@ function renderEvidenceWorkspace(review, manifest) {
   const resolved = (review.findings || []).filter(item => effectiveFindingStatus(review, item) !== "open");
   const panel = (key) => `role="tabpanel" id="evidence-panel-${key}" aria-labelledby="evidence-tab-${key}" data-evidence-panel="${key}"${state.evidenceTab === key ? "" : " hidden"}`;
   return `<div class="evidence-workbench">
-    ${renderEvidenceBrief(review, manifest)}
+    <header class="evidence-workspace-header">${renderEvidenceBrief(review, manifest)}<button type="button" class="text-button" data-return-to-decision>${uiIcon("chevron-left")}${I18n.mark("Back to decision")}</button></header>
     <div class="evidence-view-tabs" role="tablist" aria-label="Evidence views">${[
       ["requirements", review.status === "open" ? "To resolve" : "Coverage", pending.length + unresolved.length],
       ["records", "Records", review.evidence.length],
@@ -3239,16 +3232,15 @@ function renderEvidenceWorkspace(review, manifest) {
     ].map(([key,label,count]) => `<button type="button" role="tab" id="evidence-tab-${key}" data-evidence-tab="${key}" aria-controls="evidence-panel-${key}" aria-selected="${state.evidenceTab === key}" tabindex="${state.evidenceTab === key ? 0 : -1}">${I18n.mark(label)}<span>${count}</span></button>`).join("")}</div>
     <section ${panel("requirements")}>
       <section id="required-evidence" class="evidence-section"><header class="section-heading"><h3 data-i18n=Evidence%20to%20collect>Evidence to collect</h3>${I18n.mark(pending.length===1?'{count} requirement':'{count} requirements',{count:pending.length})}</header>
-        ${pending.length ? renderEvidenceObligations(review, manifest, pending) : '<p class="evidence-empty" data-i18n=No%20outstanding%20evidence%20requirements.%20Review%20any%20findings%20below%20and%20check%20Decision%20before%20approving.>No outstanding evidence requirements. Review any findings below and check Decision before approving.</p>'}
+        ${pending.length ? renderEvidenceObligations(review, manifest, pending) : '<p class="evidence-empty" data-i18n=No%20outstanding%20requirements.>No outstanding requirements.</p>'}
       </section>
       <section id="review-findings" class="evidence-section"><header class="section-heading"><h3 data-i18n=Findings%20to%20review>Findings to review</h3>${I18n.mark(unresolved.length===1?'{count} finding':'{count} findings',{count:unresolved.length})}</header>
-        ${unresolved.length ? renderFindings({...review, findings:unresolved}) : '<p class="evidence-empty" data-i18n=No%20open%20findings%20were%20recorded.%20This%20does%20not%20establish%20evidence%20coverage.>No open findings were recorded. This does not establish evidence coverage.</p>'}
+        ${unresolved.length ? renderFindings({...review, findings:unresolved}) : '<p class="evidence-empty" data-i18n=No%20open%20findings.>No open findings.</p>'}
       </section>
       ${covered.length ? `<details class="review-disclosure evidence-covered"><summary><span data-i18n=Covered%20requirements>Covered requirements</span><small>${covered.length}</small></summary>${renderEvidenceObligations(review, manifest, covered)}</details>` : ""}
       ${resolved.length ? `<details class="review-disclosure evidence-covered"><summary><span data-i18n=Resolved%20or%20waived%20findings>Resolved or waived findings</span><small>${resolved.length}</small></summary>${renderFindings({...review, findings:resolved})}</details>` : ""}
     </section>
     <section ${panel("records")}>
-      <p class="evidence-view-copy" data-i18n=Inspect%20what%20ran%2C%20what%20it%20established%2C%20and%20which%20revision%20it%20covers.%20A%20passing%20run%20can%20still%20be%20inconclusive.>Inspect what ran, what it established, and which revision it covers. A passing run can still be inconclusive.</p>
       <div class="evidence-record-tools"><label><span class="sr-only" data-i18n=Search%20evidence%20records>Search evidence records</span><input type="search" id="evidence-record-search" value="${esc(state.evidenceQuery)}" placeholder="Find a record or source…" autocomplete="off" data-i18n-placeholder=Find%20a%20record%20or%20source%E2%80%A6></label><label><span class="sr-only" data-i18n=Filter%20evidence%20records>Filter evidence records</span><select id="evidence-record-filter"><option value="all"${state.evidenceFilter === "all" ? " selected" : ""} data-i18n=All%20records>All records</option><option value="attention"${state.evidenceFilter === "attention" ? " selected" : ""} data-i18n=Needs%20attention>Needs attention</option></select></label></div>
       <div id="evidence-record-scope"></div><div class="evidence-record-status"><p id="evidence-record-count" class="evidence-record-count" role="status"></p><button type="button" class="button button-quiet" id="refresh-evidence-records" data-i18n=Refresh%20records>Refresh records</button></div>
       <div id="evidence-record-list">${renderEvidence(review)}</div>
@@ -3438,9 +3430,8 @@ function renderEvidenceObligations(review, manifest, entries = null) {
     return `
       <article class="obligation-card" data-status="${esc(status.status)}" data-obligation-card="${esc(obligation.id)}" data-focused="${state.evidenceObligation === obligation.id}" tabindex="-1">
         <div class="obligation-state" aria-hidden="true">${symbols[status.status] || "?"}</div>
-        <div class="obligation-copy"><header><b>${I18n.mark(status.status === "missing" ? "Needs verification" : status.status === "unknown" ? "Unknown" : sentence(status.status))}</b><span>${I18n.mark(signed ? "Signed verification" : "Authorized record")}</span></header><h4>${esc(context.title)}</h4>${context.statement?`<p class="obligation-claim">${esc(context.statement)}</p>`:''}<p class="obligation-explanation">${I18n.mark(explanation)}</p>
-        <details class="obligation-plan"><summary>${I18n.mark('Verification plan')}</summary><ol>${context.plan.split(/\n+/).filter(Boolean).map(line=>`<li>${esc(line)}</li>`).join('')}</ol></details>
-        <div class="obligation-footer"><details class="evidence-record-details"><summary data-i18n=Requirement%20details>Requirement details</summary><dl><div><dt data-i18n=Requirement%20ID>Requirement ID</dt><dd>${esc(obligation.id)}</dd></div><div><dt data-i18n=Claim%20ID>Claim ID</dt><dd>${esc(obligation.claim_id)}</dd></div><div><dt data-i18n=Target%20revision>Target revision</dt><dd>${esc(review.target_ref)}</dd></div><div><dt data-i18n=Accepted%20source>Accepted source</dt><dd>${I18n.mark(requiredSource)}</dd></div><div><dt data-i18n=Exception%20policy>Exception policy</dt><dd>${I18n.mark(obligation.waivable ? "An authorized, bounded waiver is allowed." : "Mandatory. A waiver is not allowed.")}</dd></div>${status.evidence_ids?.length ? `<div><dt data-i18n=Evidence%20IDs>Evidence IDs</dt><dd>${esc(status.evidence_ids.join(", "))}</dd></div>` : ""}${status.waiver_ids?.length ? `<div><dt data-i18n=Waiver%20IDs>Waiver IDs</dt><dd>${esc(status.waiver_ids.join(", "))}</dd></div>` : ""}</dl></details><div class="obligation-actions">${actions}</div></div>
+        <div class="obligation-copy"><header><b>${I18n.mark(status.status === "missing" ? "Needs verification" : status.status === "unknown" ? "Unknown" : sentence(status.status))}</b><span>${I18n.mark(signed ? "Signed verification" : "Authorized record")}</span></header><h4>${esc(context.title)}</h4>
+        <div class="obligation-footer"><details class="evidence-record-details"${state.evidenceObligation===obligation.id?' open':''}><summary data-i18n=Verification%20details>Verification details</summary>${context.statement?`<p class="obligation-claim">${esc(context.statement)}</p>`:''}<p class="obligation-explanation">${I18n.mark(explanation)}</p><div class="obligation-plan"><strong>${I18n.mark('Verification plan')}</strong><ol>${context.plan.split(/\n+/).filter(Boolean).map(line=>`<li>${esc(line)}</li>`).join('')}</ol></div><dl><div><dt data-i18n=Requirement%20ID>Requirement ID</dt><dd>${esc(obligation.id)}</dd></div><div><dt data-i18n=Claim%20ID>Claim ID</dt><dd>${esc(obligation.claim_id)}</dd></div><div><dt data-i18n=Target%20revision>Target revision</dt><dd>${esc(review.target_ref)}</dd></div><div><dt data-i18n=Accepted%20source>Accepted source</dt><dd>${I18n.mark(requiredSource)}</dd></div><div><dt data-i18n=Exception%20policy>Exception policy</dt><dd>${I18n.mark(obligation.waivable ? "An authorized, bounded waiver is allowed." : "Mandatory. A waiver is not allowed.")}</dd></div>${status.evidence_ids?.length ? `<div><dt data-i18n=Evidence%20IDs>Evidence IDs</dt><dd>${esc(status.evidence_ids.join(", "))}</dd></div>` : ""}${status.waiver_ids?.length ? `<div><dt data-i18n=Waiver%20IDs>Waiver IDs</dt><dd>${esc(status.waiver_ids.join(", "))}</dd></div>` : ""}</dl></details><div class="obligation-actions">${actions}</div></div>
         ${linked || status.evidence_ids?.length ? `<button type="button" class="button button-quiet" data-evidence-obligation="${esc(obligation.id)}">View linked records${linked ? ` (${linked})` : ""}</button>` : ""}</div>
       </article>`;
   }).join("")}</div>`;
@@ -4570,7 +4561,7 @@ function reviewDecisionBoundary(review, manifest) {
   if (review.status !== "open") return review.status === "committed" ? I18n.mark("Rolling back restores the previous project state.") : "";
   if (document.body.classList.contains("viewer-mode")) return I18n.mark("Read-only view. Share findings with an operator to record the decision.");
   const blocker = manifest.admission_checks.find((item) => item.status === "block");
-  if (blocker) return I18n.mark("Approval is blocked by a check. You can still request an update or reject.");
+  if (blocker) return I18n.mark("Approval requires all blocking checks to pass.");
   const authorities = (manifest.required_authorities || []).join(" or ");
   return authorities
     ? I18n.mark("Recorded as {authorities} under {policy}.", {authorities, policy:manifest.governing_policy})
@@ -4647,10 +4638,10 @@ function renderRevisionContext(review) {
     ? 'Requirements carried forward. Evidence and approval must be collected again for this target.'
     : 'This review has its own evidence and decision records. Previous-version notes remain historical.';
   return `<section class="review-continuation" aria-label="${I18n.t('Revision history')}">
-    ${review.predecessor_review_id?`<strong>${I18n.mark('Following up on the previous review')}</strong><button class="text-button" type="button" data-followup-review="${esc(review.predecessor_review_id)}">${I18n.mark('Open previous review')}</button><p>${esc(context.reason||'')}</p><p>${I18n.mark(versionNotice)}</p>${context.findings?.length||context.source_readings?.length?`<details><summary>${I18n.mark('Questions from the previous version · not current findings')}</summary><ul>${(context.findings||[]).map(f=>`<li>${esc(f.path||'')} ${esc(f.message)}</li>`).join('')}${(context.source_readings||[]).map(n=>`<li><code>${esc(n.path)}:${n.start_line} @${esc(n.version_ref.slice(0,8))}</code> ${esc(n.summary)}</li>`).join('')}</ul></details>`:''}`:''}
-    ${canFollowUp?`<strong>${I18n.mark('Ready to review the fix?')}</strong><p>${I18n.mark('Choose the revised commit. Keep the request and requirements; do not start over.')}</p>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="button button-primary" data-review-revision>${I18n.mark('Review revised version')}</button>`:''}`:''}
-    ${children.length?`<strong>${I18n.mark('Follow-up reviews')}</strong>`:review.status==='rebase_required'&&!canFollowUp?`<p>${I18n.mark('The baseline has advanced. Start a new review against the current project version.')}</p>`:''}
-    ${children.map(child=>`<button type="button" class="text-button" data-followup-review="${esc(child.id)}">${I18n.mark('Open follow-up review')} · ${esc(short(child.target_ref))} · ${I18n.mark(reviewStatusLabel(child.status))}</button>`).join('')}
+    ${review.predecessor_review_id?`<details class="revision-summary"><summary>${uiIcon('history')}<span>${I18n.mark('Revision history')}</span><small>${I18n.mark('Follow-up')}</small></summary><div class="revision-summary-body"><button class="text-button" type="button" data-followup-review="${esc(review.predecessor_review_id)}">${I18n.mark('Open previous review')} ${uiIcon('arrow-right')}</button><p>${esc(context.reason||'')}</p><p>${I18n.mark(versionNotice)}</p>${context.findings?.length||context.source_readings?.length?`<details><summary>${I18n.mark('Questions from the previous version · not current findings')}</summary><ul>${(context.findings||[]).map(f=>`<li>${esc(f.path||'')} ${esc(f.message)}</li>`).join('')}${(context.source_readings||[]).map(n=>`<li><code>${esc(n.path)}:${n.start_line} @${esc(n.version_ref.slice(0,8))}</code> ${esc(n.summary)}</li>`).join('')}</ul></details>`:''}</div></details>`:''}
+    ${canFollowUp?`<div class="revision-next"><span>${I18n.mark('Update requested')}</span>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="button button-small" data-review-revision>${I18n.mark('Review revised version')} ${uiIcon('arrow-right')}</button>`:''}</div>`:''}
+    ${review.status==='rebase_required'&&!canFollowUp&&!children.length?`<p>${I18n.mark('The baseline has advanced. Start a new review against the current project version.')}</p>`:''}
+    ${children.map(child=>`<button type="button" class="text-button" data-followup-review="${esc(child.id)}">${I18n.mark('Open follow-up review')} · ${esc(short(child.target_ref))} · ${I18n.mark(reviewStatusLabel(child.status))} ${uiIcon('arrow-right')}</button>`).join('')}
   </section>`;
 }
 
@@ -4700,19 +4691,17 @@ function renderReview() {
         </section>
         ${CommitmentUI.reviewView(review,manifest)}
         ${CommitmentUI.riskView(review)}
-        <details class="visual-review-detail commitment-file-map"><summary><span data-i18n=Explore%20the%20code%20changes>Explore the code changes</span><small>${I18n.mark("{count} files · paths and change volume",{count:review.changed_paths.length})}</small></summary>${renderReviewChangeMap(review, manifest)}</details>
-        <details class="visual-review-detail review-linkage-detail"><summary><span data-i18n=Request-to-decision%20links>Request-to-decision links</span><small data-i18n=Inspect%20recorded%20correspondence>Inspect recorded correspondence</small></summary>${renderReviewTrace(review, manifest)}</details>
         <details class="visual-review-detail review-policy-detail"><summary><span data-i18n=Policy%20checks>Policy checks</span><small>${I18n.mark("{count} blocking checks",{count:manifest.admission_checks.filter(item=>item.status==="block").length})}</small></summary>${renderAdmission(manifest)}</details>
         ${records ? `<details class="review-disclosure decision-history module"${open ? "" : " open"}><summary><span data-i18n=Recorded%20decision>Recorded decision</span><small>${plural(review.decision_records.length, "record")}</small></summary>${records}</details>` : ""}
       </section>
 
       <section role="tabpanel" id="review-panel-evidence" aria-labelledby="review-tab-evidence" data-review-panel="evidence"${reviewWorkspaceTab === "evidence" ? "" : " hidden"}>
-        <div class="review-return-row"><p>${I18n.mark('Inspect the records, then return to your decision.')}</p><button type="button" class="text-button" data-return-to-decision>${uiIcon('chevron-left')}${I18n.mark('Back to decision')}</button></div>
         ${renderEvidenceWorkspace(review, manifest)}
       </section>
 
       <section role="tabpanel" id="review-panel-changes" aria-labelledby="review-tab-changes" data-review-panel="changes"${reviewWorkspaceTab === "changes" ? "" : " hidden"}>
-        <div class="review-return-row"><p>${I18n.mark('Read the change alongside its findings.')}</p><button type="button" class="text-button" data-return-to-decision>${uiIcon('chevron-left')}${I18n.mark('Back to decision')}</button></div>
+        <div class="review-return-row"><button type="button" class="text-button" data-return-to-decision>${uiIcon('chevron-left')}${I18n.mark('Back to decision')}</button></div>
+        <details class="visual-review-detail commitment-file-map"><summary><span data-i18n=Explore%20the%20code%20changes>Explore the code changes</span><small>${I18n.mark("{count} files · paths and change volume",{count:review.changed_paths.length})}</small></summary>${renderReviewChangeMap(review, manifest)}</details>
         <div class="detail-body review-changes-panel">
           <div id="changed-files-block">${renderChangedFiles(review)}</div>
           <p class="diff-note hidden" id="diff-note" role="note"></p>
@@ -4724,7 +4713,8 @@ function renderReview() {
       </section>
 
       <section role="tabpanel" id="review-panel-audit" aria-labelledby="review-tab-audit" aria-label="Decision provenance" data-review-panel="audit"${reviewWorkspaceTab === "audit" ? "" : " hidden"} data-i18n-aria-label=Decision%20provenance>
-        <div class="review-return-row"><p>${I18n.mark('Inspect the records, then return to your decision.')}</p><button type="button" class="text-button" data-return-to-decision>${uiIcon('chevron-left')}${I18n.mark('Back to decision')}</button></div>
+        <div class="review-return-row"><button type="button" class="text-button" data-return-to-decision>${uiIcon('chevron-left')}${I18n.mark('Back to decision')}</button></div>
+        <details class="visual-review-detail review-linkage-detail"><summary><span data-i18n=Request-to-decision%20links>Request-to-decision links</span><small data-i18n=Inspect%20recorded%20correspondence>Inspect recorded correspondence</small></summary>${renderReviewTrace(review, manifest)}</details>
         <div class="detail-body review-audit-panel">
           <div id="contract-graph-mount" class="module module-flush"></div>
           <details class="review-disclosure audit-events module"><summary><span data-i18n=Recorded%20events>Recorded events</span><small>${plural(state.events.length, "event")}</small></summary><div class="timeline">${events || '<div class="empty-contract" data-i18n=No%20recorded%20events%20yet.>No recorded events yet.</div>'}</div></details>
