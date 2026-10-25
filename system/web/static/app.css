@@ -4,7 +4,10 @@
 
 /* Requirement coverage and revision continuity share the existing restrained palette. */
 .requirement-coverage, .review-continuation, .commitment-drafting { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel-subtle); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
-.requirement-coverage { margin-top: 16px; border-inline-start: 3px solid var(--orange); }
+.requirement-coverage { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:16px; border-inline-start:3px solid var(--orange); }
+.requirement-coverage > div { min-width:0; }
+.requirement-coverage[data-coverage="unframed"] { border:0; padding:16px 0 8px; background:transparent; }
+.requirement-coverage .button { flex:none; max-width:100%; }
 .requirement-coverage[data-coverage="recorded"] { border-inline-start-color: var(--positive); }
 .requirement-coverage ul, .review-continuation ul { padding-inline-start: 20px; margin: 8px 0; }
 .requirement-coverage p, .review-continuation p { margin: 6px 0 10px; color: var(--muted); }
@@ -24,7 +27,7 @@
 #commitment-draft-result details { max-height: 280px; overflow: auto; overscroll-behavior: contain; }
 #commitment-draft-result details p { margin: 8px 0; color: var(--muted); }
 .requirement-coverage .button, .review-continuation .button, .commitment-drafting .button { white-space: normal; text-align: start; min-height: 44px; }
-@media (max-width: 600px) { .requirement-coverage, .review-continuation, .commitment-drafting { padding: 12px; } }
+@media (max-width: 600px) { .requirement-coverage, .review-continuation, .commitment-drafting { padding:12px; } .requirement-coverage { align-items:stretch; flex-direction:column; gap:4px; } }
 
 /* Viewer role hides every governed mutation. */
 .viewer-mode #new-review-button,
@@ -665,7 +668,7 @@ dialog form { padding: 24px; }
 .graph-metrics strong { display: block; color: var(--ink); font: 600 14px var(--font-code); }
 .contract-graph-stage { display: block; min-height: 0; }
 .contract-graph-viewport { position: relative; min-width: 0; overflow: hidden; border-bottom: 1px solid var(--line); background-color: var(--panel); }
-.contract-graph-viewport:focus-within { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
+.contract-graph-viewport:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
 #contract-graph-canvas { width: 100%; outline: none; }
 .graph-lane-labels { position: absolute; top: 12px; left: 6%; right: 6%; z-index: 1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); pointer-events: none; }
 .contract-graph-viewport[data-lens="full"] .graph-lane-labels { grid-template-columns: repeat(6, minmax(0, 1fr)); }
@@ -770,7 +773,19 @@ dialog form { padding: 24px; }
   .ai-eval-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 /* Version-bound AI advice stays visually separate from recorded checks. */
-.ai-risk-panel { margin-top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.ai-risk-panel { margin-top:0; border:1px solid var(--line); border-radius:10px; min-width:0; }
+.ai-risk-panel > summary { display:flex; align-items:center; gap:12px; min-height:56px; padding:14px 18px; cursor:pointer; list-style:none; }
+.ai-risk-panel > summary::-webkit-details-marker { display:none; }
+.ai-risk-panel > summary::after { content:'+'; margin-left:auto; font-size:18px; color:var(--dim); }
+.ai-risk-panel[open] > summary::after { content:'−'; }
+.ai-risk-panel > summary strong { font-size:14px; }
+.ai-risk-panel > summary > span { font-size:12px; color:var(--muted); }
+.ai-risk-body { padding:0 18px 18px; font-size:13px; line-height:1.65; }
+.ai-risk-body .ai-risk-heading { margin-bottom:12px; }
+.ai-risk-heading .field-hint { max-width:65ch; flex:1; margin:0; }
+.ai-risk-heading .button { flex:none; min-height:40px; }
+.ai-risk-panel > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:8px; }
+@media(max-width:600px) { .ai-risk-panel > summary { flex-wrap:wrap; gap:4px 12px; } .ai-risk-panel > summary > span { order:2; flex-basis:100%; } .ai-risk-heading { flex-direction:column; align-items:stretch !important; } }
 .ai-risk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .ai-risk-heading > strong { font-size: 14px; }
 .ai-advice-origin, .ai-risk-panel > .field-hint { font-size: 12px; line-height: 1.6; }

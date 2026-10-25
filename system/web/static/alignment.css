@@ -112,7 +112,6 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .alignment-focus .meaning-focus-footer { box-shadow:0 -8px 12px -12px rgb(0 0 0 / .18); }
 @media (min-width:901px) {
   .project-canvas[data-surface="state"]:has(.meaning-workspace) > .project-canvas-head { padding-block:18px; }
-  .meaning-workspace-body { height:calc(100dvh - 164px); }
   .alignment-focus .meaning-focus-main { padding-top:20px; }
   .alignment-heading { margin-bottom:16px; }
   .alignment-heading h3 { margin-top:6px; font-size:25px; }
@@ -151,7 +150,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .project-canvas[data-surface="state"]:has(.meaning-workspace) .project-canvas-head h2 { font:600 17px/1.5 var(--font-ui); }
 .project-canvas[data-surface="state"]:has(.meaning-workspace) > .state-surface-tabs { top:12px; }
 .meaning-workspace { margin:0 14px 14px; border-radius:8px; }
-.meaning-workspace-body { grid-template-columns:216px minmax(0,1fr); height:calc(100dvh - 166px); min-height:540px; }
+.meaning-workspace-body { grid-template-columns:216px minmax(0,1fr); height:100%; min-height:0; }
 .meaning-index { padding:20px 10px 16px; }
 .meaning-index-heading { padding-bottom:20px; }
 .meaning-choice { padding:13px 10px; margin-bottom:5px; }
@@ -163,15 +162,15 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .meaning-index-footer p { font-size:11px; }
 .alignment-focus[data-inspector-open="true"] { grid-template-columns:minmax(0,1fr) clamp(360px,27vw,432px); }
 .alignment-focus .meaning-focus-main { padding:0; overflow:hidden; }
-.alignment-heading { flex:none; margin:0; padding:23px 26px 17px; gap:14px; }
-.alignment-heading h3 { font-size:25px; line-height:1.5; margin-top:8px; letter-spacing:-.025em; }
+.alignment-heading { flex:none; margin:0; padding:16px 24px 12px; gap:14px; }
+.alignment-heading h3 { font-size:23px; line-height:1.35; margin-top:6px; letter-spacing:-.025em; }
 .alignment-eyebrow > span + span { font-size:11px; }
-.meaning-heading-detail { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; margin-top:9px; color:var(--muted); font-size:12px; line-height:1.7; }
+.meaning-heading-detail { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; margin-top:5px; color:var(--muted); font-size:12px; line-height:1.7; }
 .meaning-heading-detail button { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); min-height:28px; }
 .meaning-heading-detail .ui-icon { width:13px; height:13px; }
 .meaning-workbar { display:flex; align-items:center; gap:12px; padding:0 24px; border-bottom:1px solid var(--line); flex:none; }
 .meaning-view-tabs { display:flex; gap:18px; min-width:0; }
-.meaning-view-tabs button { display:flex; align-items:center; justify-content:center; gap:7px; min-height:46px; padding:0 1px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; color:var(--muted); font:500 12px/1.5 var(--font-ui); white-space:nowrap; }
+.meaning-view-tabs button { display:flex; align-items:center; justify-content:center; gap:7px; min-height:42px; padding:0 1px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; color:var(--muted); font:500 12px/1.5 var(--font-ui); white-space:nowrap; }
 .meaning-view-tabs button[aria-selected="true"] { color:var(--ink); border-bottom-color:var(--ink); }
 .meaning-view-tabs button:hover { color:var(--ink); }
 .meaning-view-tabs .ui-icon { width:14px; height:14px; }
@@ -201,13 +200,13 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .meaning-previous-agreement h4 { font-size:12px; color:var(--muted); }
 .meaning-previous-agreement p { margin-top:10px; font-size:14px; line-height:1.8; overflow-wrap:anywhere; }
 .alignment-focus .alignment-canvas { min-height:100%; display:flex; flex-direction:column; border:0; border-radius:0; padding:20px 26px 0; background-color:var(--panel-subtle); background-image:radial-gradient(color-mix(in srgb,var(--dim) 20%,transparent) .65px,transparent .65px); background-size:22px 22px; }
-.alignment-canvas-caption { flex:none; padding:0 0 26px; font-size:11px; }
+.alignment-canvas-caption { flex:none; padding:0 0 16px; font-size:12px; }
 .alignment-canvas-caption > span,.alignment-map-legend > span,.alignment-map-legend > button { background:transparent; }
 .alignment-contract { width:min(100%,610px); margin:0 auto; padding:18px; box-shadow:0 1px 3px rgb(0 0 0 / .025); }
 .alignment-contract-mark { color:var(--muted); background:var(--raised); width:32px; height:36px; font-size:20px; border-radius:4px; }
 .alignment-contract p { font-size:15px; line-height:1.8; }
 .alignment-contract-label { font-size:11px; }
-.alignment-connectors { flex:none; height:56px; }
+.alignment-connectors { flex:none; height:36px; }
 .alignment-focus[data-inspector-open] .alignment-readings { gap:12px; }
 .alignment-focus[data-inspector-open] .alignment-reading { padding:14px 14px 0; min-height:178px; border-radius:6px; box-shadow:none; }
 .alignment-reading:hover { box-shadow:none; }
@@ -221,11 +220,11 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .reading-card-source code,.reading-card-source > span { font-size:10px; }
 .alignment-map-legend { margin-top:auto; padding:24px 0 18px; font-size:11px; gap:12px; }
 .meaning-review-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px 16px; padding:9px 24px; border-top:1px solid var(--line); flex:none; }
-.meaning-review-actions > span { flex:1; min-width:120px; color:var(--dim); font-size:11px; line-height:1.6; }
+.meaning-review-actions > span { flex:1; min-width:120px; color:var(--dim); font-size:12px; line-height:1.6; }
 .meaning-review-actions button { display:flex; align-items:center; gap:5px; min-height:28px; font-size:12px; color:var(--muted); }
 .meaning-review-actions .ui-icon { width:13px; height:13px; }
 .alignment-focus .meaning-focus-footer { display:block; position:static; margin:0; padding:0 24px; box-shadow:none; }
-.meaning-focus-footer .meaning-next-step { margin:0; padding:13px 0; border:0; gap:12px; }
+.meaning-focus-footer .meaning-next-step { margin:0; padding:10px 0; border:0; gap:12px; }
 .meaning-next-step strong { font-size:13px; }
 .meaning-next-step p { font-size:12px; line-height:1.7; }
 .meaning-next-step > button { min-height:38px; }
@@ -243,7 +242,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .meaning-tree-search { display:flex; align-items:center; position:relative; }
 .meaning-tree-search > .ui-icon { position:absolute; left:9px; width:13px; height:13px; color:var(--dim); }
 .meaning-tree-search input { min-height:32px; padding:6px 10px 6px 30px; font-size:12px; background:var(--panel); }
-.meaning-file-tree { max-height:148px; min-height:38px; overflow:auto; margin-top:8px; scrollbar-width:thin; }
+.meaning-file-tree { max-height:108px; min-height:38px; overflow:auto; margin-top:8px; scrollbar-width:thin; }
 .meaning-tree-folder > div { padding-left:14px; }
 .meaning-tree-folder summary { display:flex; gap:8px; align-items:center; min-height:30px; color:var(--muted); font:12px/1.6 var(--font-code); cursor:pointer; list-style:none; }
 .meaning-tree-folder summary::-webkit-details-marker { display:none; }
@@ -270,7 +269,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .meaning-source-find > .ui-icon { left:26px; }
 #meaning-inspector-content { display:flex; flex-direction:column; }
 #meaning-inspector-content > :not(.meaning-code) { flex:none; }
-.meaning-code { margin-top:8px; flex:1; max-height:none; min-height:160px; }
+.meaning-code { margin-top:8px; flex:1; max-height:none; min-height:100px; }
 .meaning-code-line { font-size:12px; line-height:1.85; }
 .alignment-focus[data-inspector-expanded="true"] { grid-template-columns:minmax(0,1fr); }
 .alignment-focus[data-inspector-expanded="true"] .meaning-file-browser { display:none; }
@@ -279,7 +278,9 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 @media (min-width:901px) {
   .project-canvas[data-surface="state"]:has(.meaning-workspace) .project-canvas-heading { display:flex; align-items:baseline; gap:16px; }
   .project-canvas[data-surface="state"]:has(.meaning-workspace) #project-canvas-copy { margin:0; }
-  .meaning-workspace-body { height:calc(100dvh - 142px); }
+  .project-canvas[data-surface="state"]:has(.meaning-workspace) { height:calc(100dvh - var(--topbar-height)); min-height:560px; grid-template-rows:auto minmax(0,1fr); }
+  #project-state-overview:has(.meaning-workspace) { display:flex; min-height:0; }
+  .meaning-workspace { flex:1; min-width:0; }
 }
 @container meaning-comparison (max-width:650px) {
   .alignment-focus[data-inspector-open] .alignment-readings { grid-template-columns:1fr; }
@@ -294,7 +295,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 @media (min-width:901px) and (max-width:1250px) {
   .meaning-workspace-body { grid-template-columns:184px minmax(0,1fr); }
   .alignment-focus[data-inspector-open="true"] { grid-template-columns:minmax(0,1fr) 350px; }
-  .alignment-heading { padding:20px; }
+  .alignment-heading { padding:16px 18px 12px; }
   .alignment-heading h3 { font-size:22px; }
   .meaning-workbar { padding-inline:18px; gap:8px; }
   .meaning-workbar button { font-size:11px; }
@@ -314,7 +315,7 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
   .meaning-workspace { margin-inline:12px; }
   .meaning-index { padding:10px; }
   .meaning-choice { padding:10px 12px; margin:0; }
-  .alignment-heading { padding:20px; }
+  .alignment-heading { padding:16px 18px 12px; }
   .alignment-focus .alignment-canvas { padding:18px 20px 0; }
   .meaning-workbar { padding-inline:18px; }
   .meaning-view-tabs { gap:18px; }
@@ -331,9 +332,9 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
   .project-canvas[data-surface="state"]:has(.meaning-workspace) > .state-surface-tabs { padding-bottom:10px; }
   .alignment-heading { padding:18px 16px 14px; }
   .alignment-heading h3 { font-size:22px; }
-  .alignment-heading .alignment-authority { font-size:10px; padding:4px 6px; }
-  .alignment-eyebrow { font-size:10px; gap:6px; }
-  .alignment-eyebrow > span + span { font-size:9px; padding-left:6px; }
+  .alignment-heading .alignment-authority { font-size:12px; padding:4px 6px; }
+  .alignment-eyebrow { font-size:12px; gap:6px; }
+  .alignment-eyebrow > span + span { font-size:12px; padding-left:6px; }
   .meaning-workbar { padding:0 10px; gap:6px; }
   .meaning-view-tabs { flex:1; justify-content:space-between; gap:8px; }
   .meaning-view-tabs button { font-size:12px; min-height:44px; }

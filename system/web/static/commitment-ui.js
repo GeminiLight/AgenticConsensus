@@ -7,6 +7,7 @@ window.CommitmentUI=(()=>{
   const drafts=new Map();
   const selections=new Map();
   const reviewSelections=new Map();
+  const riskDisclosures=new Map();
   const inspections=new Map(),inspectorChoices=new Map();
   let inspectionRequest=null;
   let selectionFrame=null;
@@ -206,20 +207,24 @@ window.CommitmentUI=(()=>{
   }
   function projectView(project,reviews){
     const data=CommitmentModel.projectState(project,reviews);
-    const unframed=data.unframed;
+    const unframed=CanvasModel.orderedReviews(data.unframed);
     if(state.projectLoadError||state.reviewsLoading)return `<div class="state-loading" role="status">${state.projectLoadError?'Project state unavailable. Retry the project to continue.':'Reading the project state…'}</div>`;
     if(data.pending.length||data.authorized.length)return meaningWorkspace(project,reviews);
-    return `<div class="state-overview-grid"><section class="state-agreements"><header><span class="state-section-number">01</span><div><h3 data-i18n=Agreed%20state>Agreed state</h3><p>What this project is committed to · version ${project.version}</p></div><span class="count">${data.authorized.length}</span></header>
-      ${data.authorized.length?data.authorized.map(item=>`<article class="state-agreement"><span class="commitment-category">${m(sentence(item.category))}</span><h4>${esc(item.title)}</h4>${textBlock(item.statement)}<details><summary data-i18n=Files%20%26%20verification>Files & verification</summary><p class="commitment-paths">${item.paths.map(esc).join(' · ')}</p><p>${esc(item.verification)}</p></details></article>`).join(''):
-      `<div class="state-empty"><span class="state-empty-symbol">${uiIcon('network')}</span><h4 data-i18n=No%20agreed%20commitments%20yet>No agreed commitments yet</h4><p data-i18n=Start%20with%20one%20concrete%20behavior%20or%20boundary.%20Once%20its%20proposal%20is%20approved%2C%20it%20belongs%20here.>Start with one concrete behavior or boundary. Once its proposal is approved, it belongs here.</p><button type="button" class="text-button" data-state-start>${I18n.mark("Describe the first commitment")} ${uiIcon('arrow-right')}</button></div>`}</section>
-      <section class="state-pending"><header><span class="state-section-number">02</span><div><h3 data-i18n=Proposed%20changes>Proposed changes</h3><p data-i18n=Not%20yet%20part%20of%20the%20agreed%20state>Not yet part of the agreed state</p></div><span class="count">${data.pending.length}</span></header>
-      ${data.pending.length?data.pending.map(change=>`<button type="button" class="state-proposal" data-commitment-review="${esc(change.reviewId)}"><span class="commitment-category">${change.before?'Revise commitment':'New commitment'}</span><strong>${esc(change.after.title)}</strong><span>${esc(change.after.statement.slice(0,180))}${change.after.statement.length>180?'…':''}</span><small>${I18n.mark("Review the interpretation & evidence")} ${uiIcon('arrow-right')}</small></button>`).join(''):
-      `<p class="state-pending-empty" data-i18n=No%20commitment%20proposals%20awaiting%20approval.>No commitment proposals awaiting approval.</p>`}
-      ${unframed.length?`<div class="state-unframed"><h4 data-i18n=Changes%20to%20interpret>Changes to interpret</h4><p data-i18n=These%20reviews%20have%20code%20changes%2C%20but%20no%20proposed%20commitment%20yet.>These reviews have code changes, but no proposed commitment yet.</p>${unframed.map(review=>`<button type="button" class="state-proposal" data-commitment-review="${esc(review.id)}"><span class="commitment-category">${plural((review.changed_paths||[]).length,'changed file')}</span><strong>${esc(review.intent_summary||review.summary||'Untitled change')}</strong><small>${I18n.mark("Inspect what this change means")} ${uiIcon('arrow-right')}</small></button>`).join('')}</div>`:!data.pending.length?`<button type="button" class="button" data-state-start>${I18n.mark("Start a change")} ${uiIcon('arrow-right')}</button>`:''}
-      ${(project.claims||[]).length?`<div class="state-existing-rules"><span>${plural(project.claims.length,'automated rule')} configured</span><button type="button" class="text-button" data-open-project-view="governance" data-i18n=Inspect%20rules>Inspect rules</button></div>`:''}</section></div>`;
+    return `<div class="state-overview-grid">
+      <section class="state-pending"><header><div><p class="eyebrow">${m('Review queue')}</p><h3>${m(unframed.length?'Choose a change to review':'Start with a code change')}</h3><p>${m('Understand the change, check the evidence, then decide.')}</p></div><span class="count">${unframed.length}</span></header>
+        ${unframed.length?unframed.map(review=>`<button type="button" class="state-proposal" data-commitment-review="${esc(review.id)}"><span class="state-proposal-meta"><span>${plural((review.changed_paths||[]).length,'changed file')}</span><span class="status-pill status-${esc(review.status)}" data-tone="${esc(canvasReviewTone(review))}">${m(canvasReviewTone(review)==='attention'?'Needs attention':canvasReviewTone(review)==='stale'?reviewStatusLabel(review.status):'Open')}</span></span><strong>${esc(review.intent_summary||review.summary||I18n.t('Untitled change'))}</strong><small>${m('Open decision brief')} ${uiIcon('arrow-right')}</small></button>`).join(''):`<div class="state-empty"><p>${m('Choose a pull request or compare revisions to see what needs attention.')}</p>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="button" data-state-start>${m('Start a change')} ${uiIcon('arrow-right')}</button>`:''}</div>`}
+      </section>
+      <section class="state-agreements"><header><div><p class="eyebrow">${m('Project agreement')}</p><h3>${m('What should stay true')}</h3></div></header>
+        <div class="state-empty"><span class="state-empty-symbol" aria-hidden="true">${uiIcon('shield-check')}</span><h4>${m('No agreed commitments yet')}</h4><p>${m('A commitment records the behavior or boundary this project must preserve. Draft one from a review, then verify it before approval.')}</p></div>
+        ${(project.claims||[]).length?`<div class="state-existing-rules"><span>${m('{count} configured rules',{count:project.claims.length})}</span><button type="button" class="text-button" data-open-project-view="governance">${m('Inspect rules')} ${uiIcon('arrow-right')}</button></div>`:''}
+      </section>
+    </div>`;
   }
   function reviewView(review,manifest){
     const rows=CommitmentModel.reviewRows(review,manifest),editable=review.status==='open'&&!document.body.classList.contains('viewer-mode');
+    // The decision brief already offers the first-draft action. Keep this panel
+    // for actual commitments instead of repeating an empty three-step tutorial.
+    if (!rows.length) return '';
     const key=locationMeaning(),prefix=key?.slice(0,key.indexOf(':'));
     const linkedId=prefix===review.id||prefix==='agreed'?key.slice(key.indexOf(':')+1):null;
     const selected=rows.find(row=>row.id===linkedId)||rows.find(row=>row.id===reviewSelections.get(review.id))||rows[0];
@@ -288,12 +293,20 @@ window.CommitmentUI=(()=>{
   }
   function riskView(review){
     const result=currentRiskResult(review),key=resourceKey(review),busy=riskPending.has(key),error=riskErrors.get(key);
-    return `<section class="ai-risk-panel" aria-label="${I18n.t('AI risk analysis')}" data-risk-panel><div class="ai-risk-heading"><strong>${m('AI risk analysis')}</strong>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="button" data-analyze-risks ${busy?'disabled':''}>${m(busy?'Analyzing risks…':result?'Analyze again':'Analyze risks')}</button>`:''}</div><p class="field-hint">${m('Uses the configured model with limited request, source and check records. Advice cannot approve a change.')}</p><div aria-live="polite" aria-busy="${busy}">${busy?`<p>${m('Reading source and checks; your work stays editable…')}</p>`:''}${error?`<p role="alert">${esc(error)}</p>`:''}${result?adviceMarkup(result):`<p>${m('Not analyzed · passing tests do not establish requirement coverage.')}</p>`}</div></section>`;
+    const expanded=riskDisclosures.get(key)??Boolean(result||busy||error);
+    const status=busy?'Analyzing risks…':error?'Analysis needs attention':result?(result.method==='model'?'Advice available':'AI analysis unavailable · local draft only'):'Optional · not analyzed';
+    return `<details class="ai-risk-panel" data-risk-panel data-risk-key="${esc(key)}"${expanded?' open':''}><summary><strong>${m('AI risk analysis')}</strong><span role="status">${m(status)}</span></summary><div class="ai-risk-body"><div class="ai-risk-heading"><p class="field-hint">${m('Uses the configured model with limited request, source and check records. Advice cannot approve a change.')}</p>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="button" data-analyze-risks ${busy?'disabled':''}>${m(busy?'Analyzing risks…':result?'Analyze again':'Analyze risks')}</button>`:''}</div><div aria-busy="${busy}">${busy?`<p>${m('Reading source and checks; your work stays editable…')}</p>`:''}${error?`<p role="alert">${esc(error)}</p>`:''}${result?adviceMarkup(result):`<p>${m('Not analyzed · passing tests do not establish requirement coverage.')}</p>`}</div></div></details>`;
   }
   function rememberAdvice(result,review,feature,projectVersion){
     state.aiRuns.unshift({id:result.run_id,project_id:review.project_id,review_id:review.id,review_revision:review.revision,project_version:projectVersion,feature,result});
   }
-  function refreshRiskPanel(){const panel=$('[data-risk-panel]');if(panel&&state.activeReview)panel.outerHTML=riskView(state.activeReview);}
+  function refreshRiskPanel(){
+    const panel=$('[data-risk-panel]');if(!panel||!state.activeReview)return;
+    const restoreFocus=panel.contains(document.activeElement);
+    riskDisclosures.set(panel.dataset.riskKey,panel.open);
+    panel.outerHTML=riskView(state.activeReview);
+    if(restoreFocus)($('[data-risk-panel] [data-analyze-risks]:not(:disabled)')||$('[data-risk-panel] > summary'))?.focus({preventScroll:true});
+  }
   async function analyzeRisks(){
     const review=state.activeReview;if(!review)return;
     const key=resourceKey(review),version=state.activeProject.version,selection=state.selectionVersion;
@@ -332,6 +345,9 @@ window.CommitmentUI=(()=>{
     finally{if(generation===draftGeneration)setBusy(button,false);}
   }
   function bind(){
+    document.addEventListener('toggle',event=>{
+      if(event.target.matches?.('[data-risk-panel]'))riskDisclosures.set(event.target.dataset.riskKey,event.target.open);
+    },true);
     $('#draft-commitment-button').addEventListener('click',generateDraft);
     $('#commitment-dialog').addEventListener('close',()=>{draftGeneration++;setBusy($('#draft-commitment-button'),false);});
     window.addEventListener('resize',revealSelection,{passive:true});
@@ -449,5 +465,5 @@ window.CommitmentUI=(()=>{
   }
   function closeInspector(){const item=currentMeaning();if(!item)return;rememberReading();const choice=inspectorChoice(item);choice.open=false;choice.expanded=false;refreshInspection();const original=document.querySelector(choice.opener||'[data-meaning-files-toggle]'),opener=original?.checkVisibility()?original:$('[data-meaning-files-toggle]');opener?.focus({preventScroll:true});if(matchMedia('(max-width:900px)').matches)opener?.scrollIntoView({block:'center',behavior:'instant'});}
   function clear(){inspectionRequest?.controller.abort();inspectionRequest=null;inspections.clear();inspectorChoices.clear();drafts.clear();selections.clear();reviewSelections.clear();const form=$('#commitment-form');form?.reset();if(form)delete form.dataset.commitmentDraft;$('#commitment-dialog')?.close();}
-  return {projectView,reviewView,setSurface,bind,riskView,clear:()=>{riskPending.clear();riskErrors.clear();clear();}};
+  return {projectView,reviewView,setSurface,bind,riskView,clear:()=>{riskPending.clear();riskErrors.clear();riskDisclosures.clear();clear();}};
 })();
