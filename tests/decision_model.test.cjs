@@ -122,6 +122,26 @@ test('ready reviews lead to reading the change, never automatic approval', () =>
   assert.deepEqual(inspect(review,{committable:true,admission_checks:[check('tests','pass')]}),
     {kind:'changes',label:'Read proposed changes',detail:'Passing checks do not replace your review.'});
 });
+test('an operator with an unframed change is led to define its commitment',()=>{
+  const ready={committable:true,admission_checks:[check('tests','pass')]};
+  const step=model.nextInspection(review,ready,{canPropose:true});
+  assert.equal(step.kind,'commitment');assert.equal(step.label,'Define what must hold');
+  assert.equal(model.nextInspection(review,ready,{canPropose:false}).kind,'changes');
+  assert.equal(model.nextInspection(review,manifest,{canPropose:true}).kind,'finding');
+  const framed={...review,commitment_changes:[{after:{id:'c',statement:'Exclude private notes'}}]};
+  assert.equal(model.nextInspection(framed,ready,{canPropose:true}).kind,'changes');
+});
+test('approval leads to its current agreed commitment, while older decisions retain their history',()=>{
+  const after={id:'c',title:'Public exports',statement:'Exclude private notes',category:'behavior',verification:'Check privacy',paths:['exports.py']};
+  const source={...review,status:'committed',target_ref:'accepted',commitment_changes:[{after}],decision_records:[{action:'commit'}]};
+  const project={head_ref:'accepted',commitments:[after]};
+  const step=model.nextInspection(source,{}, {project});
+  assert.equal(step.kind,'agreement');assert.equal(step.commitmentId,'c');
+  for(const other of [null,{...project,head_ref:'later'},{...project,commitments:[]},{...project,commitments:[{...after,statement:'Revised agreement'}]}]){
+    assert.equal(model.nextInspection(source,{}, {project:other}).kind,'audit');
+  }
+  assert.equal(model.nextInspection({...source,status:'rejected'},{},{project}).kind,'audit');
+});
 test('closed reviews inspect provenance and a contradictory manifest stays safe', () => {
   for(const status of ['committed','rejected','rebase_required','rolled_back']) {
     assert.equal(inspect({...review,status},manifest).kind,'audit');

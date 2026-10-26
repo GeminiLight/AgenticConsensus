@@ -148,7 +148,7 @@ window.CommitmentUI=(()=>{
     const unread=data.unreadPaths.map(path=>`<li><button type="button" class="alignment-file" data-meaning-file="${esc(path)}" title="${esc(path)}"${item.reviewId?'':' disabled'}>${uiIcon('file-text')}<span><strong>${esc(path.split('/').at(-1))}</strong><small>${path.includes('/')?esc(path.slice(0,path.lastIndexOf('/'))):m('Repository root')}</small></span>${uiIcon('arrow-right')}</button></li>`).join('');
     const editable=item.kind!=='agreed'&&item.reviewId&&!document.body.classList.contains('viewer-mode');
     return `<article id="meaning-focus" class="meaning-focus alignment-focus" data-meaning-key="${esc(item.key)}" data-inspector-open="${Boolean(choice.open)}" data-inspector-expanded="${Boolean(choice.open&&choice.expanded)}" aria-label="${esc(item.after.title)}"><div class="meaning-focus-main">
-      <header class="alignment-heading"><div class="alignment-title"><h3 id="meaning-title">${esc(item.after.title)}</h3><span class="alignment-authority" data-kind="${item.kind}"><i></i>${m(proposed?'Awaiting agreement':item.kind==='recheck'?'Agreed · rechecking':'Agreed')}</span></div><div class="alignment-heading-actions">${data.questions?`<span>${plural(data.questions,'question raised')}</span>`:''}${editable?`<button type="button" class="text-button" data-meaning-edit="${esc(item.reviewId)}" data-meaning-commitment="${esc(item.after.id)}">${m(proposed?'Revise interpretation':'Propose revision')}</button>`:''}</div></header>
+      <header class="alignment-heading"><div class="alignment-title"><h3 id="meaning-title" tabindex="-1">${esc(item.after.title)}</h3><span class="alignment-authority" data-kind="${item.kind}"><i></i>${m(proposed?'Awaiting agreement':item.kind==='recheck'?'Agreed · rechecking':'Agreed')}</span></div><div class="alignment-heading-actions">${data.questions?`<span>${plural(data.questions,'question raised')}</span>`:''}${editable?`<button type="button" class="text-button" data-meaning-edit="${esc(item.reviewId)}" data-meaning-commitment="${esc(item.after.id)}">${m(proposed?'Revise interpretation':'Propose revision')}</button>`:''}</div></header>
       <div class="meaning-workbar"><div class="meaning-view-tabs" role="tablist" aria-label="${I18n.t('Workspace views')}" data-i18n-aria-label=Workspace%20views>${[['canvas','network','Relationship canvas','Canvas'],['changes','file-text','Changes','Changes'],['evidence','shield-check','Verification','Evidence'],['history','history','History','History']].map(([tab,icon,label,compact])=>`<button type="button" id="meaning-view-${tab}" role="tab" aria-selected="${choice.view===tab}" aria-controls="meaning-pane-${tab}" tabindex="${choice.view===tab?'0':'-1'}" data-meaning-view="${tab}">${uiIcon(icon)}<span class="meaning-view-full">${m(label)}</span><span class="meaning-view-short">${m(compact)}</span></button>`).join('')}</div><button type="button" class="meaning-files-toggle" data-meaning-files-toggle aria-expanded="${Boolean(choice.open)}" aria-controls="meaning-inspector">${uiIcon('panel-right')}${m('Files')}</button></div>
       <div class="meaning-workspace-content">
       <div id="meaning-pane-canvas" class="meaning-view-pane" role="tabpanel" aria-labelledby="meaning-view-canvas" tabindex="0"${choice.view==='canvas'?'':' hidden'}>
@@ -286,10 +286,17 @@ window.CommitmentUI=(()=>{
     $('#commitment-files').innerHTML=paths.map(path=>`<label><input type="checkbox" name="paths" value="${esc(path)}"${selected.includes(path)?' checked':''}><span>${esc(path)}</span></label>`).join('');
     $('#commitment-source-readings').innerHTML=(draft?.source_readings||row?.sourceReadings||[]).map(readingEditor).join('');
     $('.source-readings-editor').open=false;
+    $('#commitment-context-fields').open=false;
     I18n.setText($('#commitment-dialog-title'),id?'Revise the proposed commitment':'Describe a project commitment');
     $('#commitment-error').textContent='';$('#commitment-reload').hidden=true;
     $('#commitment-draft-result').replaceChildren();
     showDialog('#commitment-dialog');
+  }
+  function draft(){open();return generateDraft();}
+  function showAgreement(id){
+    const project=state.activeProject;if(!project?.commitments?.some(item=>item.id===id))return;
+    const key=`agreed:${id}`;selections.set(project.id,key);rememberMeaning(key);setProjectView('canvas');
+    requestAnimationFrame(()=>$('#meaning-title')?.focus({preventScroll:true}));
   }
   function remember(){
     const form=$('#commitment-form');if(!form.dataset.commitmentDraft)return;
@@ -367,11 +374,14 @@ window.CommitmentUI=(()=>{
       if(event.target.matches?.('[data-risk-panel]'))riskDisclosures.set(event.target.dataset.riskKey,event.target.open);
     },true);
     $('#draft-commitment-button').addEventListener('click',generateDraft);
+    $('#commitment-form').addEventListener('invalid',event=>{
+      for(let node=event.target.parentElement;node&&node.id!=='commitment-form';node=node.parentElement)if(node.tagName==='DETAILS')node.open=true;
+    },true);
     $('#commitment-dialog').addEventListener('close',()=>{draftGeneration++;setBusy($('#draft-commitment-button'),false);});
     window.addEventListener('resize',revealSelection,{passive:true});
     document.addEventListener('click',async event=>{
       if(event.target.closest('[data-analyze-risks]'))return analyzeRisks();
-      if(event.target.closest('[data-draft-commitment]')){open();return generateDraft();}
+      if(event.target.closest('[data-draft-commitment]'))return draft();
       if(event.target.closest('.meaning-workspace'))rememberReading();
       if(event.target.closest('[data-meaning-tree-retry]')){
         const projectId=state.activeProject.id,version=state.selectionVersion;
@@ -486,5 +496,5 @@ window.CommitmentUI=(()=>{
   }
   function closeInspector(){const item=currentMeaning();if(!item)return;rememberReading();const choice=inspectorChoice(item);choice.open=false;choice.expanded=false;refreshInspection();const original=document.querySelector(choice.opener||'[data-meaning-files-toggle]'),opener=original?.checkVisibility()?original:$('[data-meaning-files-toggle]');opener?.focus({preventScroll:true});if(matchMedia('(max-width:900px)').matches)opener?.scrollIntoView({block:'center',behavior:'instant'});}
   function clear(){inspectionRequest?.controller.abort();inspectionRequest=null;inspections.clear();inspectorChoices.clear();drafts.clear();selections.clear();reviewSelections.clear();commitmentPanels.clear();const form=$('#commitment-form');form?.reset();if(form)delete form.dataset.commitmentDraft;$('#commitment-dialog')?.close();}
-  return {projectView,reviewView,setSurface,bind,riskView,clear:()=>{riskPending.clear();riskErrors.clear();riskDisclosures.clear();clear();}};
+  return {projectView,reviewView,setSurface,bind,riskView,draft,showAgreement,clear:()=>{riskPending.clear();riskErrors.clear();riskDisclosures.clear();clear();}};
 })();

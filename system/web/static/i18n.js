@@ -2,6 +2,19 @@
 (function(root){
   'use strict';
   const messages={
+    'Keep changes aligned with what you agreed.':'让每次改动遵循共同约定。',
+    'Define what must hold, inspect the evidence, and decide whether a change belongs in your project.':'明确必须保持的行为，核对证据，再决定是否接受这次改动。',
+    'Accepted starting version':'已接受的起始版本',
+    'Choose the last accepted branch or commit. You will compare the proposed version next.':'选择上一个已接受的分支或提交，下一步再比较提议的新版本。',
+    'Define what must hold':'明确必须保持什么',
+    'A commitment records the behavior to preserve and the evidence needed to check it.':'约定记录需要保持的行为，以及验证它需要的证据。',
+    'The checks pass, but no commitment defines the behavior this change must preserve.':'检查已通过，但尚未通过约定明确这次改动必须保持的行为。',
+    'View agreed commitment':'查看已确认的约定',
+    'See the agreed requirement, its evidence and recorded decision together.':'在同一处查看已确认的要求、支持证据和决策记录。',
+    'A commitment is the behavior you agree to preserve. Its verification plan defines what evidence you will need.':'约定是共同确认需要保持的行为；验证计划说明需要哪些证据。',
+    'What must remain true':'必须保持什么',
+    'Request, rationale & sources':'原始请求、理由与来源',
+    '{count} projects':'{count} 个项目',
     'Review required evidence':'查看所需证据',
     'Evidence and decision':'证据与决策',
     'This commitment':'这条约定',
@@ -307,7 +320,7 @@
   }
   function t(key,params={}){const source=String(key??'');let value=language==='zh-CN'?translated(source):source;
     if(language==='en'&&source==='{supported} of {total} requirements supported'&&Number(params.total)===1)value='{supported} of {total} requirements supported'.replace('requirements','requirement');
-    if(language==='en'&&Number(params.count)===1)value=({'{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed','{count} blocking checks':'{count} blocking check','{count} items need attention':'{count} item needs attention','{count} review-level approval blockers':'{count} review-level approval blocker'})[source]||value;
+    if(language==='en'&&Number(params.count)===1)value=({'{count} projects':'{count} project','{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed','{count} blocking checks':'{count} blocking check','{count} items need attention':'{count} item needs attention','{count} review-level approval blockers':'{count} review-level approval blocker'})[source]||value;
     if(language==='en'&&source==='{requirements} requirements · {findings} findings') {
       if(Number(params.requirements)===1)value=value.replace(' requirements',' requirement');
       if(Number(params.findings)===1)value=value.replace(' findings',' finding');

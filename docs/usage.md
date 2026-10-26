@@ -36,6 +36,12 @@ waivers remain exceptions rather than supporting evidence. **Review required
 evidence** opens the relevant requirement and its verification plan directly.
 Changes to an agreed statement also expose the previous statement on demand.
 
+For a new review without commitments, **Define what must hold** drafts a requirement
+from the request and source. The editor leads with the requirement and verification
+plan; the original request, rationale and sources remain expandable. Passing tests
+alone do not fill that requirement. After approval, **View agreed commitment** opens
+the accepted requirement on the Canvas when it still matches the project version.
+
 Decision keeps the current outcome and available actions first. Revision history,
 commitment details and verification plans expand in place; deep links open the
 relevant commitment automatically. Changes holds the file map, while Audit holds

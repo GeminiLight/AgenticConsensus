@@ -497,6 +497,9 @@ function applyPaperMode() {
 }
 
 function renderProjects() {
+  const healthLabel = $("#health-label");
+  I18n.setText(healthLabel, '{count} projects', {count:state.projects.length});
+  healthLabel.closest('.system-status')?.setAttribute('aria-label', `${healthLabel.textContent} · ${runtimeLabel(state.runtime || {enabled:false})}`);
   const projectList = $("#project-list");
   if (projectList) {
     projectList.innerHTML = state.projects.map((project) => `
@@ -2855,7 +2858,7 @@ function renderReviewVerdict(review, manifest) {
   const inspection = nextReviewInspection(review, manifest);
   const scope = DecisionModel.reviewScope(review, manifest);
   const coverage = DecisionModel.requirementCoverage(review, manifest);
-  const reasonHtml=terminal?esc(reason):ready?I18n.mark("Configured checks passed."):blockerClauses.length
+  const reasonHtml=terminal?esc(reason):ready&&coverage.status==='unframed'?I18n.mark('The checks pass, but no commitment defines the behavior this change must preserve.'):ready?I18n.mark("Configured checks passed."):blockerClauses.length
     ? blockerClauses.map(clause=>I18n.mark(clause)).join(' · ')
     : I18n.mark('{count} blocking checks must be resolved first.',{count:manifest.blockers.length});
   return `
@@ -2866,7 +2869,7 @@ function renderReviewVerdict(review, manifest) {
         <button type="button" class="button button-primary button-with-icon" id="next-review-inspection">${uiIcon("search")}<span>${I18n.mark(inspection.label)}</span></button>
       </div>
       </div>
-      ${!terminal&&coverage.status==='unframed'?`<div class="requirement-coverage" data-coverage="unframed"><strong>${I18n.mark('No commitment linked')}</strong>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="text-button" data-draft-commitment>${I18n.mark('Draft commitment')} ${uiIcon('arrow-right')}</button>`:''}</div>`:''}
+      ${!terminal&&coverage.status==='unframed'&&inspection.kind!=='commitment'?`<div class="requirement-coverage" data-coverage="unframed"><strong>${I18n.mark('No commitment linked')}</strong>${!document.body.classList.contains('viewer-mode')?`<button type="button" class="text-button" data-draft-commitment>${I18n.mark('Draft commitment')} ${uiIcon('arrow-right')}</button>`:''}</div>`:''}
       <details class="review-scope-note"><summary data-i18n=Assessment%20details>Assessment details</summary>
       <p class="review-coverage-note" aria-label="Structure check scope"><span data-i18n=Structure%20scope>Structure scope</span><span><b>${scope.pythonFiles}</b> <span data-i18n=Python%20files%20in%20this%20change>Python files in this change</span></span><span><b>${scope.claims}</b> <span data-i18n=linked%20rules>linked rules</span></span></p>
       <dl class="review-facts" aria-label="Review facts">
@@ -2877,13 +2880,15 @@ function renderReviewVerdict(review, manifest) {
 }
 
 function nextReviewInspection(review, manifest) {
-  return DecisionModel.nextInspection({...review, findings:review.findings.map(item => ({...item,status:effectiveFindingStatus(review,item)}))}, manifest);
+  return DecisionModel.nextInspection({...review, findings:review.findings.map(item => ({...item,status:effectiveFindingStatus(review,item)}))}, manifest, {canPropose:!document.body.classList.contains('viewer-mode'),project:state.activeProject});
 }
 
 function inspectNextReviewStep() {
   const review = state.activeReview, manifest = state.manifest;
   if (!review || !manifest) return;
   const step = nextReviewInspection(review, manifest);
+  if (step.kind === "commitment") return CommitmentUI.draft();
+  if (step.kind === "agreement") return CommitmentUI.showAgreement(step.commitmentId);
   if (step.kind === "finding") return openChangedFile(step.path, step.findingId);
   if (step.kind === "requirements" || step.kind === "records") {
     state.evidenceQuery = ""; state.evidenceFilter = "all"; state.evidenceObligation = "";
@@ -6312,10 +6317,9 @@ async function loadUsers() {
 }
 
 async function loadControlPlane() {
-  const [health, runtime, projects] = await Promise.all([
-    api("/api/health"), api("/api/runtime"), api("/api/projects"),
+  const [runtime, projects] = await Promise.all([
+    api("/api/runtime"), api("/api/projects"),
   ]);
-  $("#health-label").textContent = `${plural(health.projects, "PROJECT")} · ${plural(health.reviews, "REVIEW")}`;
   state.runtime = runtime;
   const systemStatus = $("#health-label").closest(".system-status");
   setControlTooltip(systemStatus, runtimeLabel(runtime));

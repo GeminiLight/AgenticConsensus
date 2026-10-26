@@ -17,7 +17,13 @@
       heading:status==='unframed'?'Checks pass · requirements unverified':status==='unverified'?'Checks permit a decision · verification incomplete':'Recorded requirements have evidence',
       unverified:status==='unframed'?[review.intent_summary||'No behavioral requirements are recorded.']:unverified};
   }
-  function nextInspection(review, manifest) {
+  function nextInspection(review, manifest, {canPropose = false, project = null} = {}) {
+    if (review.status === 'committed' && project?.head_ref && project.head_ref === review.target_ref) {
+      const agreed = (review.commitment_changes || []).find(change => (project.commitments || []).some(item =>
+        ['id','title','statement','verification','category'].every(key => item[key] === change.after[key])
+        && JSON.stringify(item.paths) === JSON.stringify(change.after.paths)));
+      if (agreed) return {kind:'agreement',commitmentId:agreed.after.id,label:'View agreed commitment',detail:'See the agreed requirement, its evidence and recorded decision together.'};
+    }
     if (review.status !== 'open') return review.decision_records?.length
       ? {kind:'audit',label:'Inspect recorded decision',detail:'Read the attributed decision and its source records.'}
       : {kind:'audit',label:'Inspect review history',detail:'Decision attribution is unavailable. Inspect the recorded history.'};
@@ -26,6 +32,7 @@
     const checks = (manifest.admission_checks || []).filter(check => check.status !== 'pass' && check.key !== 'human_authority');
     checks.sort((a,b) => Number(b.status === 'block') - Number(a.status === 'block') || rank(a.key)-rank(b.key));
     const check = checks[0];
+    if (!check && canPropose && requirementCoverage(review, manifest).status === 'unframed') return {kind:'commitment',label:'Define what must hold',detail:'A commitment records the behavior to preserve and the evidence needed to check it.'};
     if (!check) return {kind:'changes',label:'Read proposed changes',detail:'Passing checks do not replace your review.'};
     const checkKey = check.key;
     if (checkKey === 'critical_findings') {
