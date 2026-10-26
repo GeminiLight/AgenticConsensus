@@ -42,6 +42,13 @@ plan; the original request, rationale and sources remain expandable. Passing tes
 alone do not fill that requirement. After approval, **View agreed commitment** opens
 the accepted requirement on the Canvas when it still matches the project version.
 
+The Canvas connects the agreed or proposed statement to each verification
+requirement and its own evidence records. Amber lanes show unresolved verification;
+stale, conflicting and waived records keep their distinct status. Select a
+requirement to inspect its plan, or an evidence node to open its linked records.
+The right-hand file reader can be collapsed; source readings remain separate from
+verification. On narrow screens, each requirement is followed by its evidence.
+
 Decision keeps the current outcome and available actions first. Revision history,
 commitment details and verification plans expand in place; deep links open the
 relevant commitment automatically. Changes holds the file map, while Audit holds

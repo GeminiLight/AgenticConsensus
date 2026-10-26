@@ -3279,7 +3279,7 @@ function refreshEvidenceRecords() {
     ? `<div class="evidence-scope">${I18n.mark('Linked to: {title}',{title:EvidenceModel.obligationContext(review,obligation,state.activeProject?.claims||[]).title})}<button type="button" class="button button-quiet" data-clear-evidence-filters data-i18n=Show%20all%20records>Show all records</button></div>` : "";
 }
 
-function focusEvidenceObligation(obligationId) {
+function focusEvidenceObligation(obligationId, {records = false} = {}) {
   state.evidenceQuery = '';
   state.evidenceFilter = 'all';
   state.evidenceObligation = obligationId;
@@ -3288,6 +3288,7 @@ function focusEvidenceObligation(obligationId) {
   if (filter) filter.value = 'all';
   refreshEvidenceRecords();
   setReviewWorkspaceTab('evidence');
+  if (records) return setEvidenceTab('records', {focus:true});
   setEvidenceTab('requirements');
   let found = false;
   document.querySelectorAll('[data-obligation-card]').forEach(card=>{

@@ -2,6 +2,20 @@
 (function(root){
   'use strict';
   const messages={
+    'Agreement, requirements and evidence':'约定、验证要求与证据',
+    'Current agreement':'当前约定',
+    'Proposed agreement':'提议的约定',
+    'Proposed change':'提议的改动',
+    'Requirement {number}':'验证要求 {number}',
+    'Agreement':'约定',
+    'No evidence yet':'尚无证据',
+    'Review the plan and attach a completed check.':'查看验证计划，并附上已完成的检查。',
+    'An exception is not supporting evidence.':'例外记录不属于支持证据。',
+    'Recorded evidence':'证据记录',
+    'Review progress':'评审进度',
+    'Define':'定义',
+    'Verify':'验证',
+    'Decide':'决策',
     'Keep changes aligned with what you agreed.':'让每次改动遵循共同约定。',
     'Define what must hold, inspect the evidence, and decide whether a change belongs in your project.':'明确必须保持的行为，核对证据，再决定是否接受这次改动。',
     'Accepted starting version':'已接受的起始版本',
