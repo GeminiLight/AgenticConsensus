@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="/static/i18n.js?v=0.36.0-consensus-assessment"></script>
+  <script src="/static/i18n.js?v=0.37.0-first-use"></script>
   <script src="./entry.js?v=0.22.3-entry-1"></script>
   <style>
     body.entry-pending { margin: 0; }
@@ -28,8 +28,8 @@
   <script src="/static/theme-bootstrap.js?v=0.17.0-review-desk"></script>
   <title>AgenticConsensus</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23131311'/%3E%3Cpath d='M13 48 24 12h8L21 48zm17 0 8-27h7l-8 27zm14 0 5-17h6l-5 17z' fill='%237ea896'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/static/app.css?v=0.35.0-workspace-focus">
-  <link rel="stylesheet" href="/static/theme.css?v=0.35.0-workspace-focus">
+  <link rel="stylesheet" href="/static/app.css?v=0.37.0-first-use">
+  <link rel="stylesheet" href="/static/theme.css?v=0.37.0-first-use">
   <link rel="stylesheet" href="/static/alignment.css?v=0.36.0-consensus-assessment">
 </head>
 <body class="auth-locked entry-pending">
@@ -184,8 +184,8 @@
     <main id="main-content" tabindex="-1">
       <section class="empty-state" id="empty-state">
         <p class="eyebrow" data-i18n=Pull%20request%20review>Pull request review</p>
-        <h1 data-i18n=Decide%20what%20is%20safe%20to%20merge.>Decide what is safe to merge.</h1>
-        <p data-i18n=Open%20a%20pull%20request%20to%20see%20the%20blocking%20checks%2C%20supporting%20evidence%2C%20changed%20files%2C%20and%20the%20next%20action%20in%20one%20place.>Open a pull request to see the blocking checks, supporting evidence, changed files, and the next action in one place.</p>
+        <h1 data-i18n=Keep%20changes%20aligned%20with%20what%20you%20agreed.>Keep changes aligned with what you agreed.</h1>
+        <p data-i18n=Define%20what%20must%20hold%2C%20inspect%20the%20evidence%2C%20and%20decide%20whether%20a%20change%20belongs%20in%20your%20project.>Define what must hold, inspect the evidence, and decide whether a change belongs in your project.</p>
         <div class="empty-actions">
           <button class="button button-primary button-with-icon" id="empty-register-button"><svg class="ui-icon" aria-hidden="true"><use href="#icon-github"></use></svg><span data-i18n=Analyze%20a%20GitHub%20pull%20request>Analyze a GitHub pull request</span></button>
           <button class="button button-quiet" id="empty-local-button" data-i18n=Use%20a%20local%20repository>Use a local repository</button>
@@ -495,7 +495,7 @@
           <section class="repository-source-panel hidden" id="local-source-panel" role="tabpanel" aria-labelledby="local-source-tab">
             <label><span data-i18n=Absolute%20repository%20path>Absolute repository path</span><input name="repo_path" required placeholder="/path/to/repository"></label>
             <label><span data-i18n=Display%20label>Display label</span> <span class="field-optional" data-i18n=Optional>Optional</span><input name="repo_label" placeholder="demo://capability-migration"><small class="field-hint" data-i18n=Used%20in%20exports%20instead%20of%20the%20local%20path.>Used in exports instead of the local path.</small></label>
-            <label><span data-i18n=Revision>Revision</span><input name="head_ref" value="HEAD" required></label>
+            <label><span data-i18n=Accepted%20starting%20version>Accepted starting version</span><input name="head_ref" value="HEAD" required aria-describedby="intake-baseline-hint"><small id="intake-baseline-hint" class="field-hint" data-i18n=Choose%20the%20last%20accepted%20branch%20or%20commit.%20You%20will%20compare%20the%20proposed%20version%20next.>Choose the last accepted branch or commit. You will compare the proposed version next.</small></label>
           </section>
         </section>
         <details class="project-intake-setup" id="project-intake-settings">
@@ -559,14 +559,18 @@
     <form id="commitment-form" method="dialog">
       <div class="dialog-head"><h2 id="commitment-dialog-title" data-i18n=Describe%20a%20project%20commitment>Describe a project commitment</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close proposal" data-i18n-aria-label=Close%20proposal><svg class="ui-icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg></button></div>
       <div class="intent-composer-body">
+        <p class="commitment-intro" data-i18n=A%20commitment%20is%20the%20behavior%20you%20agree%20to%20preserve.%20Its%20verification%20plan%20defines%20what%20evidence%20you%20will%20need.>A commitment is the behavior you agree to preserve. Its verification plan defines what evidence you will need.</p>
         <section id="commitment-drafting" class="commitment-drafting"><button type="button" class="button" id="draft-commitment-button" data-i18n=Draft%20from%20request%20and%20source>Draft from request and source</button><p class="field-hint" data-i18n=AI%20draft%20when%20available%20%C2%B7%20local%20fallback%20%C2%B7%20confirm%20before%20saving>AI draft when available · local fallback · confirm before saving</p><div id="commitment-draft-result" role="status" aria-live="polite"></div></section>
-        <label><span data-i18n=Original%20request>Original request</span><textarea name="request" rows="2" maxlength="8000" required autofocus placeholder="What did the person ask for?" data-i18n-placeholder=What%20did%20the%20person%20ask%20for%3F></textarea></label>
-        <div class="commitment-form-pair"><label><span data-i18n=Commitment%20title>Commitment title</span><input name="title" maxlength="240" required placeholder="A short name for the agreement" data-i18n-placeholder=A%20short%20name%20for%20the%20agreement></label><label><span data-i18n=Kind>Kind</span><select name="category"><option value="behavior" data-i18n=Behavior>Behavior</option><option value="interface" data-i18n=Interface>Interface</option><option value="compatibility" data-i18n=Compatibility>Compatibility</option><option value="dependency" data-i18n=Dependency>Dependency</option><option value="authority" data-i18n=Authority>Authority</option></select></label></div>
-        <label><span data-i18n=Our%20proposed%20interpretation>Our proposed interpretation</span><textarea name="statement" rows="3" maxlength="4000" required placeholder="What exactly should remain true or become true?" data-i18n-placeholder=What%20exactly%20should%20remain%20true%20or%20become%20true%3F></textarea></label>
-        <label><span data-i18n=Why%20this%20interpretation%3F>Why this interpretation?</span><textarea name="reason" rows="2" minlength="8" maxlength="4000" required placeholder="Record the choice and the reasoning behind it." data-i18n-placeholder=Record%20the%20choice%20and%20the%20reasoning%20behind%20it.></textarea></label>
-        <fieldset class="commitment-file-field"><legend data-i18n=Files%20carrying%20this%20commitment>Files carrying this commitment</legend><div id="commitment-files"></div></fieldset>
-        <details class="source-readings-editor"><summary><span data-i18n=Source%20readings>Source readings</span> <span data-i18n=Optional%20%C2%B7%20interpretations%2C%20not%20test%20evidence>Optional · interpretations, not test evidence</span></summary><p class="field-hint" data-i18n=Connect%20a%20short%20interpretation%20to%201%E2%80%9312%20lines%20in%20the%20target%20snapshot.%20The%20server%20captures%20the%20actual%20source%3B%20these%20notes%20do%20not%20satisfy%20verification.>Connect a short interpretation to 1–12 lines in the target snapshot. The server captures the actual source; these notes do not satisfy verification.</p><div id="commitment-source-readings"></div><button type="button" class="button button-small" data-reading-add data-i18n=Add%20source%20reading>Add source reading</button></details>
+        <label><span data-i18n=Commitment%20title>Commitment title</span><input name="title" maxlength="240" required autofocus placeholder="A short name for the agreement" data-i18n-placeholder=A%20short%20name%20for%20the%20agreement></label>
+        <label><span data-i18n=What%20must%20remain%20true>What must remain true</span><textarea name="statement" rows="3" maxlength="4000" required placeholder="What exactly should remain true or become true?" data-i18n-placeholder=What%20exactly%20should%20remain%20true%20or%20become%20true%3F></textarea></label>
         <label><span data-i18n=How%20will%20we%20verify%20it%3F>How will we verify it?</span><textarea name="verification" rows="2" minlength="8" maxlength="2000" required placeholder="Which observation or check would support this exact statement?" data-i18n-placeholder=Which%20observation%20or%20check%20would%20support%20this%20exact%20statement%3F></textarea><small class="field-hint" data-i18n=Recorded%20as%20an%20evidence%20requirement%20for%20this%20target%20revision.%20Saving%20a%20proposal%20does%20not%20verify%20it.>Recorded as an evidence requirement for this target revision. Saving a proposal does not verify it.</small></label>
+        <fieldset class="commitment-file-field"><legend data-i18n=Files%20carrying%20this%20commitment>Files carrying this commitment</legend><div id="commitment-files"></div></fieldset>
+        <details id="commitment-context-fields" class="commitment-context-fields"><summary data-i18n=Request%2C%20rationale%20%26%20sources>Request, rationale &amp; sources</summary><div class="commitment-context-body">
+        <label><span data-i18n=Original%20request>Original request</span><textarea name="request" rows="2" maxlength="8000" required placeholder="What did the person ask for?" data-i18n-placeholder=What%20did%20the%20person%20ask%20for%3F></textarea></label>
+        <label><span data-i18n=Why%20this%20interpretation%3F>Why this interpretation?</span><textarea name="reason" rows="2" minlength="8" maxlength="4000" required placeholder="Record the choice and the reasoning behind it." data-i18n-placeholder=Record%20the%20choice%20and%20the%20reasoning%20behind%20it.></textarea></label>
+        <label><span data-i18n=Kind>Kind</span><select name="category"><option value="behavior" data-i18n=Behavior>Behavior</option><option value="interface" data-i18n=Interface>Interface</option><option value="compatibility" data-i18n=Compatibility>Compatibility</option><option value="dependency" data-i18n=Dependency>Dependency</option><option value="authority" data-i18n=Authority>Authority</option></select></label>
+        <details class="source-readings-editor"><summary><span data-i18n=Source%20readings>Source readings</span> <span data-i18n=Optional%20%C2%B7%20interpretations%2C%20not%20test%20evidence>Optional · interpretations, not test evidence</span></summary><p class="field-hint" data-i18n=Connect%20a%20short%20interpretation%20to%201%E2%80%9312%20lines%20in%20the%20target%20snapshot.%20The%20server%20captures%20the%20actual%20source%3B%20these%20notes%20do%20not%20satisfy%20verification.>Connect a short interpretation to 1–12 lines in the target snapshot. The server captures the actual source; these notes do not satisfy verification.</p><div id="commitment-source-readings"></div><button type="button" class="button button-small" data-reading-add data-i18n=Add%20source%20reading>Add source reading</button></details>
+        </div></details>
         <p id="commitment-error" class="form-error" role="alert"></p>
       </div>
       <div class="intent-composer-footer"><p class="field-hint" data-i18n=The%20agreed%20project%20state%20changes%20only%20after%20authorized%20approval.>The agreed project state changes only after authorized approval.</p><div class="dialog-actions"><button type="button" class="button" id="commitment-reload" hidden data-i18n=Reload%20%26%20keep%20draft>Reload & keep draft</button><button type="button" class="button button-quiet" data-close-dialog data-i18n=Close%20draft>Close draft</button><button type="submit" class="button button-primary" data-i18n=Save%20proposal>Save proposal</button></div></div>
@@ -902,12 +906,12 @@
   <script src="/static/diff-model.js?v=0.22.3-review-1" defer></script>
   <script src="/static/evidence-model.js?v=0.27.0-workflow" defer></script>
   <script src="/static/assistant-model.js?v=0.22.4-assistant-1" defer></script>
-  <script src="/static/decision-model.js?v=0.31.0-followup" defer></script>
+  <script src="/static/decision-model.js?v=0.37.0-first-use" defer></script>
   <script src="/static/navigation-model.js?v=0.35.0-workspace-focus" defer></script>
   <script src="/static/motion-model.js?v=0.22.12-workspace-finish-1" defer></script>
   <script src="/static/commitment-model.js?v=0.36.0-consensus-assessment" defer></script>
-  <script src="/static/commitment-ui.js?v=0.36.0-consensus-assessment" defer></script>
+  <script src="/static/commitment-ui.js?v=0.37.0-first-use" defer></script>
   <script src="/static/paper-demo.js?v=0.33.0-paper-session" defer></script>
-  <script src="/static/app.js?v=0.36.0-consensus-assessment" defer></script>
+  <script src="/static/app.js?v=0.37.0-first-use" defer></script>
 </body>
 </html>

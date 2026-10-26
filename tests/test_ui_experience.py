@@ -122,7 +122,7 @@ def test_loading_error_empty_and_permission_states_are_explicit(tmp_path: Path):
         assert 'class="permission-notice" role="note"' in javascript
         assert "Read-only access" in javascript
         assert "No pull requests yet." in javascript
-        assert "Decide what is safe to merge." in html
+        assert "Keep changes aligned with what you agreed." in html
         assert ".review-loading, .review-error" in theme
         assert ".permission-notice" in theme
 

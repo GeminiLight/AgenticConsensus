@@ -178,7 +178,7 @@ def test_browser_shell_is_a_real_operator_console(tmp_path: Path):
         assert '/static/app.js?v=' in response.text
         assert '/static/i18n.js?v=' in response.text
         assert client.get('/static/i18n.js').status_code == 200
-        assert '/static/decision-model.js?v=0.31.0-followup' in response.text
+        assert '/static/decision-model.js?v=' in response.text
         assert response.text.index('/static/decision-model.js') < response.text.index('/static/app.js')
         assert client.get('/static/decision-model.js').status_code == 200
         assert response.text.index('/static/navigation-model.js') < response.text.index('/static/app.js')
