@@ -30,7 +30,7 @@ Issues = "https://github.com/GeminiLight/AgenticConsensus/issues"
 dev = [
   "build>=1.2,<2",
   "pytest>=8,<10",
-  "pytest-cov>=5,<7",
+  "pytest-cov>=5,<8",
 ]
 
 [project.scripts]
