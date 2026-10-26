@@ -81,7 +81,9 @@ window.CommitmentUI=(()=>{
     const obligation=CommitmentModel.inspection(item,resource?.review,resource?.manifest).obligation;
     const verify=step.action==='evidence'&&item.reviewId&&(obligation?.obligation_id||item.obligation_id);
     const primary=verify?`<button type="button" class="button button-primary" data-meaning-verify="${esc(item.reviewId)}" data-meaning-commitment="${esc(item.after.id)}" data-meaning-obligation="${esc(obligation?.obligation_id||item.obligation_id||'')}">`:inspect?`<button type="button" class="button button-primary" ${target}>`:`<button type="button" class="button button-primary" data-meaning-next="${esc(step.action)}"${step.action==='loading'?' disabled':''}>`;
-    return `<div class="meaning-next-step" data-state="${esc(step.status)}"><span class="meaning-next-symbol">${uiIcon(step.status==='satisfied'?'shield-check':step.status==='question'?'git-rebase':'search')}</span><div><strong>${m(title)}</strong><p>${m(detail)}</p></div>${primary}${m(verify?'Review required evidence':label)} ${uiIcon('arrow-right')}</button></div>`;
+    const phase=CommitmentModel.verificationGraph(item,resource?.review,resource?.manifest,resource?.load||'loading').phase;
+    const progress=`<ol class="consensus-progress" aria-label="${I18n.t('Review progress')}" data-i18n-aria-label=Review%20progress>${[['define','Define'],['verify','Verify'],['decide','Decide']].map(([key,label],index)=>`<li${key===phase?' aria-current="step"':''}><span>${index+1}</span>${m(label)}</li>`).join('')}</ol>`;
+    return `<div class="meaning-next-step" data-state="${esc(step.status)}"><span class="meaning-next-symbol">${uiIcon(step.status==='satisfied'?'shield-check':step.status==='question'?'git-rebase':'search')}</span><div><strong>${m(title)}</strong><p>${m(detail)}</p></div>${progress}${primary}${m(verify?'Review required evidence':label)} ${uiIcon('arrow-right')}</button></div>`;
   }
   function assessmentView(item){
     const resource=resourceFor(item),data=CommitmentModel.assessment(item,resource?.review,resource?.manifest,resource?.load||'loading');
@@ -140,6 +142,34 @@ window.CommitmentUI=(()=>{
   }
 
   function alignmentData(item){const resource=resourceFor(item),review=resource?.review||state.reviews.find(r=>r.id===item.reviewId)||{};return CommitmentModel.alignment(item,review,resource?.manifest);}
+  function graphView(item){
+    const resource=resourceFor(item),graph=CommitmentModel.verificationGraph(item,resource?.review,resource?.manifest,resource?.load||'loading');
+    const prior=item.kind==='proposal'?item.before:item.after;
+    const statement=value=>String(value||'').length>210?`<details class="consensus-node-text"><summary>${esc(value.slice(0,160))}…</summary><p>${esc(value)}</p></details>`:`<p>${esc(value||'')}</p>`;
+    const source=`${prior?`<article class="consensus-origin"><span class="consensus-node-label">${uiIcon('file-text')} ${m('Current agreement')}</span>${statement(prior.statement)}</article>`:`<p class="consensus-no-prior">${m('No prior agreement')}</p>`}
+      ${item.kind==='proposal'?`<article class="consensus-origin consensus-proposed"><span class="consensus-node-label">${uiIcon('plus')} ${m('Proposed agreement')}</span>${statement(item.after.statement)}</article>`:item.kind==='recheck'?`<article class="consensus-origin consensus-proposed"><span class="consensus-node-label">${uiIcon('git-rebase')} ${m('Proposed change')}</span>${statement(resource?.review?.intent_summary||item.reviewTitle)}</article>`:''}`;
+    const labels={...statuses,missing:'No evidence yet',loading:'Reading evidence…',error:'Inspection unavailable',unassessed:'Not assessed'};
+    const hints={missing:'Review the plan and attach a completed check.',stale:'Earlier evidence does not cover this version.',contested:'Inspect the conflicting result before recording new evidence.',waived:'An exception is not supporting evidence.',loading:'Checking records for this exact version.',error:'Reload to inspect evidence',unassessed:'No verification recorded'};
+    const rows=graph.rows.map((row,index)=>{
+      const action=row.id?`data-meaning-verify="${esc(item.reviewId)}" data-meaning-commitment="${esc(item.after.id)}" data-meaning-obligation="${esc(row.id)}"`:'data-meaning-evidence-summary';
+      const disabled=row.status==='loading'?' disabled':'';
+      const preview=row.records[0];
+      return `<div class="consensus-lane" data-status="${esc(row.status)}">
+        <button type="button" class="consensus-requirement" data-flow-key="requirement-${esc(row.id||'plan')}" ${action}${disabled}>
+          <span class="consensus-state-icon">${uiIcon(row.status==='satisfied'?'shield-check':'search')}</span><span><strong>${m(row.id?'Requirement {number}':'Verification plan',{number:String(index+1).padStart(2,'0')})}</strong><span class="consensus-node-copy">${esc(row.label)}</span></span>
+        </button>
+        <span class="consensus-link" aria-hidden="true"></span>
+        <button type="button" class="consensus-proof" data-flow-key="evidence-${esc(row.id||'plan')}" ${action}${row.records.length?' data-meaning-records':''}${disabled}>
+          <span class="consensus-proof-title">${uiIcon('file-text')}<strong>${m(labels[row.status]||'Not assessed')}</strong>${uiIcon('chevron-right')}</span>
+          ${preview?`<span class="consensus-record-kind">${m('Recorded evidence')} · ${row.records.length}</span><span class="consensus-node-copy">${esc(preview.summary||preview.id)}</span>`:`<span class="consensus-node-copy">${m(hints[row.status]||'No verification recorded')}</span>`}
+        </button>
+      </div>`;
+    }).join('');
+    return `<div class="consensus-map">
+      <div class="consensus-map-heading"><span>${m('Agreement')}</span><span>${m('Requirements')} <small>${graph.summary.total||'—'}</small></span><span>${m('Evidence')} <code>${esc(item.targetRef?.slice(0,8)||'—')}</code></span></div>
+      <div class="consensus-map-body"><div class="consensus-origins">${source}</div><div class="consensus-lanes">${rows}</div></div>
+    </div>`;
+  }
   function selectedReading(item){const choice=inspectorChoice(item);return choice.reading==null?null:alignmentData(item).readings[choice.reading];}
   function focusView(item,project,index,total){
     const review=state.reviews.find(review=>review.id===item.reviewId),data=alignmentData(item),proposed=item.kind==='proposal',choice=inspectorChoice(item);
@@ -147,17 +177,18 @@ window.CommitmentUI=(()=>{
     const readings=data.readings.map((note,i)=>`<button type="button" class="alignment-reading" data-source-reading="${i}" data-relation="${esc(note.relation)}" aria-controls="meaning-inspector" aria-pressed="${Boolean(choice.open&&choice.tab==='source'&&choice.reading===i)}"><span class="reading-card-top"><span class="reading-symbol">${uiIcon(note.relation==='tension'?'git-rebase':'file-text')}</span><span class="reading-relation"><i></i>${m(labels[note.relation])}</span></span><strong>${esc(note.label)}</strong><p>${esc(note.summary)}</p><span class="reading-card-source"><code>${esc(note.path.split('/').at(-1))}</code><span>L${note.start_line}–${note.end_line}</span>${uiIcon('arrow-right')}</span></button>`).join('');
     const unread=data.unreadPaths.map(path=>`<li><button type="button" class="alignment-file" data-meaning-file="${esc(path)}" title="${esc(path)}"${item.reviewId?'':' disabled'}>${uiIcon('file-text')}<span><strong>${esc(path.split('/').at(-1))}</strong><small>${path.includes('/')?esc(path.slice(0,path.lastIndexOf('/'))):m('Repository root')}</small></span>${uiIcon('arrow-right')}</button></li>`).join('');
     const editable=item.kind!=='agreed'&&item.reviewId&&!document.body.classList.contains('viewer-mode');
-    return `<article id="meaning-focus" class="meaning-focus alignment-focus" data-meaning-key="${esc(item.key)}" data-inspector-open="${Boolean(choice.open)}" data-inspector-expanded="${Boolean(choice.open&&choice.expanded)}" aria-label="${esc(item.after.title)}"><div class="meaning-focus-main">
+    return `<article id="meaning-focus" class="meaning-focus alignment-focus consensus-focus" data-meaning-key="${esc(item.key)}" data-inspector-open="${Boolean(choice.open)}" data-inspector-expanded="${Boolean(choice.open&&choice.expanded)}" aria-label="${esc(item.after.title)}"><div class="meaning-focus-main">
       <header class="alignment-heading"><div class="alignment-title"><h3 id="meaning-title" tabindex="-1">${esc(item.after.title)}</h3><span class="alignment-authority" data-kind="${item.kind}"><i></i>${m(proposed?'Awaiting agreement':item.kind==='recheck'?'Agreed · rechecking':'Agreed')}</span></div><div class="alignment-heading-actions">${data.questions?`<span>${plural(data.questions,'question raised')}</span>`:''}${editable?`<button type="button" class="text-button" data-meaning-edit="${esc(item.reviewId)}" data-meaning-commitment="${esc(item.after.id)}">${m(proposed?'Revise interpretation':'Propose revision')}</button>`:''}</div></header>
       <div class="meaning-workbar"><div class="meaning-view-tabs" role="tablist" aria-label="${I18n.t('Workspace views')}" data-i18n-aria-label=Workspace%20views>${[['canvas','network','Relationship canvas','Canvas'],['changes','file-text','Changes','Changes'],['evidence','shield-check','Verification','Evidence'],['history','history','History','History']].map(([tab,icon,label,compact])=>`<button type="button" id="meaning-view-${tab}" role="tab" aria-selected="${choice.view===tab}" aria-controls="meaning-pane-${tab}" tabindex="${choice.view===tab?'0':'-1'}" data-meaning-view="${tab}">${uiIcon(icon)}<span class="meaning-view-full">${m(label)}</span><span class="meaning-view-short">${m(compact)}</span></button>`).join('')}</div><button type="button" class="meaning-files-toggle" data-meaning-files-toggle aria-expanded="${Boolean(choice.open)}" aria-controls="meaning-inspector">${uiIcon('panel-right')}${m('Files')}</button></div>
       <div class="meaning-workspace-content">
       <div id="meaning-pane-canvas" class="meaning-view-pane" role="tabpanel" aria-labelledby="meaning-view-canvas" tabindex="0"${choice.view==='canvas'?'':' hidden'}>
-      <section class="alignment-canvas" aria-label="Source-to-meaning correspondence" data-i18n-aria-label=Source-to-meaning%20correspondence>
-        <div class="alignment-contract"><div><span class="alignment-contract-label">${m(proposed?'What we propose to agree':item.kind==='recheck'?'Must remain true':'What is currently agreed')}</span><p>${esc(item.after.statement)}</p></div><span class="alignment-contract-tag">${item.kind==='recheck'?m('Baseline'):proposed?m('Draft'):'v'+project.version}</span></div>
-        ${item.before&&item.before.statement!==item.after.statement?`<details class="meaning-baseline"><summary>${m('Changes an agreed requirement')}</summary><p>${esc(item.before.statement)}</p><button type="button" class="text-button" data-meaning-history>${m('Why this change?')} ${uiIcon('arrow-right')}</button></details>`:''}
+      <section class="consensus-canvas" aria-label="Agreement, requirements and evidence" data-i18n-aria-label=Agreement%2C%20requirements%20and%20evidence>
+        <div id="meaning-flow">${graphView(item)}</div>
         <div id="meaning-assessment">${assessmentView(item)}</div>
-        ${readings?`<h4 class="alignment-canvas-caption"><span>${uiIcon('file-text')} ${m('Source reading · not verification')}</span><span>${review?esc(review.target_ref.slice(0,8)):m('Recorded snapshot')}</span></h4><div class="alignment-readings" style="--reading-columns:${Math.min(data.readings.length,3)}">${readings}</div>`:''}
-        ${unread?`<h4 class="alignment-canvas-caption"><span>${uiIcon('file-text')} ${m(data.readings.length?'Other linked files':'Linked implementation')}</span><span>${data.unreadPaths.length}</span></h4><ul class="alignment-unread">${unread}</ul>`:''}
+        ${readings||unread?`<details class="consensus-source-context"${data.questions?' open':''}><summary>${uiIcon('file-text')} ${m('Linked implementation')} <span>${plural(item.after.paths.length,'file')}${data.questions?' · '+plural(data.questions,'question raised'):''}</span></summary>
+          ${readings?`<p class="consensus-source-note">${m('Source reading · not verification')}</p><div class="alignment-readings" style="--reading-columns:${Math.min(data.readings.length,3)}">${readings}</div>`:''}
+          ${unread?`<ul class="alignment-unread">${unread}</ul>`:''}
+        </details>`:''}
       </section>
       </div>
       <section id="meaning-pane-changes" class="meaning-view-pane meaning-changes-pane" role="tabpanel" aria-labelledby="meaning-view-changes" tabindex="0"${choice.view==='changes'?'':' hidden'}><h4>${m('Files linked to this commitment')}</h4><p>${m('Select a file to read its proposed changes.')}</p><div class="meaning-file-stack">${footprint(item)}</div></section>
@@ -171,7 +202,7 @@ window.CommitmentUI=(()=>{
     const data=CommitmentModel.workspace(project,reviews,projectMeaning(project));
     if(!data.selected)return '';
     selections.set(project.id,data.selected.key);
-    const list=(items,label)=>`<div class="meaning-list-group"><h3>${m(label)}<span>${items.length}</span></h3>${items.map(item=>`<button type="button" class="meaning-choice" data-meaning-select="${esc(item.key)}" aria-pressed="${item.key===data.selected.key}" aria-controls="meaning-focus"><span class="meaning-choice-number">${String(data.cards.indexOf(item)+1).padStart(2,'0')}</span><span><strong>${esc(item.after.title)}</strong><small>${m(sentence(item.after.category))}<i>·</i>${plural(item.after.paths.length,'file')}</small></span>${uiIcon('chevron-right')}</button>`).join('')}</div>`;
+    const list=(items,label)=>`<div class="meaning-list-group"><h3>${m(label)}<span>${items.length}</span></h3>${items.map(item=>`<button type="button" class="meaning-choice" data-meaning-select="${esc(item.key)}" aria-pressed="${item.key===data.selected.key}" aria-controls="meaning-focus"><span class="meaning-choice-number">${String(data.cards.indexOf(item)+1).padStart(2,'0')}</span><span><strong>${esc(item.after.title)}</strong><small><span class="meaning-choice-state">${m(item.kind==='proposal'?'Proposed':item.kind==='recheck'?'Recheck':'Agreed')}</span><span class="meaning-choice-meta">${m(sentence(item.after.category))}<i>·</i>${plural(item.after.paths.length,'file')}</span></small></span>${uiIcon('chevron-right')}</button>`).join('')}</div>`;
     queueMicrotask(()=>{loadInspection();revealSelection();});
     const proposals=data.pending.filter(item=>item.kind==='proposal'),rechecks=data.pending.filter(item=>item.kind==='recheck');
     return `<section class="meaning-workspace" aria-label="Project meaning workspace" data-i18n-aria-label=Project%20meaning%20workspace><div class="meaning-workspace-body"><aside class="meaning-index" aria-label="Select a commitment" data-i18n-aria-label=Select%20a%20commitment><div class="meaning-index-heading">${uiIcon('git-rebase')}<span data-i18n=Commitments>Commitments</span><button type="button" data-state-start aria-label="Describe a commitment" data-i18n-aria-label=Describe%20a%20commitment>${uiIcon('plus')}</button></div>
@@ -182,14 +213,17 @@ window.CommitmentUI=(()=>{
   function refreshInspection(){
     const item=currentMeaning();if(!item||!$('#meaning-inspector'))return;
     const active=document.activeElement;
-    const zone=active?.closest('#meaning-assessment,#meaning-next-step');
-    const restore=zone?`#${zone.id} ${active.hasAttribute('data-meaning-evidence-summary')?'[data-meaning-evidence-summary]':active.hasAttribute('data-meaning-decision')?'[data-meaning-decision]':'.button-primary'}`:active?.hasAttribute('data-meaning-retry')?'.meaning-refresh':active?.hasAttribute('data-meaning-file')?`[data-meaning-file="${CSS.escape(active.dataset.meaningFile)}"]`:active?.id&&active.closest('#meaning-inspector')?`#${CSS.escape(active.id)}`:null;
+    const zone=active?.closest('#meaning-assessment,#meaning-next-step,#meaning-flow');
+    const flowControl=active?.closest('[data-flow-key]');
+    const restore=flowControl?`[data-flow-key="${CSS.escape(flowControl.dataset.flowKey)}"]`:zone?`#${zone.id} ${active.hasAttribute('data-meaning-evidence-summary')?'[data-meaning-evidence-summary]':active.hasAttribute('data-meaning-decision')?'[data-meaning-decision]':'.button-primary'}`:active?.hasAttribute('data-meaning-retry')?'.meaning-refresh':active?.hasAttribute('data-meaning-file')?`[data-meaning-file="${CSS.escape(active.dataset.meaningFile)}"]`:active?.id&&active.closest('#meaning-inspector')?`#${CSS.escape(active.id)}`:null;
     $('#meaning-inspector').outerHTML=inspectorView(item);$('.meaning-file-stack').innerHTML=footprint(item);
     $('#meaning-focus').dataset.inspectorOpen=String(Boolean(inspectorChoice(item).open));
     $('#meaning-focus').dataset.inspectorExpanded=String(Boolean(inspectorChoice(item).open&&inspectorChoice(item).expanded));
     $('#meaning-pane-evidence').innerHTML=inspectionContent(item,'evidence');
     $('#meaning-next-step').innerHTML=nextStepView(item);
     $('#meaning-assessment').innerHTML=assessmentView(item);
+    const flow=$('#meaning-flow'),markup=graphView(item);
+    if(flow.dataset.rendered!==markup){flow.innerHTML=markup;flow.dataset.rendered=markup;}
     $('[data-meaning-files-toggle]').setAttribute('aria-expanded',String(Boolean(inspectorChoice(item).open)));
     const choice=inspectorChoice(item);document.querySelectorAll('[data-source-reading]').forEach(card=>card.setAttribute('aria-pressed',String(Boolean(choice.open&&choice.tab==='source'&&choice.reading===Number(card.dataset.sourceReading)))));
     const saved=choice.positions.get(choice.path),search=$('#meaning-source-search');
@@ -437,7 +471,7 @@ window.CommitmentUI=(()=>{
           if(target.hasAttribute('data-meaning-decision')){setReviewWorkspaceTab('overview');$('.review-verdict')?.focus({preventScroll:true});$('.review-verdict')?.scrollIntoView({block:'nearest'});return;}
           if(target.dataset.meaningFullDiff)return openChangedFile(target.dataset.meaningFullDiff);
           if(target.dataset.meaningEdit)return open(target.dataset.meaningCommitment);
-          if(target.hasAttribute('data-meaning-verify'))return focusEvidenceObligation(target.dataset.meaningObligation||'');
+          if(target.hasAttribute('data-meaning-verify'))return focusEvidenceObligation(target.dataset.meaningObligation||'',{records:target.hasAttribute('data-meaning-records')});
           setReviewWorkspaceTab('overview');const panel=document.querySelector('#review-commitments');if(panel)panel.open=true;document.querySelector(`[data-commitment-id="${CSS.escape(target.dataset.meaningCommitment)}"]`)?.scrollIntoView({block:'center'});
         }catch(error){toast(error.message);}return;
       }

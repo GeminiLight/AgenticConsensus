@@ -81,6 +81,20 @@
       agreed:item.kind==='agreed'||item.kind==='recheck',evidenceStatus:inspection(item,review,manifest).status,
       unreadPaths:item.after.paths.filter(path=>!readings.some(note=>note.path===path))};
   }
+  function verificationGraph(item,review={},manifest={},load='ready') {
+    const summary=assessment(item,review,manifest,load);
+    const ready=!['loading','error','unassessed'].includes(summary.evidence);
+    const data=ready?inspection(item,review,manifest):{obligations:[],evidence:[]};
+    const rows=data.obligations.map(obligation=>({
+      id:obligation.obligation_id,
+      label:obligation.label||(review.evidence_obligations||[]).find(row=>row.id===obligation.obligation_id)?.label||item.after.verification,
+      status:obligation.status,
+      records:data.evidence.filter(record=>(obligation.evidence_ids||[]).includes(record.id)),
+    }));
+    // A plan is still visible before assessment, but never becomes a counted obligation or a proof.
+    if(!rows.length)rows.push({id:null,label:item.after.verification,status:summary.evidence,records:[]});
+    return {summary,rows,phase:['satisfied','waived'].includes(summary.evidence)?'decide':'verify'};
+  }
   function nextStep(item,review={},manifest={},load='ready') {
     if(!item.reviewId)return {action:'new-review',status:'unassessed'};
     if(load==='error')return {action:'retry',status:'error'};
@@ -92,5 +106,5 @@
     if(data.evidenceStatus==='satisfied'&&review.status==='committed')return {action:'review',status:'recorded'};
     return {action:'review',status:data.evidenceStatus};
   }
-  return {reviewRows,projectState,workspace,inspection,alignment,nextStep,assessment};
+  return {reviewRows,projectState,workspace,inspection,alignment,nextStep,assessment,verificationGraph};
 });

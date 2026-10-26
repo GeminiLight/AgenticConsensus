@@ -83,7 +83,7 @@ test('snapshot refresh preserves focus on summary and retry controls, including 
   for(const attribute of ['data-meaning-evidence-summary','data-meaning-decision','data-meaning-next']){
     for(const disabled of [false,true]){
       const calls=[],zone={id:attribute==='data-meaning-next'?'meaning-next-step':'meaning-assessment',focus:()=>calls.push('zone')};
-      const active={closest:()=>zone,hasAttribute:name=>name===attribute};
+      const active={closest:selector=>selector==='[data-flow-key]'?null:zone,hasAttribute:name=>name===attribute};
       const selected={disabled,focus:()=>calls.push('control')};
       const choice={positions:new Map()};
       const nodes=new Map();
@@ -94,7 +94,7 @@ test('snapshot refresh preserves focus on summary and retry controls, including 
       };
       const refresh=vm.runInNewContext(`${body}\nrefreshInspection`,{
         currentMeaning:()=>item,$,document:{activeElement:active,querySelector:()=>selected,querySelectorAll:()=>[]},
-        inspectorView:()=>'',footprint:()=>'',inspectionContent:()=>'',nextStepView:()=>'',assessmentView:()=>'',
+        inspectorView:()=>'',footprint:()=>'',inspectionContent:()=>'',nextStepView:()=>'',assessmentView:()=>'',graphView:()=>'',
         inspectorChoice:()=>choice,requestAnimationFrame:()=>{}});
       refresh();
       assert.deepEqual(calls,[disabled?'zone':'control']);

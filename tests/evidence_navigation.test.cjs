@@ -23,4 +23,8 @@ test('a direct evidence action opens and focuses its exact requirement, includin
   inputs['#review-tab-evidence']={focus:()=>calls.push('focus:evidence-tab')};
   focus('removed');
   assert.equal(calls.at(-1),'focus:evidence-tab');
+  calls.length=0;
+  focus('needed',{records:true});
+  assert.equal(state.evidenceObligation,'needed');
+  assert.deepEqual(calls,['refresh','review:evidence','evidence:records']);
 });
