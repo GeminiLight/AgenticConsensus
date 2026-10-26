@@ -188,6 +188,22 @@ html[lang="zh-CN"] .alignment-heading h3 { letter-spacing:-.025em; }
 .alignment-contract { width:100%; max-width:760px; margin:0; padding:18px 20px; box-shadow:none; }
 .alignment-contract p { font-size:17px; line-height:1.75; }
 .alignment-contract-label { font-size:12px; }
+.consensus-assessment { display:grid; grid-template-columns:1fr 1fr; margin-top:14px; max-width:760px; border:1px solid var(--line); border-radius:6px; background:var(--panel); overflow:hidden; }
+.consensus-assessment-item { min-width:0; display:grid; gap:5px; padding:13px 16px; color:var(--ink); background:transparent; border:0; text-align:left; }
+.consensus-assessment-item + .consensus-assessment-item { border-left:1px solid var(--line); }
+.consensus-assessment-item > span,.consensus-assessment-item small { color:var(--muted); font-size:12px; line-height:1.5; }
+.consensus-assessment-item strong { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:14px; font-weight:600; line-height:1.5; }
+.consensus-assessment-item .ui-icon { width:13px; height:13px; color:var(--dim); flex:none; }
+.consensus-assessment-item[data-status="blocked"] strong,.consensus-assessment-item[data-status="contested"] strong,.consensus-assessment-item[data-status="stale"] strong { color:var(--question); }
+.consensus-assessment-item:not(:disabled):hover { background:var(--raised); }
+.consensus-assessment-item:focus-visible { outline:2px solid var(--accent); outline-offset:-3px; }
+.consensus-assessment-item:disabled { cursor:default; }
+.consensus-assessment-item:disabled .ui-icon { visibility:hidden; }
+.meaning-baseline { max-width:760px; padding:12px 2px 0; font-size:12px; color:var(--muted); }
+.meaning-baseline summary { cursor:pointer; }
+.meaning-baseline p { padding:12px; margin-top:8px; border-left:2px solid var(--line-strong); line-height:1.7; }
+.meaning-baseline button { min-height:36px; }
+@media(max-width:600px) { .consensus-assessment { grid-template-columns:1fr; } .consensus-assessment-item + .consensus-assessment-item { border-left:0; border-top:1px solid var(--line); } }
 .alignment-focus[data-inspector-open] .alignment-readings { gap:12px; }
 .alignment-focus[data-inspector-open] .alignment-reading { padding:12px 14px 0; min-height:0; border-radius:6px; box-shadow:none; }
 .alignment-reading:hover { box-shadow:none; }

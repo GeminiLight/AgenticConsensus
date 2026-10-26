@@ -3284,17 +3284,20 @@ function focusEvidenceObligation(obligationId) {
   refreshEvidenceRecords();
   setReviewWorkspaceTab('evidence');
   setEvidenceTab('requirements');
+  let found = false;
   document.querySelectorAll('[data-obligation-card]').forEach(card=>{
     const selected = card.dataset.obligationCard === obligationId;
     card.dataset.focused = String(selected);
     if (!selected) return;
+    found = true;
     const disclosure = card.closest('details');
     if (disclosure) disclosure.open = true;
-    const plan = card.querySelector('.obligation-plan');
-    if (plan) plan.open = true;
+    const details = card.querySelector('details.evidence-record-details');
+    if (details) details.open = true;
     card.focus({preventScroll:true});
     card.scrollIntoView({block:'center',behavior:'instant'});
   });
+  if (!found) $('#review-tab-evidence')?.focus();
 }
 
 function bindEvidenceWorkspace() {
