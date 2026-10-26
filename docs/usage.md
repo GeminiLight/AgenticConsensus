@@ -28,6 +28,14 @@ and identifies unavailable model analysis explicitly. The commitment Canvas keep
 its file reader independently scrollable on desktop, with **Focus reading** for a
 wider source view; narrow screens use normal page scrolling.
 
+The Canvas places the selected commitment's evidence status beside the whole
+review's approval status. Supporting evidence for one commitment cannot clear a
+blocker elsewhere. If a commitment has several verification requirements, the
+summary counts the supported requirements and prioritizes unresolved ones;
+waivers remain exceptions rather than supporting evidence. **Review required
+evidence** opens the relevant requirement and its verification plan directly.
+Changes to an agreed statement also expose the previous statement on demand.
+
 Decision keeps the current outcome and available actions first. Revision history,
 commitment details and verification plans expand in place; deep links open the
 relevant commitment automatically. Changes holds the file map, while Audit holds

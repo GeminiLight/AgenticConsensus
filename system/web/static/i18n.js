@@ -2,6 +2,27 @@
 (function(root){
   'use strict';
   const messages={
+    'Review required evidence':'查看所需证据',
+    'Evidence and decision':'证据与决策',
+    'This commitment':'这条约定',
+    'Whole review':'整个评审',
+    'Awaiting your decision':'待你决定',
+    'Awaiting an authorized decision':'待有权限的人员决定',
+    'Approval blocked':'尚不可批准',
+    'Approval rolled back':'已撤回批准',
+    'No assessment':'尚未评估',
+    '{supported} of {total} requirements supported':'{total} 项要求中，{supported} 项有证据支持',
+    'Reading this version…':'正在读取当前版本…',
+    'Reload to inspect evidence':'重新加载以查看证据',
+    'No verification recorded':'尚未记录验证',
+    'Checks permit a human decision':'检查允许进入人工决策',
+    'Decision recorded for this version':'已记录针对该版本的决策',
+    'Target {ref}':'目标版本 {ref}',
+    'Agreed · rechecking':'已确认 · 实现待复审',
+    'Other linked files':'其他关联文件',
+    'Linked implementation':'关联的实现',
+    'Changes an agreed requirement':'修改了已确认的约定',
+    'Why this change?':'为什么修改？',
     'No reading':'尚无解读',
     'Selected interpretation':'已选解释',
     'Files without a reading':'尚未解读的文件',
@@ -166,7 +187,7 @@
     'Explore the code changes':'查看代码变更','Request-to-decision links':'从需求到决策的关联','Inspect recorded correspondence':'查看已记录的对应关系','Policy checks':'策略检查',
     'Record approval':'记录批准','Resolve blocking checks before recording approval':'记录批准前，请先处理阻碍项','Open on GitHub':'在 GitHub 中打开','Open changed files':'查看变更文件','Ask AI about this review':'向 AI 询问此评审','More review actions':'更多评审操作','More actions':'更多操作','Copy review link':'复制评审链接','Refresh review summary':'刷新评审摘要','Refresh summary':'刷新摘要','Copy summary':'复制摘要','Export JSON':'导出 JSON','Source revisions':'源码版本','base':'基线','target':'目标',
     'Read-only access':'只读访问','You can inspect this review and its evidence, but only an operator can change the recorded decision.':'可以查看评审和证据，但只有操作员能更改决策记录。','Request update':'请求更新','Roll back approval':'回退批准','Recorded decision':'已记录的决定','Raw unified patch':'原始统一补丁','Open full diff':'查看完整变更','Governing claims':'适用规则','Review trace':'评审链路','Links recorded in this review':'本评审中记录的关联','No recorded events yet.':'暂无事件记录。',
-    'Configured checks pass. Record your decision once you have read the change.':'配置的检查均已通过。阅读变更后，可以记录你的决定。','{count} blocking checks must be resolved first.':'需要先处理 {count} 项阻碍检查。','Tests have not run; {count} evidence records are missing.':'测试尚未运行；缺少 {count} 条证据。','{count} evidence records are missing.':'缺少 {count} 条证据。','{count} files changed':'{count} 个文件发生变更','{count} files · paths and change volume':'{count} 个文件 · 路径与变更量','{count} blocking checks':'{count} 项阻碍检查',
+    'Configured checks pass. Record your decision once you have read the change.':'配置的检查均已通过。阅读变更后，可以记录你的决定。','{count} blocking checks must be resolved first.':'需要先处理 {count} 项阻碍检查。','Tests have not run; {count} evidence records are missing.':'测试尚未运行；缺少 {count} 条证据。','{count} evidence records are missing.':'缺少 {count} 条证据。','{count} files changed':'{count} 个文件发生变更','{count} files · paths and change volume':'{count} 个文件 · 路径与变更量','{count} blocking checks':'{count} 项检查未通过',
     'New operator · Identity boundary':'新操作员 · 身份边界','Identity boundary':'身份边界','Your name and audit identity will be recorded with the actions you take.':'你的姓名和审计身份将随操作一同记录。','Project permissions are assigned separately. Creating an account does not grant approval authority.':'项目权限单独分配，创建账户不赋予批准权限。','New here? Choose Sign up to create an account for this installation.':'首次使用？点击注册，为此工作区创建账户。','Use the account created for this installation. Need access? Ask the administrator who runs this workspace.':'请使用此工作区的账户登录。如需访问权限，请联系管理员。',
     'Draft a Python request':'起草 Python 需求','Create first request':'创建第一条需求','View existing reviews':'查看已有评审','Open reviews':'打开评审列表',
     'Project':'项目','Projects':'项目','Project state':'项目共识','Requests':'需求','Reviews':'评审','Rules':'规则',
@@ -285,7 +306,8 @@
     return key;
   }
   function t(key,params={}){const source=String(key??'');let value=language==='zh-CN'?translated(source):source;
-    if(language==='en'&&Number(params.count)===1)value=({'{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed','{count} blocking checks':'{count} blocking check','{count} items need attention':'{count} item needs attention'})[source]||value;
+    if(language==='en'&&source==='{supported} of {total} requirements supported'&&Number(params.total)===1)value='{supported} of {total} requirements supported'.replace('requirements','requirement');
+    if(language==='en'&&Number(params.count)===1)value=({'{count} files':'{count} file','{count} linked files':'{count} linked file','{count} authored readings':'{count} authored reading','{count} linked evidence records':'{count} linked evidence record','{count} matching lines':'{count} matching line','{count} configured rules':'{count} configured rule','{count} files changed':'{count} file changed','{count} blocking checks':'{count} blocking check','{count} items need attention':'{count} item needs attention','{count} review-level approval blockers':'{count} review-level approval blocker'})[source]||value;
     if(language==='en'&&source==='{requirements} requirements · {findings} findings') {
       if(Number(params.requirements)===1)value=value.replace(' requirements',' requirement');
       if(Number(params.findings)===1)value=value.replace(' findings',' finding');
